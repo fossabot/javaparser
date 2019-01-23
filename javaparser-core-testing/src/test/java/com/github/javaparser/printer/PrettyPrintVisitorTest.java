@@ -309,4 +309,67 @@ class PrettyPrintVisitorTest {
                 "    }\n" +
                 "}\n", cu.toString());
     }
+
+
+    private String expectedJavadocComment = "public class SomeClass {\n" +
+            "\n" +
+            "    /**\n" +
+            "     * tester line\n" +
+            "     * javadoc comment\n" +
+            "     *   javadoc comment\n" +
+            "     * javadoc comment\n" +
+            "     *    javadoc comment\n" +
+            "     */\n" +
+            "    public void add(int x, int y) {\n" +
+            "    }\n" +
+            "}\n";
+
+    @Test
+    public void javadocIssue1907_allLeadingSpaces() {
+        String input_allLeadingSpaces = "public class SomeClass{" +
+                "/**\n" +
+                " * tester line\n" +
+                " * javadoc comment\n" +
+                " *   javadoc comment\n" +
+                "   * javadoc comment\n" +
+                "    javadoc comment\n" +
+                " */\n" +
+                "public void add(int x, int y){}}";
+
+        CompilationUnit cu_allLeadingSpaces = JavaParser.parse(input_allLeadingSpaces);
+        assertEqualsNoEol(expectedJavadocComment, cu_allLeadingSpaces.toString());
+    }
+
+    @Test
+    public void javadocIssue1907_singleMissingLeadingSpace() {
+        String input_singleMissingLeadingSpace = "public class SomeClass{" +
+                "/**\n" +
+                "* tester line\n" +
+                " * javadoc comment\n" +
+                " *   javadoc comment\n" +
+                "   * javadoc comment\n" +
+                "    javadoc comment\n" +
+                " */\n" +
+                "public void add(int x, int y){}}";
+
+        CompilationUnit cu_singleMissingLeadingSpace = JavaParser.parse(input_singleMissingLeadingSpace);
+        assertEqualsNoEol(expectedJavadocComment, cu_singleMissingLeadingSpace.toString());
+    }
+
+    @Test
+    public void javadocIssue1907_leadingTab() {
+        String input_leadingTab = "public class SomeClass{" +
+                "/**\n" +
+                "\t * tester line\n" +
+                " * javadoc comment\n" +
+                " *   javadoc comment\n" +
+                "   * javadoc comment\n" +
+                "    javadoc comment\n" +
+                " */\n" +
+                "public void add(int x, int y){}}";
+
+        CompilationUnit cu_leadingTab = JavaParser.parse(input_leadingTab);
+        assertEqualsNoEol(expectedJavadocComment, cu_leadingTab.toString());
+
+    }
 }
