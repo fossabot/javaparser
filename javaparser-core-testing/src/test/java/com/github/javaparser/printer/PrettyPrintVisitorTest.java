@@ -336,8 +336,8 @@ class PrettyPrintVisitorTest {
                 " */\n" +
                 "public void add(int x, int y){}}";
 
-        CompilationUnit cu_allLeadingSpaces = JavaParser.parse(input_allLeadingSpaces);
-        assertEqualsNoEol(expectedJavadocComment, cu_allLeadingSpaces.toString());
+        CompilationUnit cu = JavaParser.parse(input_allLeadingSpaces);
+        assertEqualsNoEol(expectedJavadocComment, cu.toString());
     }
 
     @Test
@@ -352,8 +352,8 @@ class PrettyPrintVisitorTest {
                 " */\n" +
                 "public void add(int x, int y){}}";
 
-        CompilationUnit cu_singleMissingLeadingSpace = JavaParser.parse(input_singleMissingLeadingSpace);
-        assertEqualsNoEol(expectedJavadocComment, cu_singleMissingLeadingSpace.toString());
+        CompilationUnit cu = JavaParser.parse(input_singleMissingLeadingSpace);
+        assertEqualsNoEol(expectedJavadocComment, cu.toString());
     }
 
     @Test
@@ -368,8 +368,110 @@ class PrettyPrintVisitorTest {
                 " */\n" +
                 "public void add(int x, int y){}}";
 
-        CompilationUnit cu_leadingTab = JavaParser.parse(input_leadingTab);
-        assertEqualsNoEol(expectedJavadocComment, cu_leadingTab.toString());
+        CompilationUnit cu = JavaParser.parse(input_leadingTab);
+        assertEqualsNoEol(expectedJavadocComment, cu.toString());
+    }
 
+    /**
+     * Where the left-most edge of the comment is pushed against the asterisks, indent whole comment.
+     */
+    @Test
+    public void javadocIssue1907_noWhitespaceFollowingAsterisk() {
+        String expectedJavadocComment = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     *  tester line\n" +
+                "     *  javadoc comment\n" +
+                "     * javadoc comment\n" +
+                "     *    javadoc comment\n" +
+                "     *  javadoc comment\n" +
+                "     *     javadoc comment\n" +
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        String input_leadingTab = "public class SomeClass{" +
+                "/**\n" +
+                "\t * tester line\n" +
+                " * javadoc comment\n" +
+                " *javadoc comment\n" +
+                " *   javadoc comment\n" +
+                "   * javadoc comment\n" +
+                "    javadoc comment\n" +
+                " */\n" +
+                "public void add(int x, int y){}}";
+
+        CompilationUnit cu = JavaParser.parse(input_leadingTab);
+        assertEqualsNoEol(expectedJavadocComment, cu.toString());
+
+    }
+
+    /**
+     * Where the left-most edge of the comment is pushed against the start of the line, indent whole comment.
+     */
+    @Test
+    public void javadocIssue1907_noWhitespaceFollowingStartOfLine() {
+        String expectedJavadocComment = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     *  tester line\n" +
+                "     *  javadoc comment\n" +
+                "     * javadoc comment\n" +
+                "     *    javadoc comment\n" +
+                "     *  javadoc comment\n" +
+                "     *     javadoc comment\n" +
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        String input_leadingTab = "public class SomeClass{" +
+                "/**\n" +
+                "\t * tester line\n" +
+                " * javadoc comment\n" +
+                "javadoc comment\n" +
+                "   javadoc comment\n" +
+                "   * javadoc comment\n" +
+                "    javadoc comment\n" +
+                " */\n" +
+                "public void add(int x, int y){}}";
+
+        CompilationUnit cu = JavaParser.parse(input_leadingTab);
+        assertEqualsNoEol(expectedJavadocComment, cu.toString());
+    }
+
+    @Test
+    public void javadocIssue1907_annotations() {
+        String expectedJavadocComment = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     *  javadoc comment\n" +
+                "     *     javadoc comment\n" +
+                "     *   \t\t   javadoc comment\n" +
+                "     * @author xyz\n" +
+                "     * @param x xyz\txyz\n" +
+                "     * @param y xyz\n" +
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        String input_leadingTab = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     *  javadoc comment\n" +
+                "     javadoc comment\n" +
+                "   \t\t   javadoc comment\n" +
+                "     *    \t     @author xyz\n" +
+                "     *  @param x xyz\txyz\n" +
+                "  \t   *\t\t@param y xyz\n" +
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        CompilationUnit cu = JavaParser.parse(input_leadingTab);
+        assertEqualsNoEol(expectedJavadocComment, cu.toString());
     }
 }

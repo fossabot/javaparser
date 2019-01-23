@@ -312,7 +312,26 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
             String[] lines = commentContent.split("\\R");
             boolean skippingLeadingEmptyLines = true;
             boolean prependEmptyLine = false;
-            boolean prependSpace = Arrays.stream(lines).anyMatch(line -> !line.isEmpty() && !line.startsWith(" "));
+
+            Optional<Integer> minimumWhitespaceLength = Arrays.stream(lines)
+                    .map(line -> {
+                        String strippedLine = line.replaceAll("^\\s*\\*", "");
+                        String trimmedLine = strippedLine;
+                        trimmedLine = trimmedLine.replaceAll("\\t", "    ").replaceAll("^\\s*", "");
+
+                        if (trimmedLine.isEmpty()) {
+                            return Integer.MAX_VALUE;
+                        }
+
+                        return strippedLine.replaceAll("\\t", "    ").length() - trimmedLine.length();
+                    })
+                    .min(Integer::compareTo);
+
+            int minimumCommonIndentSpaces = 0;
+            if (minimumWhitespaceLength.isPresent() && minimumWhitespaceLength.get() != Integer.MAX_VALUE) {
+                minimumCommonIndentSpaces = minimumWhitespaceLength.get();
+            }
+
             for (String line : lines) {
                 final String trimmedLine = line.trim();
                 if (trimmedLine.startsWith("*")) {
@@ -330,10 +349,15 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
                         prependEmptyLine = false;
                     }
                     printer.print(" *");
-                    if (prependSpace) {
-                        printer.print(" ");
+
+                    if (!line.isEmpty()) {
+                        int x = minimumCommonIndentSpaces == 0 ? 1 : minimumCommonIndentSpaces;
+                        for (int i = 0; i < x; i++) {
+                            printer.print(" ");
+                        }
+                        line = line.substring(minimumCommonIndentSpaces);
+                        printer.println(line);
                     }
-                    printer.println(line);
                 }
             }
             printer.println(" */");
