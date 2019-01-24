@@ -304,40 +304,27 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         printer.print("}");
     }
 
+
     @Override
     public void visit(final JavadocComment n, final Void arg) {
         if (configuration.isPrintComments() && configuration.isPrintJavadoc()) {
             printer.println("/**");
             final String commentContent = normalizeEolInTextBlock(n.getContent(), configuration.getEndOfLineCharacter());
             String[] lines = commentContent.split("\\R");
-            boolean skippingLeadingEmptyLines = true;
-            boolean prependEmptyLine = false;
-
-            Optional<Integer> minimumWhitespaceLength = Arrays.stream(lines)
-                    .map(line -> {
-                        String strippedLine = line.replaceAll("^\\s*\\*", "");
-                        String trimmedLine = strippedLine;
-                        trimmedLine = trimmedLine.replaceAll("\\t", "    ").replaceAll("^\\s*", "");
-
-                        if (trimmedLine.isEmpty()) {
-                            return Integer.MAX_VALUE;
-                        }
-
-                        return strippedLine.replaceAll("\\t", "    ").length() - trimmedLine.length();
-                    })
-                    .min(Integer::compareTo);
-
-            int minimumCommonIndentSpaces = 0;
-            if (minimumWhitespaceLength.isPresent() && minimumWhitespaceLength.get() != Integer.MAX_VALUE) {
-                minimumCommonIndentSpaces = minimumWhitespaceLength.get();
-            }
-
+            List<String> strippedLines = new ArrayList<>();
             for (String line : lines) {
                 final String trimmedLine = line.trim();
                 if (trimmedLine.startsWith("*")) {
                     line = trimmedLine.substring(1);
                 }
                 line = trimTrailingSpaces(line);
+                strippedLines.add(line);
+            }
+
+            boolean skippingLeadingEmptyLines = true;
+            boolean prependEmptyLine = false;
+            boolean prependSpace = strippedLines.stream().anyMatch(line -> !line.isEmpty() && !line.startsWith(" "));
+            for (String line : strippedLines) {
                 if (line.isEmpty()) {
                     if (!skippingLeadingEmptyLines) {
                         prependEmptyLine = true;
@@ -349,16 +336,10 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
                         prependEmptyLine = false;
                     }
                     printer.print(" *");
-
-                    if (!line.isEmpty()) {
+                    if (prependSpace) {
                         printer.print(" ");
-                        if(line.trim().startsWith("@")) {
-                            printer.println(line.replaceAll("^\\s*", ""));
-                        } else {
-                            line = line.substring(minimumCommonIndentSpaces);
-                            printer.println(line);
-                        }
                     }
+                    printer.println(line);
                 }
             }
             printer.println(" */");
