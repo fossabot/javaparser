@@ -351,14 +351,10 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
                     printer.print(" *");
 
                     if (!line.isEmpty()) {
+                        printer.print(" ");
                         if(line.trim().startsWith("@")) {
-                            printer.print(" ");
                             printer.println(line.replaceAll("^\\s*", ""));
                         } else {
-                            int x = minimumCommonIndentSpaces == 0 ? 1 : minimumCommonIndentSpaces;
-                            for (int i = 0; i < x; i++) {
-                                printer.print(" ");
-                            }
                             line = line.substring(minimumCommonIndentSpaces);
                             printer.println(line);
                         }

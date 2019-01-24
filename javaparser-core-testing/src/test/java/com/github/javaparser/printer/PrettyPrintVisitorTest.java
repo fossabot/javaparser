@@ -446,9 +446,9 @@ class PrettyPrintVisitorTest {
         String expectedJavadocComment = "public class SomeClass {\n" +
                 "\n" +
                 "    /**\n" +
-                "     *  javadoc comment\n" +
-                "     *     javadoc comment\n" +
-                "     *   \t\t   javadoc comment\n" +
+                "     * javadoc comment\n" +
+                "     *    javadoc comment\n" +
+                "     *  \t\t   javadoc comment\n" +
                 "     * @author xyz\n" +
                 "     * @param x xyz\txyz\n" +
                 "     * @param y xyz\n" +
@@ -475,6 +475,35 @@ class PrettyPrintVisitorTest {
         assertEqualsNoEol(expectedJavadocComment, cu.toString());
     }
 
+    @Test
+    public void javadocIssue1907_deIndentingJavadocComments() {
+        String expectedJavadocComment = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     * indented comments\n" +
+                "     * indented comments\n" +
+                "     * indented comments\n" +
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        String input_indentedComments = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     *         indented comments\n" +
+                "     *         indented comments\n" +
+                "     *         indented comments\n" +
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        CompilationUnit cu = JavaParser.parse(input_indentedComments);
+        System.out.println(cu.toString());
+        assertEqualsNoEol(expectedJavadocComment, cu.toString());
+    }
+
 
     @Test
     public void javadocIssue1907_nestedClasses() {
@@ -483,9 +512,9 @@ class PrettyPrintVisitorTest {
                 "    class NestedClass {\n" +
                 "\n" +
                 "        /**\n" +
-                "         *  javadoc comment\n" +
-                "         *     javadoc comment\n" +
-                "         *   \t\t   javadoc comment\n" +
+                "         * javadoc comment\n" +
+                "         *    javadoc comment\n" +
+                "         *  \t\t   javadoc comment\n" +
                 "         * @author xyz\n" +
                 "         * @param x xyz\txyz\n" +
                 "         * @param y xyz\n" +
@@ -495,7 +524,7 @@ class PrettyPrintVisitorTest {
                 "    }\n" +
                 "}\n";
 
-        String input_leadingTab = "public class SomeClass {\n" +
+        String input_nestedClasses = "public class SomeClass {\n" +
                 "    class NestedClass {\n" +
                 "\n" +
                 "        /**\n" +
@@ -511,7 +540,7 @@ class PrettyPrintVisitorTest {
                 "    }\n" +
                 "}\n";
 
-        CompilationUnit cu = JavaParser.parse(input_leadingTab);
+        CompilationUnit cu = JavaParser.parse(input_nestedClasses);
         assertEqualsNoEol(expectedJavadocComment, cu.toString());
     }
 }
