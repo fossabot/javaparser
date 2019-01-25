@@ -531,7 +531,7 @@ class PrettyPrintVisitorTest {
                 "     *  javadoc comment\n" +
                 "     javadoc comment\n" +
                 "   \t\t   javadoc comment\n" +
-                "     *    \t     @author xyz\n" +
+                "     *  @author xyz\n" +
                 "     *  @param x xyz\txyz\n" +
                 "  \t   *\t\t@param y xyz\n" +
                 "         */\n" +
