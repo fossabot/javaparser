@@ -344,8 +344,13 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
                         printer.println(" *");
                         prependEmptyLine = false;
                     }
+
                     printer.print(" * ");
-                    printer.println(line.substring(minimumCommonIndentSpaces));
+                    if (line.trim().startsWith("@")) {
+                        printer.println(line.trim());
+                    } else {
+                        printer.println(line.substring(minimumCommonIndentSpaces));
+                    }
                 }
             }
             printer.println(" */");
