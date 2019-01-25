@@ -325,7 +325,7 @@ class PrettyPrintVisitorTest {
             "}\n";
 
     @Test
-    public void javadocIssue1907_allLeadingSpaces() {
+    public void javadoc_allLeadingSpaces() {
         String input_allLeadingSpaces = "public class SomeClass{" +
                 "/**\n" +
                 " * tester line\n" +
@@ -341,7 +341,7 @@ class PrettyPrintVisitorTest {
     }
 
     @Test
-    public void javadocIssue1907_singleMissingLeadingSpace() {
+    public void javadoc_singleMissingLeadingSpace() {
         String input_singleMissingLeadingSpace = "public class SomeClass{" +
                 "/**\n" +
                 "* tester line\n" +
@@ -357,7 +357,7 @@ class PrettyPrintVisitorTest {
     }
 
     @Test
-    public void javadocIssue1907_leadingTab() {
+    public void javadoc_leadingTab() {
         String input_leadingTab = "public class SomeClass{" +
                 "/**\n" +
                 "\t * tester line\n" +
@@ -376,7 +376,7 @@ class PrettyPrintVisitorTest {
      * Where the left-most edge of the comment is pushed against the asterisks, indent whole comment.
      */
     @Test
-    public void javadocIssue1907_noWhitespaceFollowingAsterisk() {
+    public void javadoc_noWhitespaceFollowingAsterisk() {
         String expectedJavadocComment = "public class SomeClass {\n" +
                 "\n" +
                 "    /**\n" +
@@ -411,7 +411,7 @@ class PrettyPrintVisitorTest {
      * Where the left-most edge of the comment is pushed against the start of the line, indent whole comment.
      */
     @Test
-    public void javadocIssue1907_noWhitespaceFollowingStartOfLine() {
+    public void javadoc_noWhitespaceFollowingStartOfLine() {
         String expectedJavadocComment = "public class SomeClass {\n" +
                 "\n" +
                 "    /**\n" +
@@ -442,7 +442,7 @@ class PrettyPrintVisitorTest {
     }
 
     @Test
-    public void javadocIssue1907_annotations() {
+    public void javadoc_annotations() {
         String expectedJavadocComment = "public class SomeClass {\n" +
                 "\n" +
                 "    /**\n" +
@@ -477,7 +477,7 @@ class PrettyPrintVisitorTest {
 
 
     @Test
-    public void javadocIssue1907_annotationsDeep() {
+    public void javadoc_annotationsShallowerThanContent() {
         String expectedJavadocComment = "public class SomeClass {\n" +
                 "\n" +
                 "    /**\n" +
@@ -511,7 +511,7 @@ class PrettyPrintVisitorTest {
     }
 
     @Test
-    public void javadocIssue1907_deIndentingJavadocComments() {
+    public void javadoc_deIndentingJavadocComments() {
         String expectedJavadocComment = "public class SomeClass {\n" +
                 "\n" +
                 "    /**\n" +
@@ -540,7 +540,7 @@ class PrettyPrintVisitorTest {
 
 
     @Test
-    public void javadocIssue1907_nestedClasses() {
+    public void javadoc_nestedClasses() {
         String expectedJavadocComment = "public class SomeClass {\n" +
                 "\n" +
                 "    class NestedClass {\n" +
@@ -580,7 +580,7 @@ class PrettyPrintVisitorTest {
 
 
     @Test
-    public void javadocIssue1907_tabHandling() {
+    public void javadoc_tabHandling() {
         String expectedJavadocComment = "public class SomeClass {\n" +
                 "\n" +
                 "    /**\n" +
