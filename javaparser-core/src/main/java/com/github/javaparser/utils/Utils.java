@@ -278,4 +278,14 @@ public class Utils {
         return line;
     }
 
+    /**
+     * Like {@link String#trim()}, but only the leading spaces.
+     */
+    public static String trimLeadingSpaces(String line) {
+        while (line.length() > 0 && line.charAt(0) <= 0x20) {
+            line = line.substring(1);
+        }
+        return line;
+    }
+
 }

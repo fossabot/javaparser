@@ -304,7 +304,6 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         printer.print("}");
     }
 
-
     @Override
     public void visit(final JavadocComment n, final Void arg) {
         if (configuration.isPrintComments() && configuration.isPrintJavadoc()) {
@@ -323,7 +322,17 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
 
             boolean skippingLeadingEmptyLines = true;
             boolean prependEmptyLine = false;
-            boolean prependSpace = strippedLines.stream().anyMatch(line -> !line.isEmpty() && !line.startsWith(" "));
+
+            int minimumCommonIndentSpaces = strippedLines
+                    .stream()
+                    .filter(s -> !s.trim().isEmpty())
+                    .map(line -> {
+                        line = line.replaceAll("\\t", "    ");
+                        return line.length() - trimLeadingSpaces(line).length();
+                    })
+                    .min(Integer::compareTo)
+                    .orElse(0);
+
             for (String line : strippedLines) {
                 if (line.isEmpty()) {
                     if (!skippingLeadingEmptyLines) {
@@ -335,11 +344,8 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
                         printer.println(" *");
                         prependEmptyLine = false;
                     }
-                    printer.print(" *");
-                    if (prependSpace) {
-                        printer.print(" ");
-                    }
-                    printer.println(line);
+                    printer.print(" * ");
+                    printer.println(line.substring(minimumCommonIndentSpaces));
                 }
             }
             printer.println(" */");
