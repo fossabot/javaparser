@@ -500,7 +500,6 @@ class PrettyPrintVisitorTest {
                 "}\n";
 
         CompilationUnit cu = JavaParser.parse(input_indentedComments);
-        System.out.println(cu.toString());
         assertEqualsNoEol(expectedJavadocComment, cu.toString());
     }
 
@@ -543,4 +542,43 @@ class PrettyPrintVisitorTest {
         CompilationUnit cu = JavaParser.parse(input_nestedClasses);
         assertEqualsNoEol(expectedJavadocComment, cu.toString());
     }
+
+
+
+    @Test
+    public void javadocIssue1907_tabHandling() {
+        String expectedJavadocComment = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     * indented comments\n" +
+                "     * \tindented comments\n" +
+                "     *     indented comments\n" +
+                "     *     indented comments\n" +
+                "     *   \tindented comments\n" +
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        String input = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     *  indented comments\n" +   // Two spaces removed, one re-added
+                "     *  \tindented comments\n" + // Two spaces removed, one re-added (tab retained as comment content)
+                "     * \t indented comments\n" + // One space removed, tab converted to 4x spaces, second space
+                // removed, leaving 4 spaces as part of comment content plus one space re-added (total = 5 spaces)
+                "     *\t  indented comments\n" + // Tab converted to 4x spaces, two spaces removed, remaining two
+                // spaces plus one content space retained as content spaces plus one space re-added(total = 5 spaces)
+                "     *\t\tindented comments\n" + // Tab converted to 4x spaces, two spaces removed, one space
+                // re-added (total = 3 spaces and tab)
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        CompilationUnit cu = JavaParser.parse(input);
+        assertEqualsNoEol(expectedJavadocComment, cu.toString());
+    }
+
+
 }

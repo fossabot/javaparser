@@ -34,6 +34,7 @@ import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.*;
 import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.ast.visitor.VoidVisitor;
+import com.github.javaparser.utils.Utils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -345,11 +346,20 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
                         prependEmptyLine = false;
                     }
 
+                    int tabSpaceConversion = 4;
+
                     printer.print(" * ");
                     if (line.trim().startsWith("@")) {
                         printer.println(line.trim());
                     } else {
-                        printer.println(line.substring(minimumCommonIndentSpaces));
+                        for (int i = 0; i < minimumCommonIndentSpaces; i++) {
+                            if (line.startsWith("\t")) {
+                                line = line.substring(1);
+                                line = Utils.stringRepeat(" ", tabSpaceConversion) + line;
+                            }
+                            line = line.substring(1);
+                        }
+                        printer.println(line);
                     }
                 }
             }
