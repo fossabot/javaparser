@@ -327,6 +327,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
             int minimumCommonIndentSpaces = strippedLines
                     .stream()
                     .filter(s -> !s.trim().isEmpty())
+                    .filter(s -> !s.trim().startsWith("@"))
                     .map(line -> {
                         line = line.replaceAll("\\t", "    ");
                         return line.length() - trimLeadingSpaces(line).length();

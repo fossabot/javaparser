@@ -475,6 +475,41 @@ class PrettyPrintVisitorTest {
         assertEqualsNoEol(expectedJavadocComment, cu.toString());
     }
 
+
+    @Test
+    public void javadocIssue1907_annotationsDeep() {
+        String expectedJavadocComment = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     * javadoc comment\n" +
+                "     * javadoc comment\n" +
+                "     * javadoc comment\n" +
+                "     * @author xyz\n" +
+                "     * @param x xyz\txyz\n" +
+                "     * @param y xyz\n" +
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        String input_leadingTab = "public class SomeClass {\n" +
+                "\n" +
+                "    /**\n" +
+                "     *    javadoc comment\n" +
+                "     *    javadoc comment\n" +
+                "     *    javadoc comment\n" +
+                "     * @author xyz\n" +
+                "     * @param x xyz\txyz\n" +
+                "     * @param y xyz\n" +
+                "     */\n" +
+                "    public void add(int x, int y) {\n" +
+                "    }\n" +
+                "}\n";
+
+        CompilationUnit cu = JavaParser.parse(input_leadingTab);
+        assertEqualsNoEol(expectedJavadocComment, cu.toString());
+    }
+
     @Test
     public void javadocIssue1907_deIndentingJavadocComments() {
         String expectedJavadocComment = "public class SomeClass {\n" +
@@ -542,7 +577,6 @@ class PrettyPrintVisitorTest {
         CompilationUnit cu = JavaParser.parse(input_nestedClasses);
         assertEqualsNoEol(expectedJavadocComment, cu.toString());
     }
-
 
 
     @Test
