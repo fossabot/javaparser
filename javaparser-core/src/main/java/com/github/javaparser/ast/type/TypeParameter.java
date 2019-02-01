@@ -84,6 +84,11 @@ public class TypeParameter extends ReferenceType implements NodeWithSimpleName<T
     public TypeParameter(TokenRange tokenRange, SimpleName name, NodeList<ClassOrInterfaceType> typeBound, NodeList<AnnotationExpr> annotations) {
         super(tokenRange, annotations);
         setName(name);
+        if(typeBound.isEmpty()) {
+            ClassOrInterfaceType object = new ClassOrInterfaceType();
+            object.setName("Object");
+            typeBound.add(object);
+        }
         setTypeBound(typeBound);
         customInitialization();
     }
