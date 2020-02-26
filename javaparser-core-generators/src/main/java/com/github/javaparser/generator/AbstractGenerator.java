@@ -21,6 +21,7 @@
 
 package com.github.javaparser.generator;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -41,12 +42,13 @@ import static com.github.javaparser.utils.CodeGenerationUtils.f;
  */
 public abstract class AbstractGenerator {
     protected final SourceRoot sourceRoot;
+    protected List<CompilationUnit> editedCus;
 
     protected AbstractGenerator(SourceRoot sourceRoot) {
         this.sourceRoot = sourceRoot;
     }
 
-    public abstract void generate() throws Exception;
+    public abstract List<CompilationUnit> generate() throws Exception;
 
     protected <T extends Node & NodeWithAnnotations<?>> void annotateGenerated(T node) {
         annotate(node, Generated.class, new StringLiteralExpr(getClass().getName()));

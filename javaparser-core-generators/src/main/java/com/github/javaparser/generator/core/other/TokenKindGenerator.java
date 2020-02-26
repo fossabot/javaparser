@@ -36,6 +36,9 @@ import com.github.javaparser.generator.AbstractGenerator;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Generates the TokenKind enum from {@link com.github.javaparser.GeneratedJavaParserConstants}
  */
@@ -48,7 +51,7 @@ public class TokenKindGenerator extends AbstractGenerator {
     }
 
     @Override
-    public void generate() {
+    public List<CompilationUnit> generate() {
         Log.info("Running %s", () -> getClass().getSimpleName());
         
         final CompilationUnit javaTokenCu = sourceRoot.parse("com.github.javaparser", "JavaToken.java");
@@ -77,6 +80,8 @@ public class TokenKindGenerator extends AbstractGenerator {
                         generateValueOfEntry(valueOfSwitch, name, kind);
                     });
         }
+
+        return Collections.emptyList();
     }
 
     private void generateValueOfEntry(SwitchStmt valueOfSwitch, String name, IntegerLiteralExpr kind) {

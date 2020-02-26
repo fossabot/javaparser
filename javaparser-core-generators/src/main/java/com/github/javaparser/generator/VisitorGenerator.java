@@ -31,6 +31,8 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static com.github.javaparser.ast.Modifier.Keyword.PUBLIC;
@@ -56,7 +58,7 @@ public abstract class VisitorGenerator extends AbstractGenerator {
         this.createMissingVisitMethods = createMissingVisitMethods;
     }
 
-    public final void generate() throws Exception {
+    public final List<CompilationUnit> generate() throws Exception {
         Log.info("Running %s", () -> getClass().getSimpleName());
 
         final CompilationUnit compilationUnit = sourceRoot.tryToParse(pkg, visitorClassName + ".java").getResult().get();
@@ -71,6 +73,8 @@ public abstract class VisitorGenerator extends AbstractGenerator {
                 .filter((baseNodeMetaModel) -> !baseNodeMetaModel.isAbstract())
                 .forEach(node -> generateVisitMethodForNode(node, visitorClass, compilationUnit));
         after();
+
+        return Collections.emptyList();
     }
 
     protected void after() throws Exception {

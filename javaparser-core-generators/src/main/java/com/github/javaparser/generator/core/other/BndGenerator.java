@@ -21,6 +21,7 @@
 
 package com.github.javaparser.generator.core.other;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.generator.AbstractGenerator;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
@@ -29,6 +30,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Generates the bnd.bnd file in javaparser-core.
@@ -40,7 +43,7 @@ public class BndGenerator extends AbstractGenerator {
     }
 
     @Override
-    public void generate() throws IOException {
+    public List<CompilationUnit> generate() throws IOException {
         Log.info("Running %s", () -> getClass().getSimpleName());
         Path root = sourceRoot.getRoot();
         Path projectRoot = root.getParent().getParent().getParent();
@@ -59,6 +62,8 @@ public class BndGenerator extends AbstractGenerator {
             writer.write(template.replace("{exportedPackages}", packagesList));
         }
         Log.info("Written " + output);
+
+        return Collections.emptyList();
     }
 
     private String concatPackageName(String packageName, String packageList, String lineSeparator) {

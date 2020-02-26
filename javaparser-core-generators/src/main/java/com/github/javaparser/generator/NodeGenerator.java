@@ -29,6 +29,9 @@ import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.Pair;
 import com.github.javaparser.utils.SourceRoot;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Makes it easier to generate code in the core AST nodes. The generateNode method will get every node type passed to
  * it, ready for modification.
@@ -38,13 +41,15 @@ public abstract class NodeGenerator extends AbstractGenerator {
         super(sourceRoot);
     }
 
-    public final void generate() throws Exception {
+    public final List<CompilationUnit> generate() throws Exception {
         Log.info("Running %s", () -> getClass().getSimpleName());
         for (BaseNodeMetaModel nodeMetaModel : JavaParserMetaModel.getNodeMetaModels()) {
             Pair<CompilationUnit, ClassOrInterfaceDeclaration> result = parseNode(nodeMetaModel);
             generateNode(nodeMetaModel, result.a, result.b);
         }
         after();
+
+        return Collections.emptyList();
     }
 
     protected Pair<CompilationUnit, ClassOrInterfaceDeclaration> parseNode(BaseNodeMetaModel nodeMetaModel) {
