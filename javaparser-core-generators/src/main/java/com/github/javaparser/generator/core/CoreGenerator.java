@@ -23,8 +23,10 @@ package com.github.javaparser.generator.core;
 
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.generator.core.node.*;
 import com.github.javaparser.generator.core.other.BndGenerator;
+import com.github.javaparser.generator.core.other.RemoveGeneratorAnnotations;
 import com.github.javaparser.generator.core.other.TokenKindGenerator;
 import com.github.javaparser.generator.core.visitor.*;
 import com.github.javaparser.utils.Log;
@@ -33,9 +35,12 @@ import com.github.javaparser.utils.SourceRoot;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.github.javaparser.ParserConfiguration.LanguageLevel.RAW;
+import static com.github.javaparser.utils.CodeGenerationUtils.f;
 
 /**
  * Generates all generated visitors in the javaparser-core module.
@@ -88,8 +93,8 @@ public class CoreGenerator {
 
         // Do generating.
         final CoreGenerator coreGenerator = new CoreGenerator(projectRoot);
+        coreGenerator.deleteAllGeneratorAnnotations(coreGenerator.sourceRoots);
         coreGenerator.runner();
-
     }
 
     private static SourceRoot getSourceRootForJpModule(Path projectRoot, String moduleName) {
@@ -103,6 +108,34 @@ public class CoreGenerator {
 
     public void runner() throws Exception {
         this.run(this.jpCoreSourceRoot, this.generatedJavaCcSourceRoot);
+    }
+
+    public void deleteAllGeneratorAnnotations(List<SourceRoot> sourceRoots) {
+        final String description = "deleteAllGeneratorAnnotations";
+        final Set<CompilationUnit> allTouchedCus = new HashSet<>();
+
+        // Do deletion for all source roots
+        for (SourceRoot sourceRoot : sourceRoots) {
+            try {
+                final List<CompilationUnit> thisTouchedCus = new RemoveGeneratorAnnotations(sourceRoot).generate();
+                allTouchedCus.addAll(thisTouchedCus);
+                System.out.println(f(
+                        "\n" +
+                                "\nFinished running %s for sourceRoot %s" +
+                                "\nsetup touched %d files within %s %n" +
+                                "\n\n"
+                        , description, sourceRoot, thisTouchedCus.size(), sourceRoot)
+                );
+            } catch (Exception e) {
+                System.out.println(f("ERROR:: running %s for sourceRoot %s", description, sourceRoot));
+                e.printStackTrace();
+                throw new RuntimeException(f("ERROR:: running %s for sourceRoot %s", description, sourceRoot), e);
+            }
+        }
+
+        System.out.println(f("Finished %s for all sourceRoots", description));
+        allTouchedCus.forEach(compilationUnit -> compilationUnit.getStorage().orElseThrow(IllegalStateException::new).save());
+
     }
 
     private void run(SourceRoot sourceRoot, SourceRoot generatedJavaCcSourceRoot) throws Exception {
