@@ -32,6 +32,8 @@ import com.github.javaparser.utils.SourceRoot;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.github.javaparser.ParserConfiguration.LanguageLevel.RAW;
 
@@ -41,6 +43,7 @@ import static com.github.javaparser.ParserConfiguration.LanguageLevel.RAW;
  * You may want to run_metamodel_generator.sh before that.
  */
 public class CoreGenerator {
+
     private static final ParserConfiguration parserConfiguration = new ParserConfiguration()
             .setLanguageLevel(RAW)
 //                                .setStoreTokens(false)
@@ -48,25 +51,58 @@ public class CoreGenerator {
 //                                .setLexicalPreservationEnabled(true)
             ;
 
+    protected final List<SourceRoot> sourceRoots;
+    private final SourceRoot jpCoreSourceRoot;
+    private final SourceRoot jssLogicSourceRoot;
+    private final SourceRoot jssModelSourceRoot;
+    private final SourceRoot jssSourceRoot;
+    private final SourceRoot generatedJavaCcSourceRoot;
+
+    public CoreGenerator(Path projectRoot) {
+        // Setup source roots
+        this.jpCoreSourceRoot = getSourceRootForJpModule(projectRoot, "javaparser-core");
+        this.jssLogicSourceRoot = getSourceRootForJpModule(projectRoot, "javaparser-symbol-solver-logic");
+        this.jssModelSourceRoot = getSourceRootForJpModule(projectRoot, "javaparser-symbol-solver-model");
+        this.jssSourceRoot = getSourceRootForJpModule(projectRoot, "javaparser-symbol-solver-core");
+
+        final Path generatedJavaCcRoot = projectRoot.resolve("javaparser-core").resolve("target").resolve("generated-sources").resolve("javacc");
+        this.generatedJavaCcSourceRoot = new SourceRoot(generatedJavaCcRoot, parserConfiguration);
+
+        // Setup collection for later iteration
+        this.sourceRoots = new ArrayList<>(7);
+        this.sourceRoots.add(this.jpCoreSourceRoot);
+        this.sourceRoots.add(this.jssLogicSourceRoot);
+        this.sourceRoots.add(this.jssModelSourceRoot);
+        this.sourceRoots.add(this.jssSourceRoot);
+        this.sourceRoots.add(this.generatedJavaCcSourceRoot);
+    }
+
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {
-            throw new RuntimeException("Need 1 parameter: the JavaParser source checkout root directory.");
+            throw new RuntimeException("Need 1 parameter: the JavaParser generator source checkout root directory.");
         }
         Log.setAdapter(new Log.StandardOutStandardErrorAdapter());
-        final Path root = Paths.get(args[0], "..", "javaparser-core", "src", "main", "java");
-        final SourceRoot sourceRoot = new SourceRoot(root, parserConfiguration)
-//                .setPrinter(LexicalPreservingPrinter::print)
-                ;
         StaticJavaParser.setConfiguration(parserConfiguration);
 
-        final Path generatedJavaCcRoot = Paths.get(args[0], "..", "javaparser-core", "target", "generated-sources", "javacc");
-        final SourceRoot generatedJavaCcSourceRoot = new SourceRoot(generatedJavaCcRoot, parserConfiguration)
-//                .setPrinter(LexicalPreservingPrinter::print)
-                ;
+        Path projectRoot = Paths.get(args[0]).resolve("..");
 
-        new CoreGenerator().run(sourceRoot, generatedJavaCcSourceRoot);
+        // Do generating.
+        final CoreGenerator coreGenerator = new CoreGenerator(projectRoot);
+        coreGenerator.runner();
 
-        sourceRoot.saveAll();
+    }
+
+    private static SourceRoot getSourceRootForJpModule(Path projectRoot, String moduleName) {
+        final Path jpCoreProjectRoot = projectRoot.resolve(moduleName).resolve("src").resolve("main").resolve("java");
+        return getSourceRoot(jpCoreProjectRoot);
+    }
+
+    private static SourceRoot getSourceRoot(Path rootPath) {
+        return new SourceRoot(rootPath, parserConfiguration); //.setPrinter(LexicalPreservingPrinter::print);
+    }
+
+    public void runner() throws Exception {
+        this.run(this.jpCoreSourceRoot, this.generatedJavaCcSourceRoot);
     }
 
     private void run(SourceRoot sourceRoot, SourceRoot generatedJavaCcSourceRoot) throws Exception {
