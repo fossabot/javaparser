@@ -88,12 +88,14 @@ public abstract class VisitorGenerator extends AbstractGenerator {
                 .findFirst();
 
         if (existingVisitMethod.isPresent()) {
+            annotateGenerated(existingVisitMethod.get());
             generateVisitMethodBody(node, existingVisitMethod.get(), compilationUnit);
         } else if (createMissingVisitMethods) {
             MethodDeclaration newVisitMethod = visitorClass.addMethod("visit")
                     .addParameter(node.getTypeNameGenerified(), "n")
                     .addParameter(argumentType, "arg")
                     .setType(returnType);
+            annotateGenerated(newVisitMethod);
             if (!visitorClass.isInterface()) {
                 newVisitMethod
                         .addAnnotation(new MarkerAnnotationExpr(new Name("Override")))
