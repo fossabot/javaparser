@@ -112,7 +112,10 @@ public abstract class AbstractGenerator {
      * with callable. If not found, adds callable. When the new callable has no javadoc, any old javadoc will be kept.
      */
     protected void addOrReplaceWhenSameSignature(ClassOrInterfaceDeclaration containingClassOrInterface, CallableDeclaration<?> callable) {
-        this.addOrReplaceMethod(containingClassOrInterface, callable, () -> containingClassOrInterface.addMember(callable));
+        this.addOrReplaceMethod(containingClassOrInterface, callable, () -> {
+            this.annotateGenerated(callable);
+            containingClassOrInterface.addMember(callable);
+        });
     }
 
     /**
