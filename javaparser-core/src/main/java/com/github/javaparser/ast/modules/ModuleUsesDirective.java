@@ -82,7 +82,11 @@ public class ModuleUsesDirective extends ModuleDirective implements NodeWithName
         return super.remove(node);
     }
 
-    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    /**
+     * TODO: JavaDoc and confirm differences
+     * @deprecated in favour of {@link #setName(Name)} following field rename.
+     */
+    @Deprecated
     public ModuleUsesDirective setType(final Name name) {
         assertNotNull(name);
         if (name == this.name) {

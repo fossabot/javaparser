@@ -31,6 +31,8 @@ import java.util.Arrays;
 
 /**
  * Properties considered by the AstObserver
+ * TODO: Investigate why the {@code @Generated} annotation is not regenerated/added.
+ * @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
  */
 @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
 public enum ObservableProperty {

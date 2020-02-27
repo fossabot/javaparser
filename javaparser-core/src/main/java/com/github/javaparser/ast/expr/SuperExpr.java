@@ -148,8 +148,12 @@ public class SuperExpr extends Expression {
         return Optional.of(this);
     }
 
-    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
+    /**
+     * @deprecated in favour of {@link #setTypeName(Name)} following field rename.
+     */
+    @Deprecated
     public SuperExpr removeClassName() {
+        // Delegate deprecated method to correct implementation.
         return setTypeName((Name) null);
     }
 

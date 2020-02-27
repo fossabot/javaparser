@@ -402,12 +402,10 @@ public class Difference {
 
                 diffIndex++;
             }
-        } else if (removed.isToken() && originalElementIsToken &&
-                (removed.getTokenType() == ((TokenTextElement) originalElement).getTokenKind()
-                        // handle EOLs separately as their token kind might not be equal. This is because the 'removed'
-                        // element always has the current operating system's EOL as type
-                        || (((TokenTextElement) originalElement).getToken().getCategory().isEndOfLine()
-                                && removed.isNewLine()))) {
+        } else if (removed.isToken() && originalElementIsToken && (removed.getTokenType() == ((TokenTextElement) originalElement).getTokenKind() || // handle EOLs separately as their token kind might not be equal. This is because the 'removed'
+                (((TokenTextElement) originalElement).getToken().getCategory().isEndOfLine() && removed.isNewLine()))) {
+            // handle EOLs separately as their token kind might not be equal. This is because the 'removed'
+            // element always has the current operating system's EOL as type
             nodeText.removeElement(originalIndex);
             diffIndex++;
         } else if (originalElementIsToken && originalElement.isWhiteSpaceOrComment()) {

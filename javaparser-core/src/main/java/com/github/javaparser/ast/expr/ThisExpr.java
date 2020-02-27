@@ -115,8 +115,12 @@ public class ThisExpr extends Expression implements Resolvable<ResolvedTypeDecla
         return super.remove(node);
     }
 
-    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
+    /**
+     * @deprecated in favour of {@link #setTypeName(Name)} following field rename.
+     */
+    @Deprecated
     public ThisExpr removeClassName() {
+        // Delegate deprecated method to correct implementation.
         return setTypeName((Name) null);
     }
 

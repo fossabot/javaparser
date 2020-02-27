@@ -128,11 +128,8 @@ public class LexicalPreservingPrinter {
             }
             if (property == ObservableProperty.COMMENT) {
                 Optional<Node> parentNode = observedNode.getParentNode();
-                NodeText nodeText = parentNode
-                        .map(parent -> getOrCreateNodeText(parentNode.get()))
-                        // We're at the root node. 
-                        .orElse(getOrCreateNodeText(observedNode));
-
+                // We're at the root node (in the "or else").
+                NodeText nodeText = parentNode.map(parent -> getOrCreateNodeText(parentNode.get())).orElse(getOrCreateNodeText(observedNode));
                 if (oldValue == null) {
                     int index = parentNode.isPresent() ?
                             // Find the position of the comment node and put in front of it the [...]
