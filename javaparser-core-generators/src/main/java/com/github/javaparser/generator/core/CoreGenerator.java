@@ -133,6 +133,7 @@ public class CoreGenerator {
             }
         }
 
+        // Save the files after removing the annotations.
         System.out.println(f("Finished %s for all sourceRoots", description));
         allTouchedCus.forEach(compilationUnit -> compilationUnit.getStorage().orElseThrow(IllegalStateException::new).save());
 
@@ -166,5 +167,8 @@ public class CoreGenerator {
         new AcceptGenerator(sourceRoot).generate();
         new TokenKindGenerator(sourceRoot, generatedJavaCcSourceRoot).generate();
         new BndGenerator(sourceRoot).generate();
+
+        sourceRoot.saveAll();
+        generatedJavaCcSourceRoot.saveAll();
     }
 }
