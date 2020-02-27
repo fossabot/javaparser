@@ -41,7 +41,7 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.ast.Generated;
 
 /**
- * A require directive in module-info.java. <code>require a.b.C;</code>
+ * A require directive in module-info.java. {@code require a.b.C;}
  */
 public class ModuleRequiresDirective extends ModuleDirective implements NodeWithStaticModifier<ModuleRequiresDirective>, NodeWithName<ModuleRequiresDirective> {
 
@@ -165,27 +165,32 @@ public class ModuleRequiresDirective extends ModuleDirective implements NodeWith
         return super.replace(node, replacementNode);
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public boolean isModuleRequiresStmt() {
-        return true;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleRequiresDirective();
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public ModuleRequiresDirective asModuleRequiresStmt() {
-        return this;
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleRequiresDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
-    public void ifModuleRequiresStmt(Consumer<ModuleRequiresDirective> action) {
-        action.accept(this);
-    }
-
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    public void ifModuleRequiresStmt(Consumer<ModuleRequiresDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleRequiresDirective(action);
+    }
+
+    @Deprecated
+    @Override
     public Optional<ModuleRequiresDirective> toModuleRequiresStmt() {
-        return Optional.of(this);
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleRequiresDirective();
     }
 
     @Override

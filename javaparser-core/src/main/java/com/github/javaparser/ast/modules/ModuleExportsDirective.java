@@ -155,27 +155,32 @@ public class ModuleExportsDirective extends ModuleDirective implements NodeWithN
         return super.replace(node, replacementNode);
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public boolean isModuleExportsStmt() {
-        return true;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleExportsDirective();
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public ModuleExportsDirective asModuleExportsStmt() {
-        return this;
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleExportsDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
-    public void ifModuleExportsStmt(Consumer<ModuleExportsDirective> action) {
-        action.accept(this);
-    }
-
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    public void ifModuleExportsStmt(Consumer<ModuleExportsDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleExportsDirective(action);
+    }
+
+    @Deprecated
+    @Override
     public Optional<ModuleExportsDirective> toModuleExportsStmt() {
-        return Optional.of(this);
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleExportsDirective();
     }
 
     public ModuleExportsDirective addModuleName(String name) {

@@ -20,16 +20,16 @@
  */
 package com.github.javaparser.ast.modules;
 
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Generated;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
-import com.github.javaparser.TokenRange;
+import com.github.javaparser.metamodel.JavaParserMetaModel;
+import com.github.javaparser.metamodel.ModuleDirectiveMetaModel;
+import java.util.Optional;
 import java.util.function.Consumer;
 import static com.github.javaparser.utils.CodeGenerationUtils.f;
-import java.util.Optional;
-import com.github.javaparser.metamodel.ModuleDirectiveMetaModel;
-import com.github.javaparser.metamodel.JavaParserMetaModel;
 
 /**
  * A module directive.
@@ -47,7 +47,7 @@ public abstract class ModuleDirective extends Node {
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public ModuleDirective(TokenRange tokenRange) {
         super(tokenRange);
-        customInitialization();
+        this.customInitialization();
     }
 
     @Override
@@ -72,99 +72,184 @@ public abstract class ModuleDirective extends Node {
         return super.replace(node, replacementNode);
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #isModuleExportsDirective()} following field rename.
+     */
+    @Deprecated
     public boolean isModuleExportsStmt() {
-        return false;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleExportsDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #asModuleExportsDirective()} following field rename.
+     */
+    @Deprecated
     public ModuleExportsDirective asModuleExportsStmt() {
-        throw new IllegalStateException(f("%s is not an ModuleExportsDirective", this));
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleExportsDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #isModuleOpensDirective()} following field rename.
+     */
+    @Deprecated
     public boolean isModuleOpensStmt() {
-        return false;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleOpensDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #asModuleOpensDirective()} following field rename.
+     */
+    @Deprecated
     public ModuleOpensDirective asModuleOpensStmt() {
-        throw new IllegalStateException(f("%s is not an ModuleOpensDirective", this));
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleOpensDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #isModuleProvidesDirective()} following field rename.
+     */
+    @Deprecated
     public boolean isModuleProvidesStmt() {
-        return false;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleProvidesDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #asModuleProvidesDirective()} following field rename.
+     */
+    @Deprecated
     public ModuleProvidesDirective asModuleProvidesStmt() {
-        throw new IllegalStateException(f("%s is not an ModuleProvidesDirective", this));
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleProvidesDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #isModuleRequiresDirective()} following field rename.
+     */
+    @Deprecated
     public boolean isModuleRequiresStmt() {
-        return false;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleRequiresDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #asModuleRequiresDirective()} following field rename.
+     */
+    @Deprecated
     public ModuleRequiresDirective asModuleRequiresStmt() {
-        throw new IllegalStateException(f("%s is not an ModuleRequiresDirective", this));
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleRequiresDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #isModuleUsesDirective()} following field rename.
+     */
+    @Deprecated
     public boolean isModuleUsesStmt() {
-        return false;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleUsesDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #asModuleUsesDirective()} following field rename.
+     */
+    @Deprecated
     public ModuleUsesDirective asModuleUsesStmt() {
-        throw new IllegalStateException(f("%s is not an ModuleUsesDirective", this));
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleUsesDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #ifModuleExportsDirective(Consumer)} following field rename.
+     */
+    @Deprecated
     public void ifModuleExportsStmt(Consumer<ModuleExportsDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleExportsDirective(action);
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #ifModuleOpensDirective(Consumer)} following field rename.
+     */
+    @Deprecated
     public void ifModuleOpensStmt(Consumer<ModuleOpensDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleOpensDirective(action);
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #ifModuleProvidesDirective(Consumer)} following field rename.
+     */
+    @Deprecated
     public void ifModuleProvidesStmt(Consumer<ModuleProvidesDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleProvidesDirective(action);
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #ifModuleRequiresDirective(Consumer)} following field rename.
+     */
+    @Deprecated
     public void ifModuleRequiresStmt(Consumer<ModuleRequiresDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleRequiresDirective(action);
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #ifModuleUsesDirective(Consumer)} following field rename.
+     */
+    @Deprecated
     public void ifModuleUsesStmt(Consumer<ModuleUsesDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleUsesDirective(action);
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #toModuleExportsDirective()} following field rename.
+     */
+    @Deprecated
     public Optional<ModuleExportsDirective> toModuleExportsStmt() {
-        return Optional.empty();
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleExportsDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #toModuleOpensDirective()} following field rename.
+     */
+    @Deprecated
     public Optional<ModuleOpensDirective> toModuleOpensStmt() {
-        return Optional.empty();
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleOpensDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #toModuleProvidesDirective()} following field rename.
+     */
+    @Deprecated
     public Optional<ModuleProvidesDirective> toModuleProvidesStmt() {
-        return Optional.empty();
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleProvidesDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #toModuleRequiresDirective()} following field rename.
+     */
+    @Deprecated
     public Optional<ModuleRequiresDirective> toModuleRequiresStmt() {
-        return Optional.empty();
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleRequiresDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    /**
+     * @deprecated in favour of {@link #toModuleUsesDirective()} following field rename.
+     */
+    @Deprecated
     public Optional<ModuleUsesDirective> toModuleUsesStmt() {
-        return Optional.empty();
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleUsesDirective();
     }
 
     @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")

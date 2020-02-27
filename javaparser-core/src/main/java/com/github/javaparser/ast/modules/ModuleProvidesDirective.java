@@ -38,7 +38,7 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.ast.Generated;
 
 /**
- * A provides directive in module-info.java. <code>provides X.Y with Z1.Z2, Z3.Z4;</code>
+ * A provides directive in module-info.java. {@code provides X.Y with Z1.Z2, Z3.Z4;}
  */
 public class ModuleProvidesDirective extends ModuleDirective implements NodeWithName<ModuleProvidesDirective> {
 
@@ -98,27 +98,32 @@ public class ModuleProvidesDirective extends ModuleDirective implements NodeWith
         return (ModuleProvidesDirective) accept(new CloneVisitor(), null);
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public boolean isModuleProvidesStmt() {
-        return true;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleProvidesDirective();
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public ModuleProvidesDirective asModuleProvidesStmt() {
-        return this;
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleProvidesDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
-    public void ifModuleProvidesStmt(Consumer<ModuleProvidesDirective> action) {
-        action.accept(this);
-    }
-
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    public void ifModuleProvidesStmt(Consumer<ModuleProvidesDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleProvidesDirective(action);
+    }
+
+    @Deprecated
+    @Override
     public Optional<ModuleProvidesDirective> toModuleProvidesStmt() {
-        return Optional.of(this);
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleProvidesDirective();
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")

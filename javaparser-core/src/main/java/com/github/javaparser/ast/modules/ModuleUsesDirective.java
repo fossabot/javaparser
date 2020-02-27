@@ -102,27 +102,32 @@ public class ModuleUsesDirective extends ModuleDirective implements NodeWithName
         return (ModuleUsesDirective) accept(new CloneVisitor(), null);
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public boolean isModuleUsesStmt() {
-        return true;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleUsesDirective();
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public ModuleUsesDirective asModuleUsesStmt() {
-        return this;
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleUsesDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
-    public void ifModuleUsesStmt(Consumer<ModuleUsesDirective> action) {
-        action.accept(this);
-    }
-
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    public void ifModuleUsesStmt(Consumer<ModuleUsesDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleUsesDirective(action);
+    }
+
+    @Deprecated
+    @Override
     public Optional<ModuleUsesDirective> toModuleUsesStmt() {
-        return Optional.of(this);
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleUsesDirective();
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")

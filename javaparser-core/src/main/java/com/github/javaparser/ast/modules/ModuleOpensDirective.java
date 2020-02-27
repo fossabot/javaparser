@@ -154,27 +154,32 @@ public class ModuleOpensDirective extends ModuleDirective implements NodeWithNam
         return super.replace(node, replacementNode);
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public boolean isModuleOpensStmt() {
-        return true;
+        // Delegate deprecated method to correct implementation.
+        return this.isModuleOpensDirective();
     }
 
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public ModuleOpensDirective asModuleOpensStmt() {
-        return this;
+        // Delegate deprecated method to correct implementation.
+        return this.asModuleOpensDirective();
     }
 
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
-    public void ifModuleOpensStmt(Consumer<ModuleOpensDirective> action) {
-        action.accept(this);
-    }
-
+    @Deprecated
     @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
+    public void ifModuleOpensStmt(Consumer<ModuleOpensDirective> action) {
+        // Delegate deprecated method to correct implementation.
+        this.ifModuleOpensDirective(action);
+    }
+
+    @Deprecated
+    @Override
     public Optional<ModuleOpensDirective> toModuleOpensStmt() {
-        return Optional.of(this);
+        // Delegate deprecated method to correct implementation.
+        return this.toModuleOpensDirective();
     }
 
     @Override
