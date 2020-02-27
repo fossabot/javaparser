@@ -62,6 +62,8 @@ public class CoreGenerator {
     private final SourceRoot jssModelSourceRoot;
     private final SourceRoot jssSourceRoot;
     private final SourceRoot generatedJavaCcSourceRoot;
+    public static final String GENERATOR_INIT_TIMESTAMP = String.valueOf(System.currentTimeMillis()) + "L";
+
 
     public CoreGenerator(Path projectRoot) {
         // Setup source roots
@@ -93,7 +95,7 @@ public class CoreGenerator {
 
         // Do generating.
         final CoreGenerator coreGenerator = new CoreGenerator(projectRoot);
-        coreGenerator.deleteAllGeneratorAnnotations(coreGenerator.sourceRoots);
+//        coreGenerator.deleteAllGeneratorAnnotations(coreGenerator.sourceRoots);
         coreGenerator.runner();
     }
 

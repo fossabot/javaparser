@@ -25,7 +25,6 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.Problem;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Generated;
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.generator.AbstractGenerator;
 import com.github.javaparser.utils.Log;
@@ -76,9 +75,26 @@ public class RemoveGeneratorAnnotations extends AbstractGenerator {
                 List<AnnotationExpr> allAnnotations = compilationUnit.findAll(AnnotationExpr.class);
                 allAnnotations.stream()
                         .filter(annotationExpr -> annotationExpr.getName().asString().equals(Generated.class.getSimpleName()))
-                        .forEach(Node::remove);
+                        .forEach(annotationExpr -> {
+                            // Remove the annotation -- TODO: should likely be a replace operation.
+                            annotationExpr.remove();
+                            // Mark this CU as having been edited.
+                            this.editedCus.add(compilationUnit);
+                        });
 
-                this.editedCus.add(compilationUnit);
+//                // Remove the import. -- TODO: Fix this (causes java.util.ConcurrentModificationException)
+//                compilationUnit.getImports().removeIf(importDeclaration -> importDeclaration.getName().asString().equals(Generated.class.getCanonicalName()));
+//                for (ImportDeclaration importDeclaration : compilationUnit.getImports()) {
+//                    if (importDeclaration.getName().asString().equals(Generated.class.getCanonicalName())) {
+//                        System.out.println("importDeclaration.getName().asString() = " + importDeclaration.getName().asString());
+//                        System.out.println("Generated.class.getCanonicalName()     = " + Generated.class.getCanonicalName());
+//                        importDeclaration.remove();
+//
+//                        // Mark this CU as having been edited.
+//                        this.editedCus.add(compilationUnit);
+//                    }
+//                }
+
             });
 
             return this.editedCus;

@@ -33,7 +33,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * and will be overwritten the next time the generators are run.
  */
 @Retention(SOURCE)
-@Target({PACKAGE, TYPE, ANNOTATION_TYPE, METHOD, CONSTRUCTOR, FIELD, LOCAL_VARIABLE, PARAMETER})
+@Target({ PACKAGE, TYPE, ANNOTATION_TYPE, METHOD, CONSTRUCTOR, FIELD, LOCAL_VARIABLE, PARAMETER })
 public @interface Generated {
 
     /**
@@ -41,7 +41,9 @@ public @interface Generated {
      * The recommended convention is to use the fully qualified name of the
      * code generator. For example: <code>com.acme.generator.CodeGen</code>.
      */
-    String[] value();
+    String[] value() default "";
+
+    String[] qualifiedGeneratorName() default "";
 
     long timestamp() default 0L;
 }

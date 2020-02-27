@@ -28,8 +28,10 @@ import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.generator.core.CoreGenerator;
 import com.github.javaparser.utils.SourceRoot;
 
 import java.util.ArrayList;
@@ -66,6 +68,7 @@ public abstract class AbstractGenerator {
      */
     protected <T extends Node & NodeWithAnnotations<?>> void annotateGenerated(T node) {
         this.annotate(node, Generated.class, new StringLiteralExpr(this.getClass().getName()));
+//        this.annotateWithTimestamp(node, Generated.class, new StringLiteralExpr(this.getClass().getName()));
     }
 
     /**
@@ -102,6 +105,33 @@ public abstract class AbstractGenerator {
         } else {
             node.addMarkerAnnotation(annotation.getSimpleName());
         }
+
+        // The annotation class will normally need to be imported.
+        node.tryAddImportToParentCompilationUnit(annotation);
+    }
+
+    /**
+     * @param node       The node to which the annotation will be added.
+     * @param annotation The annotation to be added to the given node.
+     * @param content    Where an annotation has content, it is passed here (otherwise null).
+     * @param <T>
+     */
+    private <T extends Node & NodeWithAnnotations<?>> void annotateWithTimestamp(T node, Class<?> annotation, Expression content) {
+        node.setAnnotations(
+                node.getAnnotations()
+                        .stream()
+                        .filter(a -> !a.getNameAsString().equals(annotation.getSimpleName()))
+                        .collect(toNodeList())
+        );
+
+        NormalAnnotationExpr newAnnotation = new NormalAnnotationExpr();
+        newAnnotation.setName(annotation.getSimpleName());
+        if (content != null) {
+            newAnnotation.addPair("qualifiedGeneratorName", content);
+        }
+
+        newAnnotation.addPair("timestamp", CoreGenerator.GENERATOR_INIT_TIMESTAMP);
+        node.addAnnotation(newAnnotation);
 
         // The annotation class will normally need to be imported.
         node.tryAddImportToParentCompilationUnit(annotation);
