@@ -18,7 +18,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser.printer;
 
 import com.github.javaparser.GeneratedJavaParserConstants;
@@ -34,10 +33,8 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.printer.concretesyntaxmodel.CsmConditional;
 import com.github.javaparser.printer.concretesyntaxmodel.CsmElement;
 import com.github.javaparser.printer.concretesyntaxmodel.CsmMix;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static com.github.javaparser.GeneratedJavaParserConstants.*;
 import static com.github.javaparser.ast.observer.ObservableProperty.*;
 import static com.github.javaparser.printer.concretesyntaxmodel.CsmConditional.Condition.*;
@@ -50,6 +47,7 @@ import static com.github.javaparser.printer.concretesyntaxmodel.CsmElement.*;
 public class ConcreteSyntaxModel {
 
     private static final Map<Class, CsmElement> concreteSyntaxModelByClass = new HashMap<>();
+
     private static Optional<String> initializationError;
 
     private static CsmElement modifiers() {
@@ -72,13 +70,11 @@ public class ConcreteSyntaxModel {
     }
 
     private static CsmElement typeParameters() {
-        return list(ObservableProperty.TYPE_PARAMETERS, sequence(comma(), space()), token(GeneratedJavaParserConstants.LT),
-                sequence(token(GeneratedJavaParserConstants.GT), space()));
+        return list(ObservableProperty.TYPE_PARAMETERS, sequence(comma(), space()), token(GeneratedJavaParserConstants.LT), sequence(token(GeneratedJavaParserConstants.GT), space()));
     }
 
     private static CsmElement typeArguments() {
-        return list(ObservableProperty.TYPE_ARGUMENTS, sequence(comma(), space()), token(GeneratedJavaParserConstants.LT),
-                sequence(token(GeneratedJavaParserConstants.GT)));
+        return list(ObservableProperty.TYPE_ARGUMENTS, sequence(comma(), space()), token(GeneratedJavaParserConstants.LT), sequence(token(GeneratedJavaParserConstants.GT)));
     }
 
     static {
@@ -952,7 +948,6 @@ public class ConcreteSyntaxModel {
     }
 
     private ConcreteSyntaxModel() {
-
     }
 
     public static void genericPrettyPrint(Node node, SourcePrinter printer) {
@@ -974,5 +969,4 @@ public class ConcreteSyntaxModel {
         }
         return concreteSyntaxModelByClass.get(nodeClazz);
     }
-
 }

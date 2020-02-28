@@ -18,7 +18,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser.ast.validator.chunks;
 
 import com.github.javaparser.ast.NodeList;
@@ -36,6 +35,7 @@ import com.github.javaparser.metamodel.PropertyMetaModel;
  * Contains validations that are valid for every Java version.
  */
 public class CommonValidators extends Validators {
+
     public CommonValidators() {
         super(
                 new SimpleValidator<>(ClassOrInterfaceDeclaration.class,

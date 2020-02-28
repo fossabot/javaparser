@@ -18,13 +18,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser.printer;
 
 import com.github.javaparser.ast.visitor.VoidVisitor;
-
 import java.util.function.Function;
-
 import static com.github.javaparser.printer.PrettyPrinterConfiguration.IndentType.SPACES;
 import static com.github.javaparser.utils.Utils.EOL;
 import static com.github.javaparser.utils.Utils.assertNonNegative;
@@ -35,18 +32,18 @@ import static com.github.javaparser.utils.Utils.assertPositive;
  * Configuration options for the {@link PrettyPrinter}.
  */
 public class PrettyPrinterConfiguration {
+
     public enum IndentType {
+
         /**
          * Indent with spaces.
          */
         SPACES,
-
         /**
          * Indent with tabs as far as possible.
          * For proper aligning, the tab width is necessary and by default 4.
          */
         TABS,
-
         /**
          * Indent with tabs but align with spaces when wrapping and aligning
          * method call chains and method call parameters.
@@ -74,15 +71,25 @@ public class PrettyPrinterConfiguration {
     public static final int DEFAULT_MAX_ENUM_CONSTANTS_TO_ALIGN_HORIZONTALLY = 5;
 
     private boolean orderImports = false;
+
     private boolean printComments = true;
+
     private boolean printJavadoc = true;
+
     private boolean columnAlignParameters = false;
+
     private boolean columnAlignFirstMethodChain = false;
+
     private IndentType indentType = SPACES;
+
     private int tabWidth = 4;
+
     private int indentSize = 4;
+
     private String endOfLineCharacter = EOL;
+
     private Function<PrettyPrinterConfiguration, VoidVisitor<Void>> visitorFactory = PrettyPrintVisitor::new;
+
     private int maxEnumConstantsToAlignHorizontally = DEFAULT_MAX_ENUM_CONSTANTS_TO_ALIGN_HORIZONTALLY;
 
     /**
@@ -91,16 +98,14 @@ public class PrettyPrinterConfiguration {
     public String getIndent() {
         StringBuilder indentString = new StringBuilder();
         char indentChar;
-        switch (indentType) {
+        switch(indentType) {
             case SPACES:
                 indentChar = ' ';
                 break;
-
             case TABS:
             case TABS_WITH_SPACE_ALIGN:
                 indentChar = '\t';
                 break;
-
             default:
                 throw new AssertionError("Unhandled indent type");
         }

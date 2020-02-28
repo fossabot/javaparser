@@ -18,13 +18,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser.printer.lexicalpreservation;
 
 import com.github.javaparser.GeneratedJavaParserConstants;
 import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
-
 import java.util.Optional;
 
 public abstract class TextElement implements TextElementMatcher {

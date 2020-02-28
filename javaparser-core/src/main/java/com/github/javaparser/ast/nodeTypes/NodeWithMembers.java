@@ -28,10 +28,8 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.VoidType;
-
 import java.util.List;
 import java.util.Optional;
-
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.Modifier.Keyword;
 import static com.github.javaparser.ast.Modifier.Keyword.*;
@@ -46,6 +44,7 @@ import static java.util.stream.Collectors.toList;
  * method.
  */
 public interface NodeWithMembers<N extends Node> extends NodeWithSimpleName<N> {
+
     /**
      * @return all members inside the braces of this node,
      * like fields, methods, nested types, etc.

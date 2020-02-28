@@ -18,7 +18,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser.ast.validator.chunks;
 
 import com.github.javaparser.ast.Node;
@@ -35,10 +34,10 @@ import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.VarType;
 import com.github.javaparser.ast.validator.ProblemReporter;
 import com.github.javaparser.ast.validator.TypedValidator;
-
 import java.util.Optional;
 
 public class VarValidator implements TypedValidator<VarType> {
+
     private boolean varAllowedInLambdaParameters;
 
     public VarValidator(boolean varAllowedInLambdaParameters) {
@@ -87,8 +86,10 @@ public class VarValidator implements TypedValidator<VarType> {
                     return;
                 }
                 container.ifPresent(c -> {
-                    boolean positionIsFine = c instanceof ForStmt || c instanceof ForEachStmt ||
-                            c instanceof ExpressionStmt || c instanceof TryStmt;
+                    boolean positionIsFine = c instanceof ForStmt
+                            || c instanceof ForEachStmt
+                            || c instanceof ExpressionStmt
+                            || c instanceof TryStmt;
                     if (!positionIsFine) {
                         reportIllegalPosition(node, reporter);
                     }
@@ -105,12 +106,10 @@ public class VarValidator implements TypedValidator<VarType> {
                                 reporter.report(node, "\"var\" cannot infer array types.");
                             }
                         });
-
                     }
                 });
             });
         });
-
     }
 
     private void reportIllegalPosition(VarType n, ProblemReporter reporter) {

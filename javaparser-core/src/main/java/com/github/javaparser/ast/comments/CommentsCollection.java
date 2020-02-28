@@ -18,22 +18,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser.ast.comments;
 
 import com.github.javaparser.Range;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-
 import static com.github.javaparser.ast.Node.NODE_BY_BEGIN_POSITION;
 
 /**
  * The comments contained in a certain parsed piece of source code.
  */
 public class CommentsCollection {
+
     private final TreeSet<Comment> comments = new TreeSet<>(NODE_BY_BEGIN_POSITION);
 
     public CommentsCollection() {

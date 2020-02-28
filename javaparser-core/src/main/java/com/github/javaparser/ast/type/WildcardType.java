@@ -218,7 +218,6 @@ public class WildcardType extends Type implements NodeWithAnnotations<WildcardTy
      * TODO: Investigate why the {@code @Generated} annotation is not regenerated/added.
      * @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
      */
-    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public WildcardType(TokenRange tokenRange, ReferenceType extendedType, ReferenceType superType) {
         super(tokenRange);
         setExtendedType(extendedType);

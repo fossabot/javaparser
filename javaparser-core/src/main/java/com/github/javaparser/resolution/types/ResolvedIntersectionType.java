@@ -18,11 +18,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser.resolution.types;
 
 import com.github.javaparser.resolution.declarations.ResolvedTypeParameterDeclaration;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +30,7 @@ import java.util.stream.Collectors;
  * @author Federico Tomassetti
  */
 public class ResolvedIntersectionType implements ResolvedType {
+
     private List<ResolvedType> elements;
 
     public ResolvedIntersectionType(Collection<ResolvedType> elements) {
@@ -43,11 +42,11 @@ public class ResolvedIntersectionType implements ResolvedType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ResolvedIntersectionType that = (ResolvedIntersectionType) o;
-
         return new HashSet<>(elements).equals(new HashSet<>(that.elements));
     }
 
@@ -77,5 +76,4 @@ public class ResolvedIntersectionType implements ResolvedType {
             return new ResolvedIntersectionType(elementsReplaced);
         }
     }
-
 }

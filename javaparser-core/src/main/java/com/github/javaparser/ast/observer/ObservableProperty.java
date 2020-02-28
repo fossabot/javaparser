@@ -34,7 +34,6 @@ import java.util.Arrays;
  * TODO: Investigate why the {@code @Generated} annotation is not regenerated/added.
  * @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
  */
-@Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
 public enum ObservableProperty {
 
     ANNOTATIONS(Type.MULTIPLE_REFERENCE),

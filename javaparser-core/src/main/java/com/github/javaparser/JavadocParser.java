@@ -18,7 +18,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser;
 
 import com.github.javaparser.ast.comments.JavadocComment;
@@ -30,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.github.javaparser.utils.Utils.*;
 
 /**
@@ -40,6 +38,7 @@ import static com.github.javaparser.utils.Utils.*;
 class JavadocParser {
 
     private static String BLOCK_TAG_PREFIX = "@";
+
     private static Pattern BLOCK_PATTERN = Pattern.compile("^\\s*" + BLOCK_TAG_PREFIX, Pattern.MULTILINE);
 
     public static Javadoc parse(JavadocComment comment) {
@@ -104,7 +103,6 @@ class JavadocParser {
         if (lines.length == 0) {
             return Collections.emptyList();
         }
-
         List<String> cleanedLines = Arrays.stream(lines).map(l -> {
             int asteriskIndex = startsWithAsterisk(l);
             if (asteriskIndex == -1) {
@@ -113,7 +111,6 @@ class JavadocParser {
                 // if a line starts with space followed by an asterisk drop to the asterisk
                 // if there is a space immediately after the asterisk drop it also
                 if (l.length() > (asteriskIndex + 1)) {
-
                     char c = l.charAt(asteriskIndex + 1);
                     if (c == ' ' || c == '\t') {
                         return l.substring(asteriskIndex + 2);

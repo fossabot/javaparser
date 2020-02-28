@@ -18,7 +18,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser.resolution.types;
 
 import java.util.*;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
  * @author Federico Tomassetti
  */
 public class ResolvedUnionType implements ResolvedType {
+
     private List<ResolvedType> elements;
 
     public ResolvedUnionType(List<ResolvedType> elements) {
@@ -53,11 +53,11 @@ public class ResolvedUnionType implements ResolvedType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ResolvedUnionType that = (ResolvedUnionType) o;
-
         return new HashSet<>(elements).equals(new HashSet<>(that.elements));
     }
 

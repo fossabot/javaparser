@@ -18,7 +18,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
-
 package com.github.javaparser.ast.validator;
 
 import com.github.javaparser.ast.ImportDeclaration;
@@ -42,20 +41,15 @@ import com.github.javaparser.ast.validator.chunks.NoUnderscoresInIntegerLiterals
  * This validator validates according to Java 1.0 syntax rules.
  */
 public class Java1_0Validator extends Validators {
-    final Validator modifiersWithoutStrictfpAndDefaultAndStaticInterfaceMethodsAndPrivateInterfaceMethods
-            = new ModifierValidator(false, false, false);
-    final Validator noAssertKeyword = new SimpleValidator<>(AssertStmt.class,
-            n -> true,
-            (n, reporter) -> reporter.report(n, "'assert' keyword is not supported.")
-    );
-    final Validator noInnerClasses = new SimpleValidator<>(ClassOrInterfaceDeclaration.class,
-            n -> !n.isTopLevelType(),
-            (n, reporter) -> reporter.report(n, "inner classes or interfaces are not supported.")
-    );
-    final Validator noReflection = new SimpleValidator<>(ClassExpr.class,
-            n -> true,
-            (n, reporter) -> reporter.report(n, "Reflection is not supported.")
-    );
+
+    final Validator modifiersWithoutStrictfpAndDefaultAndStaticInterfaceMethodsAndPrivateInterfaceMethods = new ModifierValidator(false, false, false);
+
+    final Validator noAssertKeyword = new SimpleValidator<>(AssertStmt.class, n -> true, (n, reporter) -> reporter.report(n, "'assert' keyword is not supported."));
+
+    final Validator noInnerClasses = new SimpleValidator<>(ClassOrInterfaceDeclaration.class, n -> !n.isTopLevelType(), (n, reporter) -> reporter.report(n, "inner classes or interfaces are not supported."));
+
+    final Validator noReflection = new SimpleValidator<>(ClassExpr.class, n -> true, (n, reporter) -> reporter.report(n, "Reflection is not supported."));
+
     final Validator noGenerics = new TreeVisitorValidator((node, reporter) -> {
         if (node instanceof NodeWithTypeArguments) {
             if (((NodeWithTypeArguments<? extends Node>) node).getTypeArguments().isPresent()) {
@@ -68,6 +62,7 @@ public class Java1_0Validator extends Validators {
             }
         }
     });
+
     final SingleNodeTypeValidator<TryStmt> tryWithoutResources = new SingleNodeTypeValidator<>(TryStmt.class, (n, reporter) -> {
         if (n.getCatchClauses().isEmpty() && !n.getFinallyBlock().isPresent()) {
             reporter.report(n, "Try has no finally and no catch.");
@@ -76,6 +71,7 @@ public class Java1_0Validator extends Validators {
             reporter.report(n, "Catch with resource is not supported.");
         }
     });
+
     final Validator noAnnotations = new TreeVisitorValidator((node, reporter) -> {
         if (node instanceof AnnotationExpr || node instanceof AnnotationDeclaration) {
             reporter.report(node, "Annotations are not supported.");
