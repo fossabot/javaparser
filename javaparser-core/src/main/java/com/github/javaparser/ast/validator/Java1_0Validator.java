@@ -77,48 +77,30 @@ public class Java1_0Validator extends Validators {
             reporter.report(node, "Annotations are not supported.");
         }
     });
-    final Validator noEnums = new SimpleValidator<>(EnumDeclaration.class,
-            n -> true,
-            (n, reporter) -> reporter.report(n, "Enumerations are not supported.")
-    );
-    final Validator noVarargs = new SimpleValidator<>(Parameter.class,
-            Parameter::isVarArgs,
-            (n, reporter) -> reporter.report(n, "Varargs are not supported.")
-    );
-    final Validator noForEach = new SimpleValidator<>(ForEachStmt.class,
-            n -> true,
-            (n, reporter) -> reporter.report(n, "For-each loops are not supported.")
-    );
-    final Validator noStaticImports = new SimpleValidator<>(ImportDeclaration.class,
-            ImportDeclaration::isStatic,
-            (n, reporter) -> reporter.report(n, "Static imports are not supported.")
-    );
-    final Validator onlyOneLabelInSwitchCase = new SimpleValidator<>(SwitchEntry.class,
-            n -> n.getLabels().size() > 1,
-            (n, reporter) -> reporter.report(n.getLabels().getParentNode().get(), "Only one label allowed in a switch-case.")
-    );
-    final Validator noYield = new SimpleValidator<>(YieldStmt.class,
-            n -> true,
-            (n, reporter) -> reporter.report(n, "Only labels allowed in break statements.")
-    );
+
+    final Validator noEnums = new SimpleValidator<>(EnumDeclaration.class, n -> true, (n, reporter) -> reporter.report(n, "Enumerations are not supported."));
+
+    final Validator noVarargs = new SimpleValidator<>(Parameter.class, Parameter::isVarArgs, (n, reporter) -> reporter.report(n, "Varargs are not supported."));
+
+    final Validator noForEach = new SimpleValidator<>(ForEachStmt.class, n -> true, (n, reporter) -> reporter.report(n, "For-each loops are not supported."));
+
+    final Validator noStaticImports = new SimpleValidator<>(ImportDeclaration.class, ImportDeclaration::isStatic, (n, reporter) -> reporter.report(n, "Static imports are not supported."));
+
+    final Validator onlyOneLabelInSwitchCase = new SimpleValidator<>(SwitchEntry.class, n -> n.getLabels().size() > 1, (n, reporter) -> reporter.report(n.getLabels().getParentNode().get(), "Only one label allowed in a switch-case."));
+
+    final Validator noYield = new SimpleValidator<>(YieldStmt.class, n -> true, (n, reporter) -> reporter.report(n, "Only labels allowed in break statements."));
+
     final Validator noBinaryIntegerLiterals = new NoBinaryIntegerLiteralsValidator();
+
     final Validator noUnderscoresInIntegerLiterals = new NoUnderscoresInIntegerLiteralsValidator();
-    final Validator noMultiCatch = new SimpleValidator<>(UnionType.class,
-            n -> true,
-            (n, reporter) -> reporter.report(n, "Multi-catch is not supported.")
-    );
-    final Validator noLambdas = new SimpleValidator<>(LambdaExpr.class,
-            n -> true,
-            (n, reporter) -> reporter.report(n, "Lambdas are not supported.")
-    );
-    final Validator noModules = new SimpleValidator<>(ModuleDeclaration.class,
-            n -> true,
-            (n, reporter) -> reporter.report(n, "Modules are not supported.")
-    );
-    final Validator noSwitchExpressions = new SimpleValidator<>(SwitchExpr.class,
-            n -> true,
-            (n, reporter) -> reporter.report(n, "Switch expressions are not supported.")
-    );
+
+    final Validator noMultiCatch = new SimpleValidator<>(UnionType.class, n -> true, (n, reporter) -> reporter.report(n, "Multi-catch is not supported."));
+
+    final Validator noLambdas = new SimpleValidator<>(LambdaExpr.class, n -> true, (n, reporter) -> reporter.report(n, "Lambdas are not supported."));
+
+    final Validator noModules = new SimpleValidator<>(ModuleDeclaration.class, n -> true, (n, reporter) -> reporter.report(n, "Modules are not supported."));
+
+    final Validator noSwitchExpressions = new SimpleValidator<>(SwitchExpr.class, n -> true, (n, reporter) -> reporter.report(n, "Switch expressions are not supported."));
 
     public Java1_0Validator() {
         super(new CommonValidators());

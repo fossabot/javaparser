@@ -42,24 +42,15 @@ public class CommentsCollection {
     }
 
     public Set<LineComment> getLineComments() {
-        return comments.stream()
-                .filter(comment -> comment instanceof LineComment)
-                .map(comment -> (LineComment) comment)
-                .collect(Collectors.toCollection(() -> new TreeSet<>(NODE_BY_BEGIN_POSITION)));
+        return comments.stream().filter(comment -> comment instanceof LineComment).map(comment -> (LineComment) comment).collect(Collectors.toCollection(() -> new TreeSet<>(NODE_BY_BEGIN_POSITION)));
     }
 
     public Set<BlockComment> getBlockComments() {
-        return comments.stream()
-                .filter(comment -> comment instanceof BlockComment)
-                .map(comment -> (BlockComment) comment)
-                .collect(Collectors.toCollection(() -> new TreeSet<>(NODE_BY_BEGIN_POSITION)));
+        return comments.stream().filter(comment -> comment instanceof BlockComment).map(comment -> (BlockComment) comment).collect(Collectors.toCollection(() -> new TreeSet<>(NODE_BY_BEGIN_POSITION)));
     }
 
     public Set<JavadocComment> getJavadocComments() {
-        return comments.stream()
-                .filter(comment -> comment instanceof JavadocComment)
-                .map(comment -> (JavadocComment) comment)
-                .collect(Collectors.toCollection(() -> new TreeSet<>(NODE_BY_BEGIN_POSITION)));
+        return comments.stream().filter(comment -> comment instanceof JavadocComment).map(comment -> (JavadocComment) comment).collect(Collectors.toCollection(() -> new TreeSet<>(NODE_BY_BEGIN_POSITION)));
     }
 
     public void addComment(Comment comment) {
@@ -78,9 +69,7 @@ public class CommentsCollection {
             Range cRange = c.getRange().get();
             // we tolerate a difference of one element in the end column:
             // it depends how \r and \n are calculated...
-            if (cRange.begin.equals(commentRange.begin) &&
-                    cRange.end.line == commentRange.end.line &&
-                    Math.abs(cRange.end.column - commentRange.end.column) < 2) {
+            if (cRange.begin.equals(commentRange.begin) && cRange.end.line == commentRange.end.line && Math.abs(cRange.end.column - commentRange.end.column) < 2) {
                 return true;
             }
         }
@@ -97,10 +86,7 @@ public class CommentsCollection {
 
     public CommentsCollection minus(CommentsCollection other) {
         CommentsCollection result = new CommentsCollection();
-        result.comments.addAll(
-                comments.stream()
-                        .filter(comment -> !other.contains(comment))
-                        .collect(Collectors.toList()));
+        result.comments.addAll(comments.stream().filter(comment -> !other.contains(comment)).collect(Collectors.toList()));
         return result;
     }
 

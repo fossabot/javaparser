@@ -292,10 +292,6 @@ public class Utils {
      * Checks, if the parent is a unary expression with a minus operator. Used to check for negative literals.
      */
     public static boolean hasUnaryMinusAsParent(Node n) {
-        return n.getParentNode()
-                .filter(parent -> parent instanceof UnaryExpr)
-                .map(parent -> (UnaryExpr) parent)
-                .map(unaryExpr -> unaryExpr.getOperator() == UnaryExpr.Operator.MINUS)
-                .orElse(false);
+        return n.getParentNode().filter(parent -> parent instanceof UnaryExpr).map(parent -> (UnaryExpr) parent).map(unaryExpr -> unaryExpr.getOperator() == UnaryExpr.Operator.MINUS).orElse(false);
     }
 }

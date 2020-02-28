@@ -95,7 +95,7 @@ public class CoreGenerator {
 
         // Do generating.
         final CoreGenerator coreGenerator = new CoreGenerator(projectRoot);
-//        coreGenerator.deleteAllGeneratorAnnotations(coreGenerator.sourceRoots);
+        coreGenerator.deleteAllGeneratorAnnotations(coreGenerator.sourceRoots);
         coreGenerator.runner();
     }
 

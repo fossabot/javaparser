@@ -189,19 +189,10 @@ public class LexicalPreservingPrinter {
 
         private List<ChildTextElement> findChildTextElementForComment(Comment oldValue, NodeText nodeText) {
             List<ChildTextElement> matchingChildElements;
-
-            matchingChildElements = nodeText.getElements().stream()
-                    .filter(e -> e.isChild())
-                    .map(c -> (ChildTextElement) c)
-                    .filter(c -> c.isComment())
-                    .filter(c -> ((Comment) c.getChild()).getContent().equals(oldValue.getContent()))
-                    .collect(toList());
-
+            matchingChildElements = nodeText.getElements().stream().filter(e -> e.isChild()).map(c -> (ChildTextElement) c).filter(c -> c.isComment()).filter(c -> ((Comment) c.getChild()).getContent().equals(oldValue.getContent())).collect(toList());
             if (matchingChildElements.size() > 1) {
                 // Duplicate child nodes found, refine the result
-                matchingChildElements = matchingChildElements.stream()
-                        .filter(t -> isEqualRange(t.getChild().getRange(), oldValue.getRange()))
-                        .collect(toList());
+                matchingChildElements = matchingChildElements.stream().filter(t -> isEqualRange(t.getChild().getRange(), oldValue.getRange())).collect(toList());
             }
             if (matchingChildElements.size() != 1) {
                 throw new IllegalStateException("The matching child text element for the comment to be removed could not be found.");
@@ -212,29 +203,15 @@ public class LexicalPreservingPrinter {
         private List<TokenTextElement> findTokenTextElementForComment(Comment oldValue, NodeText nodeText) {
             List<TokenTextElement> matchingTokens;
             if (oldValue instanceof JavadocComment) {
-                matchingTokens = nodeText.getElements().stream()
-                        .filter(e -> e.isToken(JAVADOC_COMMENT))
-                        .map(e -> (TokenTextElement) e)
-                        .filter(t -> t.getText().equals("/**" + oldValue.getContent() + "*/"))
-                        .collect(toList());
+                matchingTokens = nodeText.getElements().stream().filter(e -> e.isToken(JAVADOC_COMMENT)).map(e -> (TokenTextElement) e).filter(t -> t.getText().equals("/**" + oldValue.getContent() + "*/")).collect(toList());
             } else if (oldValue instanceof BlockComment) {
-                matchingTokens = nodeText.getElements().stream()
-                        .filter(e -> e.isToken(MULTI_LINE_COMMENT))
-                        .map(e -> (TokenTextElement) e)
-                        .filter(t -> t.getText().equals("/*" + oldValue.getContent() + "*/"))
-                        .collect(toList());
+                matchingTokens = nodeText.getElements().stream().filter(e -> e.isToken(MULTI_LINE_COMMENT)).map(e -> (TokenTextElement) e).filter(t -> t.getText().equals("/*" + oldValue.getContent() + "*/")).collect(toList());
             } else {
-                matchingTokens = nodeText.getElements().stream()
-                        .filter(e -> e.isToken(SINGLE_LINE_COMMENT))
-                        .map(e -> (TokenTextElement) e)
-                        .filter(t -> t.getText().trim().equals(("//" + oldValue.getContent()).trim()))
-                        .collect(toList());
+                matchingTokens = nodeText.getElements().stream().filter(e -> e.isToken(SINGLE_LINE_COMMENT)).map(e -> (TokenTextElement) e).filter(t -> t.getText().trim().equals(("//" + oldValue.getContent()).trim())).collect(toList());
             }
             if (matchingTokens.size() > 1) {
                 // Duplicate comments found, refine the result
-                matchingTokens = matchingTokens.stream()
-                        .filter(t -> isEqualRange(t.getToken().getRange(), oldValue.getRange()))
-                        .collect(toList());
+                matchingTokens = matchingTokens.stream().filter(t -> isEqualRange(t.getToken().getRange(), oldValue.getRange())).collect(toList());
             }
             return matchingTokens;
         }

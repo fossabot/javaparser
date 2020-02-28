@@ -67,9 +67,7 @@ public class ResolvedIntersectionType implements ResolvedType {
 
     @Override
     public ResolvedType replaceTypeVariables(ResolvedTypeParameterDeclaration tp, ResolvedType replaced, Map<ResolvedTypeParameterDeclaration, ResolvedType> inferredTypes) {
-        List<ResolvedType> elementsReplaced = elements.stream()
-                .map(e -> e.replaceTypeVariables(tp, replaced, inferredTypes))
-                .collect(Collectors.toList());
+        List<ResolvedType> elementsReplaced = elements.stream().map(e -> e.replaceTypeVariables(tp, replaced, inferredTypes)).collect(Collectors.toList());
         if (elementsReplaced.equals(elements)) {
             return this;
         } else {

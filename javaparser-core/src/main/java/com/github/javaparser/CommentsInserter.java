@@ -87,11 +87,7 @@ class CommentsInserter {
         List<Node> children = node.getChildNodes().stream().filter(n -> !(n instanceof Modifier)).collect(toList());
         for (Node child : children) {
             TreeSet<Comment> commentsInsideChild = new TreeSet<>(NODE_BY_BEGIN_POSITION);
-            commentsInsideChild.addAll(
-                    commentsToAttribute.stream()
-                            .filter(c -> c.getRange().isPresent())
-                            .filter(c -> PositionUtils.nodeContains(child, c,
-                                    configuration.isIgnoreAnnotationsWhenAttributingComments())).collect(toList()));
+            commentsInsideChild.addAll(commentsToAttribute.stream().filter(c -> c.getRange().isPresent()).filter(c -> PositionUtils.nodeContains(child, c, configuration.isIgnoreAnnotationsWhenAttributingComments())).collect(toList()));
             commentsToAttribute.removeAll(commentsInsideChild);
             insertComments(child, commentsInsideChild);
         }
@@ -143,20 +139,13 @@ class CommentsInserter {
         /* I can attribute in line comments to elements preceeding them, if
          there is something contained in their line */
         List<Comment> attributedComments = new LinkedList<>();
-        commentsToAttribute.stream()
-                .filter(comment -> comment.getRange().isPresent())
-                .filter(Comment::isLineComment)
-                .forEach(comment -> children.stream()
-                        .filter(child -> child.getRange().isPresent())
-                        .forEach(child -> {
-                            Range commentRange = comment.getRange().get();
-                            Range childRange = child.getRange().get();
-                            if (childRange.end.line == commentRange.begin.line
-                                    && attributeLineCommentToNodeOrChild(child,
-                                    comment.asLineComment())) {
-                                attributedComments.add(comment);
-                            }
-                        }));
+        commentsToAttribute.stream().filter(comment -> comment.getRange().isPresent()).filter(Comment::isLineComment).forEach(comment -> children.stream().filter(child -> child.getRange().isPresent()).forEach(child -> {
+            Range commentRange = comment.getRange().get();
+            Range childRange = child.getRange().get();
+            if (childRange.end.line == commentRange.begin.line && attributeLineCommentToNodeOrChild(child, comment.asLineComment())) {
+                attributedComments.add(comment);
+            }
+        }));
         commentsToAttribute.removeAll(attributedComments);
     }
 

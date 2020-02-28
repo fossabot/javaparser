@@ -129,9 +129,7 @@ public class VisitorMap<N extends Node, V> implements Map<N, V> {
 
     @Override
     public Set<N> keySet() {
-        return innerMap.keySet().stream()
-                .map(k -> k.overridden)
-                .collect(Collectors.toSet());
+        return innerMap.keySet().stream().map(k -> k.overridden).collect(Collectors.toSet());
     }
 
     @Override
@@ -141,8 +139,6 @@ public class VisitorMap<N extends Node, V> implements Map<N, V> {
 
     @Override
     public Set<Entry<N, V>> entrySet() {
-        return innerMap.entrySet().stream()
-                .map(e -> new HashMap.SimpleEntry<>(e.getKey().overridden, e.getValue()))
-                .collect(Collectors.toSet());
+        return innerMap.entrySet().stream().map(e -> new HashMap.SimpleEntry<>(e.getKey().overridden, e.getValue())).collect(Collectors.toSet());
     }
 }

@@ -79,49 +79,15 @@ public final class StringEscapeUtils {
         return UNESCAPE_JAVA_TEXT_BLOCK.translate(input);
     }
 
-    private static final LookupTranslator JAVA_CTRL_CHARS_UNESCAPE = new LookupTranslator(new String[][]{
-            {"\\b", "\b"},
-            {"\\n", "\n"},
-            {"\\t", "\t"},
-            {"\\f", "\f"},
-            {"\\r", "\r"}});
+    private static final LookupTranslator JAVA_CTRL_CHARS_UNESCAPE = new LookupTranslator(new String[][] { { "\\b", "\b" }, { "\\n", "\n" }, { "\\t", "\t" }, { "\\f", "\f" }, { "\\r", "\r" } });
 
-    private static final LookupTranslator JAVA_CTRL_CHARS_ESCAPE = new LookupTranslator(new String[][]{
-            {"\b", "\\b"},
-            {"\n", "\\n"},
-            {"\t", "\\t"},
-            {"\f", "\\f"},
-            {"\r", "\\r"}});
+    private static final LookupTranslator JAVA_CTRL_CHARS_ESCAPE = new LookupTranslator(new String[][] { { "\b", "\\b" }, { "\n", "\\n" }, { "\t", "\\t" }, { "\f", "\\f" }, { "\r", "\\r" } });
 
-    private static final CharSequenceTranslator ESCAPE_JAVA = new AggregateTranslator(
-            new LookupTranslator(
-                    new String[][]{
-                            {"\"", "\\\""},
-                            {"\\", "\\\\"},
-                    }),
-            JAVA_CTRL_CHARS_ESCAPE);
+    private static final CharSequenceTranslator ESCAPE_JAVA = new AggregateTranslator(new LookupTranslator(new String[][] { { "\"", "\\\"" }, { "\\", "\\\\" } }), JAVA_CTRL_CHARS_ESCAPE);
 
-    private static final CharSequenceTranslator UNESCAPE_JAVA = new AggregateTranslator(
-            new OctalUnescaper(),
-            new UnicodeUnescaper(),
-            JAVA_CTRL_CHARS_UNESCAPE,
-            new LookupTranslator(new String[][]{
-                    {"\\\\", "\\"},
-                    {"\\\"", "\""},
-                    {"\\'", "'"},
-                    {"\\", ""}}));
+    private static final CharSequenceTranslator UNESCAPE_JAVA = new AggregateTranslator(new OctalUnescaper(), new UnicodeUnescaper(), JAVA_CTRL_CHARS_UNESCAPE, new LookupTranslator(new String[][] { { "\\\\", "\\" }, { "\\\"", "\"" }, { "\\'", "'" }, { "\\", "" } }));
 
-    private static final CharSequenceTranslator UNESCAPE_JAVA_TEXT_BLOCK = new AggregateTranslator(
-            new OctalUnescaper(),
-            new UnicodeUnescaper(),
-            JAVA_CTRL_CHARS_UNESCAPE,
-            new LookupTranslator(new String[][]{
-                    {"\\\\", "\\"},
-                    {"\\\"", "\""},
-                    {"\\'", "'"},
-                    {"\\", ""},
-                    {"\\s", " "},
-                    {"\\\n", ""}}));
+    private static final CharSequenceTranslator UNESCAPE_JAVA_TEXT_BLOCK = new AggregateTranslator(new OctalUnescaper(), new UnicodeUnescaper(), JAVA_CTRL_CHARS_UNESCAPE, new LookupTranslator(new String[][] { { "\\\\", "\\" }, { "\\\"", "\"" }, { "\\'", "'" }, { "\\", "" }, { "\\s", " " }, { "\\\n", "" } }));
 
     /**
      * Adapted from apache commons-lang3 project.

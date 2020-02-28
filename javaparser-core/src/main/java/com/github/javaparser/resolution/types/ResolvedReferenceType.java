@@ -366,20 +366,13 @@ public abstract class ResolvedReferenceType implements ResolvedType, ResolvedTyp
      * type plus all declared fields which are not private.
      */
     public List<ResolvedFieldDeclaration> getAllFieldsVisibleToInheritors() {
-        List<ResolvedFieldDeclaration> res = new LinkedList<>(this.getDeclaredFields().stream()
-                .filter(f -> f.accessSpecifier() != AccessSpecifier.PRIVATE)
-                .collect(Collectors.toList()));
-
-        getDirectAncestors().forEach(a ->
-                res.addAll(a.getAllFieldsVisibleToInheritors()));
-
+        List<ResolvedFieldDeclaration> res = new LinkedList<>(this.getDeclaredFields().stream().filter(f -> f.accessSpecifier() != AccessSpecifier.PRIVATE).collect(Collectors.toList()));
+        getDirectAncestors().forEach(a -> res.addAll(a.getAllFieldsVisibleToInheritors()));
         return res;
     }
 
     public List<ResolvedMethodDeclaration> getAllMethodsVisibleToInheritors() {
-        return this.getAllMethods().stream()
-                .filter(m -> m.accessSpecifier() != AccessSpecifier.PRIVATE)
-                .collect(Collectors.toList());
+        return this.getAllMethods().stream().filter(m -> m.accessSpecifier() != AccessSpecifier.PRIVATE).collect(Collectors.toList());
     }
 
     // 
@@ -388,9 +381,7 @@ public abstract class ResolvedReferenceType implements ResolvedType, ResolvedTyp
     protected abstract ResolvedReferenceType create(ResolvedReferenceTypeDeclaration typeDeclaration, List<ResolvedType> typeParameters);
 
     protected ResolvedReferenceType create(ResolvedReferenceTypeDeclaration typeDeclaration, ResolvedTypeParametersMap typeParametersMap) {
-        return create(typeDeclaration, typeDeclaration.getTypeParameters().stream()
-                .map(typeParametersMap::getValue)
-                .collect(Collectors.toList()));
+        return create(typeDeclaration, typeDeclaration.getTypeParameters().stream().map(typeParametersMap::getValue).collect(Collectors.toList()));
     }
 
     protected abstract ResolvedReferenceType create(ResolvedReferenceTypeDeclaration typeDeclaration);

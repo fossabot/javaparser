@@ -777,18 +777,11 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         AtomicBoolean columnAlignFirstMethodChain = new AtomicBoolean();
         if (configuration.isColumnAlignFirstMethodChain()) {
             // pick the kind of expressions where vertically aligning method calls is okay.
-            if (n.findAncestor(Statement.class).map(p -> p.isReturnStmt()
-                    || p.isThrowStmt()
-                    || p.isAssertStmt()
-                    || p.isExpressionStmt()).orElse(false)) {
+            if (n.findAncestor(Statement.class).map(p -> p.isReturnStmt() || p.isThrowStmt() || p.isAssertStmt() || p.isExpressionStmt()).orElse(false)) {
                 // search for first parent that does not have its child as scope
                 Node c = n;
                 Optional<Node> p = c.getParentNode();
-                while (p.isPresent() && p.filter(NodeWithTraversableScope.class::isInstance)
-                        .map(NodeWithTraversableScope.class::cast)
-                        .flatMap(NodeWithTraversableScope::traverseScope)
-                        .map(c::equals)
-                        .orElse(false)) {
+                while (p.isPresent() && p.filter(NodeWithTraversableScope.class::isInstance).map(NodeWithTraversableScope.class::cast).flatMap(NodeWithTraversableScope::traverseScope).map(c::equals).orElse(false)) {
                     c = p.get();
                     p = c.getParentNode();
                 }
@@ -801,12 +794,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         AtomicBoolean lastMethodInCallChain = new AtomicBoolean(true);
         if (columnAlignFirstMethodChain.get()) {
             Node node = n;
-            while (node.getParentNode()
-                    .filter(NodeWithTraversableScope.class::isInstance)
-                    .map(NodeWithTraversableScope.class::cast)
-                    .flatMap(NodeWithTraversableScope::traverseScope)
-                    .map(node::equals)
-                    .orElse(false)) {
+            while (node.getParentNode().filter(NodeWithTraversableScope.class::isInstance).map(NodeWithTraversableScope.class::cast).flatMap(NodeWithTraversableScope::traverseScope).map(node::equals).orElse(false)) {
                 node = node.getParentNode().orElseThrow(AssertionError::new);
                 if (node instanceof MethodCallExpr) {
                     lastMethodInCallChain.set(false);

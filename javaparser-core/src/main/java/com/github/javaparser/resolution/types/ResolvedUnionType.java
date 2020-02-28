@@ -40,14 +40,11 @@ public class ResolvedUnionType implements ResolvedType {
     }
 
     public Optional<ResolvedReferenceType> getCommonAncestor() {
-        Optional<List<ResolvedReferenceType>> reduce = elements.stream()
-                .map(ResolvedType::asReferenceType)
-                .map(ResolvedReferenceType::getAllAncestors)
-                .reduce((a, b) -> {
-                    ArrayList<ResolvedReferenceType> common = new ArrayList<>(a);
-                    common.retainAll(b);
-                    return common;
-                });
+        Optional<List<ResolvedReferenceType>> reduce = elements.stream().map(ResolvedType::asReferenceType).map(ResolvedReferenceType::getAllAncestors).reduce((a, b) -> {
+            ArrayList<ResolvedReferenceType> common = new ArrayList<>(a);
+            common.retainAll(b);
+            return common;
+        });
         return reduce.orElse(new ArrayList<>()).stream().findFirst();
     }
 
