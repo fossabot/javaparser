@@ -66,7 +66,7 @@ public class TextBlockLiteralExpr extends LiteralStringValueExpr {
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public TextBlockLiteralExpr(TokenRange tokenRange, String value) {
         super(tokenRange, value);
-        customInitialization();
+        this.customInitialization();
     }
 
     @Override
@@ -84,8 +84,9 @@ public class TextBlockLiteralExpr extends LiteralStringValueExpr {
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.remove(node);
     }
 
@@ -107,6 +108,7 @@ public class TextBlockLiteralExpr extends LiteralStringValueExpr {
         return Optional.of(this);
     }
 
+    @Override
     @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public void ifTextBlockLiteralExpr(Consumer<TextBlockLiteralExpr> action) {
         action.accept(this);
@@ -115,15 +117,16 @@ public class TextBlockLiteralExpr extends LiteralStringValueExpr {
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.replace(node, replacementNode);
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public TextBlockLiteralExpr clone() {
-        return (TextBlockLiteralExpr) accept(new CloneVisitor(), null);
+        return (TextBlockLiteralExpr) this.accept(new CloneVisitor(), null);
     }
 
     @Override
