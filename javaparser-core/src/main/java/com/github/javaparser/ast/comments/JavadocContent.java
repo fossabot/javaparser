@@ -67,9 +67,9 @@ public class JavadocContent extends Comment {
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public JavadocContent(TokenRange tokenRange, String content, JavadocDescription description, NodeList<JavadocBlockTag> blockTags) {
         super(tokenRange, content);
-        setDescription(description);
-        setBlockTags(blockTags);
-        customInitialization();
+        this.setDescription(description);
+        this.setBlockTags(blockTags);
+        this.customInitialization();
     }
 
     protected JavadocContent(TokenRange tokenRange) {
@@ -80,13 +80,14 @@ public class JavadocContent extends Comment {
     public JavadocContent setDescription(final JavadocDescription description) {
         assertNotNull(description);
         if (description == this.description) {
-            return (JavadocContent) this;
+            return this;
         }
-        notifyPropertyChange(ObservableProperty.DESCRIPTION, this.description, description);
-        if (this.description != null)
+        this.notifyPropertyChange(ObservableProperty.DESCRIPTION, this.description, description);
+        if (this.description != null) {
             this.description.setParentNode(null);
+        }
         this.description = description;
-        setAsParentNodeOf(description);
+        this.setAsParentNodeOf(description);
         return this;
     }
 
@@ -94,13 +95,14 @@ public class JavadocContent extends Comment {
     public JavadocContent setBlockTags(final NodeList<JavadocBlockTag> blockTags) {
         assertNotNull(blockTags);
         if (blockTags == this.blockTags) {
-            return (JavadocContent) this;
+            return this;
         }
-        notifyPropertyChange(ObservableProperty.BLOCK_TAGS, this.blockTags, blockTags);
-        if (this.blockTags != null)
+        this.notifyPropertyChange(ObservableProperty.BLOCK_TAGS, this.blockTags, blockTags);
+        if (this.blockTags != null) {
             this.blockTags.setParentNode(null);
+        }
         this.blockTags = blockTags;
-        setAsParentNodeOf(blockTags);
+        this.setAsParentNodeOf(blockTags);
         return this;
     }
 
@@ -113,12 +115,12 @@ public class JavadocContent extends Comment {
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<JavadocBlockTag> getBlockTags() {
-        return blockTags;
+        return this.blockTags;
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public JavadocDescription getDescription() {
-        return description;
+        return this.description;
     }
 
     /**
@@ -171,6 +173,7 @@ public class JavadocContent extends Comment {
         return Optional.of(this);
     }
 
+    @Override
     @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public void ifJavadocContent(Consumer<JavadocContent> action) {
         action.accept(this);
@@ -179,11 +182,12 @@ public class JavadocContent extends Comment {
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
-        for (int i = 0; i < blockTags.size(); i++) {
-            if (blockTags.get(i) == node) {
-                blockTags.remove(i);
+        }
+        for (int i = 0; i < this.blockTags.size(); i++) {
+            if (this.blockTags.get(i) == node) {
+                this.blockTags.remove(i);
                 return true;
             }
         }
@@ -193,16 +197,17 @@ public class JavadocContent extends Comment {
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
-        for (int i = 0; i < blockTags.size(); i++) {
-            if (blockTags.get(i) == node) {
-                blockTags.set(i, (JavadocBlockTag) replacementNode);
+        }
+        for (int i = 0; i < this.blockTags.size(); i++) {
+            if (this.blockTags.get(i) == node) {
+                this.blockTags.set(i, (JavadocBlockTag) replacementNode);
                 return true;
             }
         }
-        if (node == description) {
-            setDescription((JavadocDescription) replacementNode);
+        if (node == this.description) {
+            this.setDescription((JavadocDescription) replacementNode);
             return true;
         }
         return super.replace(node, replacementNode);
@@ -211,7 +216,7 @@ public class JavadocContent extends Comment {
     @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public JavadocContent clone() {
-        return (JavadocContent) accept(new CloneVisitor(), null);
+        return (JavadocContent) this.accept(new CloneVisitor(), null);
     }
 
     @Override

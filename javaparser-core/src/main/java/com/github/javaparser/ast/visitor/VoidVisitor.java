@@ -322,13 +322,18 @@ public interface VoidVisitor<A> {
     @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorGenerator")
     void visit(YieldStmt yieldStmt, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorGenerator")
     void visit(JavadocBlockTag n, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorGenerator")
     void visit(JavadocContent n, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorGenerator")
     void visit(JavadocDescription n, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorGenerator")
     void visit(JavadocInlineTag n, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorGenerator")
     void visit(JavadocSnippet n, A arg);
 }

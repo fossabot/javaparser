@@ -327,13 +327,18 @@ public interface GenericVisitor<R, A> {
     @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorGenerator")
     R visit(TextBlockLiteralExpr n, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorGenerator")
     R visit(JavadocBlockTag n, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorGenerator")
     R visit(JavadocContent n, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorGenerator")
     R visit(JavadocDescription n, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorGenerator")
     R visit(JavadocInlineTag n, A arg);
 
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorGenerator")
     R visit(JavadocSnippet n, A arg);
 }

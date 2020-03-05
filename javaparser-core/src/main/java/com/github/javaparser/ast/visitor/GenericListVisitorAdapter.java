@@ -2175,6 +2175,7 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
     public List<R> visit(final JavadocBlockTag n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
@@ -2192,6 +2193,7 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
     public List<R> visit(final JavadocContent n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
@@ -2214,6 +2216,7 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
     public List<R> visit(final JavadocDescription n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
@@ -2231,6 +2234,7 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
     public List<R> visit(final JavadocInlineTag n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
@@ -2243,6 +2247,7 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
     public List<R> visit(final JavadocSnippet n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;

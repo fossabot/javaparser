@@ -58,13 +58,13 @@ public class JavadocDescription extends Node {
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public JavadocDescription(TokenRange tokenRange, NodeList<JavadocDescriptionElement> elements) {
         super(tokenRange);
-        setElements(elements);
-        customInitialization();
+        this.setElements(elements);
+        this.customInitialization();
     }
 
     /**
-     * Get text representation of description    
-     * 
+     * Get text representation of description
+     *
      * @return text representation of node
      */
     public String toText() {
@@ -83,19 +83,20 @@ public class JavadocDescription extends Node {
     public JavadocDescription setElements(final NodeList<JavadocDescriptionElement> elements) {
         assertNotNull(elements);
         if (elements == this.elements) {
-            return (JavadocDescription) this;
+            return this;
         }
-        notifyPropertyChange(ObservableProperty.ELEMENTS, this.elements, elements);
-        if (this.elements != null)
+        this.notifyPropertyChange(ObservableProperty.ELEMENTS, this.elements, elements);
+        if (this.elements != null) {
             this.elements.setParentNode(null);
+        }
         this.elements = elements;
-        setAsParentNodeOf(elements);
+        this.setAsParentNodeOf(elements);
         return this;
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<JavadocDescriptionElement> getElements() {
-        return elements;
+        return this.elements;
     }
 
     @Override
@@ -113,11 +114,12 @@ public class JavadocDescription extends Node {
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
-        for (int i = 0; i < elements.size(); i++) {
-            if (elements.get(i) == node) {
-                elements.remove(i);
+        }
+        for (int i = 0; i < this.elements.size(); i++) {
+            if (this.elements.get(i) == node) {
+                this.elements.remove(i);
                 return true;
             }
         }
@@ -127,11 +129,12 @@ public class JavadocDescription extends Node {
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
-        for (int i = 0; i < elements.size(); i++) {
-            if (elements.get(i) == node) {
-                elements.set(i, (JavadocDescriptionElement) replacementNode);
+        }
+        for (int i = 0; i < this.elements.size(); i++) {
+            if (this.elements.get(i) == node) {
+                this.elements.set(i, (JavadocDescriptionElement) replacementNode);
                 return true;
             }
         }
@@ -141,7 +144,7 @@ public class JavadocDescription extends Node {
     @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public JavadocDescription clone() {
-        return (JavadocDescription) accept(new CloneVisitor(), null);
+        return (JavadocDescription) this.accept(new CloneVisitor(), null);
     }
 
     @Override

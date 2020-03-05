@@ -531,26 +531,31 @@ public class NoCommentHashCodeVisitor implements GenericVisitor<Integer, Void> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentHashCodeVisitorGenerator")
     public Integer visit(final JavadocBlockTag n, final Void arg) {
         return (n.getDescription().accept(this, arg)) * 31 + (n.getType().hashCode());
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentHashCodeVisitorGenerator")
     public Integer visit(final JavadocContent n, final Void arg) {
         return (n.getBlockTags().accept(this, arg)) * 31 + (n.getDescription().accept(this, arg)) * 31 + (n.getContent().hashCode());
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentHashCodeVisitorGenerator")
     public Integer visit(final JavadocDescription n, final Void arg) {
         return (n.getElements().accept(this, arg));
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentHashCodeVisitorGenerator")
     public Integer visit(final JavadocInlineTag n, final Void arg) {
         return (n.getContent().hashCode()) * 31 + (n.getType().hashCode());
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentHashCodeVisitorGenerator")
     public Integer visit(final JavadocSnippet n, final Void arg) {
         return (n.getText().hashCode());
     }

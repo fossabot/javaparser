@@ -531,26 +531,31 @@ public class ObjectIdentityHashCodeVisitor implements GenericVisitor<Integer, Vo
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ObjectIdentityHashCodeVisitorGenerator")
     public Integer visit(final JavadocBlockTag n, final Void arg) {
         return n.hashCode();
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ObjectIdentityHashCodeVisitorGenerator")
     public Integer visit(final JavadocContent n, final Void arg) {
         return n.hashCode();
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ObjectIdentityHashCodeVisitorGenerator")
     public Integer visit(final JavadocDescription n, final Void arg) {
         return n.hashCode();
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ObjectIdentityHashCodeVisitorGenerator")
     public Integer visit(final JavadocInlineTag n, final Void arg) {
         return n.hashCode();
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ObjectIdentityHashCodeVisitorGenerator")
     public Integer visit(final JavadocSnippet n, final Void arg) {
         return n.hashCode();
     }

@@ -70,9 +70,9 @@ public class JavadocBlockTag extends Node {
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public JavadocBlockTag(TokenRange tokenRange, JavadocDescription description, BlockTagType type) {
         super(tokenRange);
-        setDescription(description);
-        setType(type);
-        customInitialization();
+        this.setDescription(description);
+        this.setType(type);
+        this.customInitialization();
     }
 
     public JavadocBlockTag() {
@@ -83,10 +83,10 @@ public class JavadocBlockTag extends Node {
     public JavadocBlockTag(JavadocDescription description, BlockTagType type) {
         this(null, description, type);
     }
-    
+
     /**
      * Get text representation block tag
-     * 
+     *
      * @return text representation of node
      */
     public String toText() {
@@ -110,13 +110,14 @@ public class JavadocBlockTag extends Node {
     public JavadocBlockTag setDescription(final JavadocDescription description) {
         assertNotNull(description);
         if (description == this.description) {
-            return (JavadocBlockTag) this;
+            return this;
         }
-        notifyPropertyChange(ObservableProperty.DESCRIPTION, this.description, description);
-        if (this.description != null)
+        this.notifyPropertyChange(ObservableProperty.DESCRIPTION, this.description, description);
+        if (this.description != null) {
             this.description.setParentNode(null);
+        }
         this.description = description;
-        setAsParentNodeOf(description);
+        this.setAsParentNodeOf(description);
         return this;
     }
 
@@ -130,9 +131,9 @@ public class JavadocBlockTag extends Node {
     public JavadocBlockTag setType(final BlockTagType type) {
         assertNotNull(type);
         if (type == this.type) {
-            return (JavadocBlockTag) this;
+            return this;
         }
-        notifyPropertyChange(ObservableProperty.TYPE, this.type, type);
+        this.notifyPropertyChange(ObservableProperty.TYPE, this.type, type);
         this.type = type;
         return this;
     }
@@ -144,7 +145,7 @@ public class JavadocBlockTag extends Node {
      */
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public JavadocDescription getDescription() {
-        return description;
+        return this.description;
     }
 
     /**
@@ -154,7 +155,7 @@ public class JavadocBlockTag extends Node {
      */
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public BlockTagType getType() {
-        return type;
+        return this.type;
     }
 
     @Override
@@ -172,18 +173,20 @@ public class JavadocBlockTag extends Node {
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.remove(node);
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
-        if (node == description) {
-            setDescription((JavadocDescription) replacementNode);
+        }
+        if (node == this.description) {
+            this.setDescription((JavadocDescription) replacementNode);
             return true;
         }
         return super.replace(node, replacementNode);
@@ -192,7 +195,7 @@ public class JavadocBlockTag extends Node {
     @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public JavadocBlockTag clone() {
-        return (JavadocBlockTag) accept(new CloneVisitor(), null);
+        return (JavadocBlockTag) this.accept(new CloneVisitor(), null);
     }
 
     @Override

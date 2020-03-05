@@ -613,8 +613,9 @@ public class ModifierVisitor<A> implements GenericVisitor<Visitable, A> {
     public Visitable visit(final JavadocComment n, final A arg) {
         JavadocContent contentNode = (JavadocContent) n.getContentNode().accept(this, arg);
         Comment comment = n.getComment().map(s -> (Comment) s.accept(this, arg)).orElse(null);
-        if (contentNode == null)
+        if (contentNode == null) {
             return null;
+        }
         n.setContentNode(contentNode);
         n.setComment(comment);
         return n;
@@ -1419,23 +1420,27 @@ public class ModifierVisitor<A> implements GenericVisitor<Visitable, A> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ModifierVisitorGenerator")
     public Visitable visit(final JavadocBlockTag n, final A arg) {
         JavadocDescription description = (JavadocDescription) n.getDescription().accept(this, arg);
         Comment comment = n.getComment().map(s -> (Comment) s.accept(this, arg)).orElse(null);
-        if (description == null)
+        if (description == null) {
             return null;
+        }
         n.setDescription(description);
         n.setComment(comment);
         return n;
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ModifierVisitorGenerator")
     public Visitable visit(final JavadocContent n, final A arg) {
-        NodeList<JavadocBlockTag> blockTags = modifyList(n.getBlockTags(), arg);
+        NodeList<JavadocBlockTag> blockTags = this.modifyList(n.getBlockTags(), arg);
         JavadocDescription description = (JavadocDescription) n.getDescription().accept(this, arg);
         Comment comment = n.getComment().map(s -> (Comment) s.accept(this, arg)).orElse(null);
-        if (description == null)
+        if (description == null) {
             return null;
+        }
         n.setBlockTags(blockTags);
         n.setDescription(description);
         n.setComment(comment);
@@ -1443,8 +1448,9 @@ public class ModifierVisitor<A> implements GenericVisitor<Visitable, A> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ModifierVisitorGenerator")
     public Visitable visit(final JavadocDescription n, final A arg) {
-        NodeList<JavadocDescriptionElement> elements = modifyList(n.getElements(), arg);
+        NodeList<JavadocDescriptionElement> elements = this.modifyList(n.getElements(), arg);
         Comment comment = n.getComment().map(s -> (Comment) s.accept(this, arg)).orElse(null);
         n.setElements(elements);
         n.setComment(comment);
@@ -1452,6 +1458,7 @@ public class ModifierVisitor<A> implements GenericVisitor<Visitable, A> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ModifierVisitorGenerator")
     public Visitable visit(final JavadocInlineTag n, final A arg) {
         Comment comment = n.getComment().map(s -> (Comment) s.accept(this, arg)).orElse(null);
         n.setComment(comment);
@@ -1459,6 +1466,7 @@ public class ModifierVisitor<A> implements GenericVisitor<Visitable, A> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.ModifierVisitorGenerator")
     public Visitable visit(final JavadocSnippet n, final A arg) {
         Comment comment = n.getComment().map(s -> (Comment) s.accept(this, arg)).orElse(null);
         n.setComment(comment);

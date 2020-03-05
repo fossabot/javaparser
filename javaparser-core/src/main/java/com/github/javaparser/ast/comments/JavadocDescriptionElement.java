@@ -53,29 +53,31 @@ public abstract class JavadocDescriptionElement extends Node {
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public JavadocDescriptionElement(TokenRange tokenRange) {
         super(tokenRange);
-        customInitialization();
+        this.customInitialization();
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.remove(node);
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.replace(node, replacementNode);
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public JavadocDescriptionElement clone() {
-        return (JavadocDescriptionElement) accept(new CloneVisitor(), null);
+        return (JavadocDescriptionElement) this.accept(new CloneVisitor(), null);
     }
 
     @Override

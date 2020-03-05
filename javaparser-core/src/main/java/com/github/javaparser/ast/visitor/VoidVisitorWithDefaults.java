@@ -620,27 +620,32 @@ public abstract class VoidVisitorWithDefaults<A> implements VoidVisitor<A> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorWithDefaultsGenerator")
     public void visit(final JavadocBlockTag n, final A arg) {
-        defaultAction(n, arg);
+        this.defaultAction(n, arg);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorWithDefaultsGenerator")
     public void visit(final JavadocContent n, final A arg) {
-        defaultAction(n, arg);
+        this.defaultAction(n, arg);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorWithDefaultsGenerator")
     public void visit(final JavadocDescription n, final A arg) {
-        defaultAction(n, arg);
+        this.defaultAction(n, arg);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorWithDefaultsGenerator")
     public void visit(final JavadocInlineTag n, final A arg) {
-        defaultAction(n, arg);
+        this.defaultAction(n, arg);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorWithDefaultsGenerator")
     public void visit(final JavadocSnippet n, final A arg) {
-        defaultAction(n, arg);
+        this.defaultAction(n, arg);
     }
 }

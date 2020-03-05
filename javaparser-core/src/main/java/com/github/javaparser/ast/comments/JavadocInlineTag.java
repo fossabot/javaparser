@@ -75,9 +75,9 @@ public class JavadocInlineTag extends JavadocDescriptionElement {
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public JavadocInlineTag(TokenRange tokenRange, InlineTagType type, String content) {
         super(tokenRange);
-        setType(type);
-        setContent(content);
-        customInitialization();
+        this.setType(type);
+        this.setContent(content);
+        this.customInitialization();
     }
 
     /**
@@ -90,9 +90,9 @@ public class JavadocInlineTag extends JavadocDescriptionElement {
     public JavadocInlineTag setType(final InlineTagType type) {
         assertNotNull(type);
         if (type == this.type) {
-            return (JavadocInlineTag) this;
+            return this;
         }
-        notifyPropertyChange(ObservableProperty.TYPE, this.type, type);
+        this.notifyPropertyChange(ObservableProperty.TYPE, this.type, type);
         this.type = type;
         return this;
     }
@@ -107,21 +107,21 @@ public class JavadocInlineTag extends JavadocDescriptionElement {
     public JavadocInlineTag setContent(final String content) {
         assertNotNull(content);
         if (content == this.content) {
-            return (JavadocInlineTag) this;
+            return this;
         }
-        notifyPropertyChange(ObservableProperty.CONTENT, this.content, content);
+        this.notifyPropertyChange(ObservableProperty.CONTENT, this.content, content);
         this.content = content;
         return this;
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public String getContent() {
-        return content;
+        return this.content;
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public InlineTagType getType() {
-        return type;
+        return this.type;
     }
 
     /**
@@ -148,23 +148,25 @@ public class JavadocInlineTag extends JavadocDescriptionElement {
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.remove(node);
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.replace(node, replacementNode);
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public JavadocInlineTag clone() {
-        return (JavadocInlineTag) accept(new CloneVisitor(), null);
+        return (JavadocInlineTag) this.accept(new CloneVisitor(), null);
     }
 
     @Override

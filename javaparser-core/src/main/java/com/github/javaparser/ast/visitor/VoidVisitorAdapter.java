@@ -807,12 +807,14 @@ public abstract class VoidVisitorAdapter<A> implements VoidVisitor<A> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorAdapterGenerator")
     public void visit(final JavadocBlockTag n, final A arg) {
         n.getDescription().accept(this, arg);
         n.getComment().ifPresent(l -> l.accept(this, arg));
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorAdapterGenerator")
     public void visit(final JavadocContent n, final A arg) {
         n.getBlockTags().forEach(p -> p.accept(this, arg));
         n.getDescription().accept(this, arg);
@@ -820,17 +822,20 @@ public abstract class VoidVisitorAdapter<A> implements VoidVisitor<A> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorAdapterGenerator")
     public void visit(final JavadocDescription n, final A arg) {
         n.getElements().forEach(p -> p.accept(this, arg));
         n.getComment().ifPresent(l -> l.accept(this, arg));
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorAdapterGenerator")
     public void visit(final JavadocInlineTag n, final A arg) {
         n.getComment().ifPresent(l -> l.accept(this, arg));
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.VoidVisitorAdapterGenerator")
     public void visit(final JavadocSnippet n, final A arg) {
         n.getComment().ifPresent(l -> l.accept(this, arg));
     }

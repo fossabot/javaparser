@@ -624,27 +624,32 @@ public abstract class GenericVisitorWithDefaults<R, A> implements GenericVisitor
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorWithDefaultsGenerator")
     public R visit(final JavadocBlockTag n, final A arg) {
-        return defaultAction(n, arg);
+        return this.defaultAction(n, arg);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorWithDefaultsGenerator")
     public R visit(final JavadocContent n, final A arg) {
-        return defaultAction(n, arg);
+        return this.defaultAction(n, arg);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorWithDefaultsGenerator")
     public R visit(final JavadocDescription n, final A arg) {
-        return defaultAction(n, arg);
+        return this.defaultAction(n, arg);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorWithDefaultsGenerator")
     public R visit(final JavadocInlineTag n, final A arg) {
-        return defaultAction(n, arg);
+        return this.defaultAction(n, arg);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorWithDefaultsGenerator")
     public R visit(final JavadocSnippet n, final A arg) {
-        return defaultAction(n, arg);
+        return this.defaultAction(n, arg);
     }
 }

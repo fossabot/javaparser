@@ -56,8 +56,8 @@ public class JavadocSnippet extends JavadocDescriptionElement {
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public JavadocSnippet(TokenRange tokenRange, String text) {
         super(tokenRange);
-        setText(text);
-        customInitialization();
+        this.setText(text);
+        this.customInitialization();
     }
 
     /**
@@ -70,9 +70,9 @@ public class JavadocSnippet extends JavadocDescriptionElement {
     public JavadocSnippet setText(final String text) {
         assertNotNull(text);
         if (text == this.text) {
-            return (JavadocSnippet) this;
+            return this;
         }
-        notifyPropertyChange(ObservableProperty.TEXT, this.text, text);
+        this.notifyPropertyChange(ObservableProperty.TEXT, this.text, text);
         this.text = text;
         return this;
     }
@@ -93,7 +93,7 @@ public class JavadocSnippet extends JavadocDescriptionElement {
      */
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public String getText() {
-        return text;
+        return this.text;
     }
 
     @Override
@@ -111,23 +111,25 @@ public class JavadocSnippet extends JavadocDescriptionElement {
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.remove(node);
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.replace(node, replacementNode);
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public JavadocSnippet clone() {
-        return (JavadocSnippet) accept(new CloneVisitor(), null);
+        return (JavadocSnippet) this.accept(new CloneVisitor(), null);
     }
 
     @Override

@@ -539,26 +539,31 @@ public class HashCodeVisitor implements GenericVisitor<Integer, Void> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.HashCodeVisitorGenerator")
     public Integer visit(final JavadocBlockTag n, final Void arg) {
         return (n.getDescription().accept(this, arg)) * 31 + (n.getType().hashCode()) * 31 + (n.getComment().isPresent() ? n.getComment().get().accept(this, arg) : 0);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.HashCodeVisitorGenerator")
     public Integer visit(final JavadocContent n, final Void arg) {
         return (n.getBlockTags().accept(this, arg)) * 31 + (n.getDescription().accept(this, arg)) * 31 + (n.getContent().hashCode()) * 31 + (n.getComment().isPresent() ? n.getComment().get().accept(this, arg) : 0);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.HashCodeVisitorGenerator")
     public Integer visit(final JavadocDescription n, final Void arg) {
         return (n.getElements().accept(this, arg)) * 31 + (n.getComment().isPresent() ? n.getComment().get().accept(this, arg) : 0);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.HashCodeVisitorGenerator")
     public Integer visit(final JavadocInlineTag n, final Void arg) {
         return (n.getContent().hashCode()) * 31 + (n.getType().hashCode()) * 31 + (n.getComment().isPresent() ? n.getComment().get().accept(this, arg) : 0);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.HashCodeVisitorGenerator")
     public Integer visit(final JavadocSnippet n, final Void arg) {
         return (n.getText().hashCode()) * 31 + (n.getComment().isPresent() ? n.getComment().get().accept(this, arg) : 0);
     }

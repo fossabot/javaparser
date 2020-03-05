@@ -1408,50 +1408,64 @@ public class NoCommentEqualsVisitor implements GenericVisitor<Boolean, Visitable
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentEqualsVisitorGenerator")
     public Boolean visit(final JavadocBlockTag n, final Visitable arg) {
         final JavadocBlockTag n2 = (JavadocBlockTag) arg;
-        if (!nodeEquals(n.getDescription(), n2.getDescription()))
+        if (!this.nodeEquals(n.getDescription(), n2.getDescription())) {
             return false;
-        if (!objEquals(n.getType(), n2.getType()))
+        }
+        if (!this.objEquals(n.getType(), n2.getType())) {
             return false;
+        }
         return true;
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentEqualsVisitorGenerator")
     public Boolean visit(final JavadocContent n, final Visitable arg) {
         final JavadocContent n2 = (JavadocContent) arg;
-        if (!nodesEquals(n.getBlockTags(), n2.getBlockTags()))
+        if (!this.nodesEquals(n.getBlockTags(), n2.getBlockTags())) {
             return false;
-        if (!nodeEquals(n.getDescription(), n2.getDescription()))
+        }
+        if (!this.nodeEquals(n.getDescription(), n2.getDescription())) {
             return false;
-        if (!objEquals(n.getContent(), n2.getContent()))
+        }
+        if (!this.objEquals(n.getContent(), n2.getContent())) {
             return false;
+        }
         return true;
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentEqualsVisitorGenerator")
     public Boolean visit(final JavadocDescription n, final Visitable arg) {
         final JavadocDescription n2 = (JavadocDescription) arg;
-        if (!nodesEquals(n.getElements(), n2.getElements()))
+        if (!this.nodesEquals(n.getElements(), n2.getElements())) {
             return false;
+        }
         return true;
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentEqualsVisitorGenerator")
     public Boolean visit(final JavadocInlineTag n, final Visitable arg) {
         final JavadocInlineTag n2 = (JavadocInlineTag) arg;
-        if (!objEquals(n.getContent(), n2.getContent()))
+        if (!this.objEquals(n.getContent(), n2.getContent())) {
             return false;
-        if (!objEquals(n.getType(), n2.getType()))
+        }
+        if (!this.objEquals(n.getType(), n2.getType())) {
             return false;
+        }
         return true;
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.NoCommentEqualsVisitorGenerator")
     public Boolean visit(final JavadocSnippet n, final Visitable arg) {
         final JavadocSnippet n2 = (JavadocSnippet) arg;
-        if (!objEquals(n.getText(), n2.getText()))
+        if (!this.objEquals(n.getText(), n2.getText())) {
             return false;
+        }
         return true;
     }
 }

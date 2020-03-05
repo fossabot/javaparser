@@ -1076,8 +1076,9 @@ public abstract class GenericVisitorAdapter<R, A> implements GenericVisitor<R, A
         R result;
         {
             result = n.getContentNode().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         if (n.getComment().isPresent()) {
             result = n.getComment().get().accept(this, arg);
@@ -2453,76 +2454,90 @@ public abstract class GenericVisitorAdapter<R, A> implements GenericVisitor<R, A
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorAdapterGenerator")
     public R visit(final JavadocBlockTag n, final A arg) {
         R result;
         {
             result = n.getDescription().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         if (n.getComment().isPresent()) {
             result = n.getComment().get().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         return null;
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorAdapterGenerator")
     public R visit(final JavadocContent n, final A arg) {
         R result;
         {
             result = n.getBlockTags().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         {
             result = n.getDescription().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         if (n.getComment().isPresent()) {
             result = n.getComment().get().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         return null;
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorAdapterGenerator")
     public R visit(final JavadocDescription n, final A arg) {
         R result;
         {
             result = n.getElements().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         if (n.getComment().isPresent()) {
             result = n.getComment().get().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         return null;
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorAdapterGenerator")
     public R visit(final JavadocInlineTag n, final A arg) {
         R result;
         if (n.getComment().isPresent()) {
             result = n.getComment().get().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         return null;
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericVisitorAdapterGenerator")
     public R visit(final JavadocSnippet n, final A arg) {
         R result;
         if (n.getComment().isPresent()) {
             result = n.getComment().get().accept(this, arg);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         return null;
     }
