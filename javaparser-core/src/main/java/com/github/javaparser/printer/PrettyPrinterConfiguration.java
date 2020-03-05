@@ -18,10 +18,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  */
+
 package com.github.javaparser.printer;
 
 import com.github.javaparser.ast.visitor.VoidVisitor;
+
 import java.util.function.Function;
+
 import static com.github.javaparser.printer.PrettyPrinterConfiguration.IndentType.SPACES;
 import static com.github.javaparser.utils.Utils.EOL;
 import static com.github.javaparser.utils.Utils.assertNonNegative;
@@ -32,18 +35,18 @@ import static com.github.javaparser.utils.Utils.assertPositive;
  * Configuration options for the {@link PrettyPrinter}.
  */
 public class PrettyPrinterConfiguration {
-
     public enum IndentType {
-
         /**
          * Indent with spaces.
          */
         SPACES,
+
         /**
          * Indent with tabs as far as possible.
          * For proper aligning, the tab width is necessary and by default 4.
          */
         TABS,
+
         /**
          * Indent with tabs but align with spaces when wrapping and aligning
          * method call chains and method call parameters.
@@ -71,25 +74,26 @@ public class PrettyPrinterConfiguration {
     public static final int DEFAULT_MAX_ENUM_CONSTANTS_TO_ALIGN_HORIZONTALLY = 5;
 
     private boolean orderImports = false;
-
     private boolean printComments = true;
-
     private boolean printJavadoc = true;
-
+    private boolean spacesBetweenOperators = true;
     private boolean columnAlignParameters = false;
-
     private boolean columnAlignFirstMethodChain = false;
-
+    /**
+     * Indent the case when it is true, don't if false
+     * switch(x) {            switch(x) {
+     *    case 1:             case 1:
+     *        return y;           return y;
+     *    case 2:             case 2:
+     *        return z;           return x;
+     *}                       }
+     */
+    private boolean indentCaseInSwitch = true;
     private IndentType indentType = SPACES;
-
     private int tabWidth = 4;
-
     private int indentSize = 4;
-
     private String endOfLineCharacter = EOL;
-
     private Function<PrettyPrinterConfiguration, VoidVisitor<Void>> visitorFactory = PrettyPrintVisitor::new;
-
     private int maxEnumConstantsToAlignHorizontally = DEFAULT_MAX_ENUM_CONSTANTS_TO_ALIGN_HORIZONTALLY;
 
     /**
@@ -98,14 +102,16 @@ public class PrettyPrinterConfiguration {
     public String getIndent() {
         StringBuilder indentString = new StringBuilder();
         char indentChar;
-        switch(indentType) {
+        switch (indentType) {
             case SPACES:
                 indentChar = ' ';
                 break;
+
             case TABS:
             case TABS_WITH_SPACE_ALIGN:
                 indentChar = '\t';
                 break;
+
             default:
                 throw new AssertionError("Unhandled indent type");
         }
@@ -142,6 +148,8 @@ public class PrettyPrinterConfiguration {
         return this;
     }
 
+
+
     /**
      * Get the tab width for pretty aligning.
      */
@@ -168,6 +176,8 @@ public class PrettyPrinterConfiguration {
     public boolean isIgnoreComments() {
         return !printComments;
     }
+    
+    public boolean isSpacesBetweenOperators() { return spacesBetweenOperators; }
 
     public boolean isPrintJavadoc() {
         return printJavadoc;
@@ -177,9 +187,12 @@ public class PrettyPrinterConfiguration {
         return columnAlignParameters;
     }
 
-    public boolean isColumnAlignFirstMethodChain() {
-        return columnAlignFirstMethodChain;
+    public boolean isColumnAlignFirstMethodChain() { return columnAlignFirstMethodChain; }
+
+    public boolean isIndentCaseInSwitch() {
+        return indentCaseInSwitch;
     }
+
 
     /**
      * When true, all comments will be printed, unless printJavadoc is false, then only line and block comments will be
@@ -198,6 +211,14 @@ public class PrettyPrinterConfiguration {
         return this;
     }
 
+    /**
+     * Set if there should be spaces between operators
+     */
+    public PrettyPrinterConfiguration setSpacesBetweenOperators(boolean spacesBetweenOperators){
+        this.spacesBetweenOperators = spacesBetweenOperators;
+        return this;
+    }
+
     public PrettyPrinterConfiguration setColumnAlignParameters(boolean columnAlignParameters) {
         this.columnAlignParameters = columnAlignParameters;
         return this;
@@ -205,6 +226,11 @@ public class PrettyPrinterConfiguration {
 
     public PrettyPrinterConfiguration setColumnAlignFirstMethodChain(boolean columnAlignFirstMethodChain) {
         this.columnAlignFirstMethodChain = columnAlignFirstMethodChain;
+        return this;
+    }
+
+    public PrettyPrinterConfiguration setIndentCaseInSwitch(boolean indentInSwitch) {
+        this.indentCaseInSwitch = indentInSwitch;
         return this;
     }
 
@@ -240,6 +266,8 @@ public class PrettyPrinterConfiguration {
         this.orderImports = orderImports;
         return this;
     }
+
+
 
     public int getMaxEnumConstantsToAlignHorizontally() {
         return maxEnumConstantsToAlignHorizontally;

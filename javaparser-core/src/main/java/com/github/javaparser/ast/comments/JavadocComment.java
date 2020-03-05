@@ -33,6 +33,8 @@ import java.util.function.Consumer;
 import java.util.Optional;
 import com.github.javaparser.ast.Generated;
 import static com.github.javaparser.StaticJavaParser.parseJavadoc;
+import static com.github.javaparser.utils.Utils.assertNotNull;
+import com.github.javaparser.ast.observer.ObservableProperty;
 
 /**
  * A Javadoc comment. <code>/&#42;&#42; a comment &#42;/</code>
@@ -41,22 +43,48 @@ import static com.github.javaparser.StaticJavaParser.parseJavadoc;
  */
 public class JavadocComment extends Comment {
 
+    private JavadocContent contentNode;
+
     public JavadocComment() {
         this(null, "empty");
     }
 
-    @AllFieldsConstructor
     public JavadocComment(String content) {
-        this(null, content);
+        this(new JavadocContent(), content);
+    }
+
+    @AllFieldsConstructor
+    public JavadocComment(JavadocContent contentNode, String content) {
+        this(null, content, contentNode);
     }
 
     /**
      * This constructor is used by the parser and is considered private.
      */
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
-    public JavadocComment(TokenRange tokenRange, String content) {
+    public JavadocComment(TokenRange tokenRange, String content, JavadocContent contentNode) {
         super(tokenRange, content);
-        this.customInitialization();
+        setContentNode(contentNode);
+        customInitialization();
+    }
+
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public JavadocContent getContentNode() {
+        return contentNode;
+    }
+
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public JavadocComment setContentNode(final JavadocContent contentNode) {
+        assertNotNull(contentNode);
+        if (contentNode == this.contentNode) {
+            return (JavadocComment) this;
+        }
+        notifyPropertyChange(ObservableProperty.CONTENT_NODE, this.contentNode, contentNode);
+        if (this.contentNode != null)
+            this.contentNode.setParentNode(null);
+        this.contentNode = contentNode;
+        setAsParentNodeOf(contentNode);
+        return this;
     }
 
     @Override
@@ -78,16 +106,15 @@ public class JavadocComment extends Comment {
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null) {
+        if (node == null)
             return false;
-        }
         return super.remove(node);
     }
 
     @Override
     @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public JavadocComment clone() {
-        return (JavadocComment) this.accept(new CloneVisitor(), null);
+        return (JavadocComment) accept(new CloneVisitor(), null);
     }
 
     @Override
@@ -99,8 +126,11 @@ public class JavadocComment extends Comment {
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null) {
+        if (node == null)
             return false;
+        if (node == contentNode) {
+            setContentNode((JavadocContent) replacementNode);
+            return true;
         }
         return super.replace(node, replacementNode);
     }
@@ -117,7 +147,6 @@ public class JavadocComment extends Comment {
         return this;
     }
 
-    @Override
     @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public void ifJavadocComment(Consumer<JavadocComment> action) {
         action.accept(this);
@@ -127,5 +156,15 @@ public class JavadocComment extends Comment {
     @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public Optional<JavadocComment> toJavadocComment() {
         return Optional.of(this);
+    }
+
+    /**
+     * This constructor is used by the parser and is considered private.
+     */
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public JavadocComment(TokenRange tokenRange, JavadocContent contentNode, String content) {
+        super(tokenRange, content);
+        setContentNode(contentNode);
+        customInitialization();
     }
 }
