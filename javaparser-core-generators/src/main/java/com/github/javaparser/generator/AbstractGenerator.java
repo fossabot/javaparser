@@ -21,6 +21,8 @@
 
 package com.github.javaparser.generator;
 
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.Problem;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Generated;
 import com.github.javaparser.ast.Node;
@@ -34,14 +36,17 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.generator.core.CoreGenerator;
 import com.github.javaparser.utils.SourceRoot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.github.javaparser.ast.NodeList.toNodeList;
 import static com.github.javaparser.utils.CodeGenerationUtils.f;
 
 /**
- * A general pattern that the generators within this module will follow.
+ * A general pattern that the generators in this module will follow.
  */
 public abstract class AbstractGenerator {
 
@@ -56,11 +61,19 @@ public abstract class AbstractGenerator {
         this.editedCus = new ArrayList<>();
     }
 
+    protected void before() {
+        // Default: Empty / no-operation.
+    }
+
+    protected void after() {
+        // Default: Empty / no-operation.
+    }
+
     /**
      * @return A list of compilation units that have been modified by this generator.
      * @throws Exception -- TODO: Remove or narrow!
      */
-    public abstract List<CompilationUnit> generate() throws Exception;
+    public abstract List<CompilationUnit> generate();
 
     /**
      * @param node The node to which the {@code @Annotated} annotation will be added.
@@ -160,7 +173,6 @@ public abstract class AbstractGenerator {
                 });
     }
 
-
     private void addOrReplaceMethod(
             ClassOrInterfaceDeclaration containingClassOrInterface,
             CallableDeclaration<?> callable,
@@ -200,6 +212,31 @@ public abstract class AbstractGenerator {
         }
     }
 
+    protected List<CompilationUnit> getParsedCompilationUnitsFromSourceRoot(SourceRoot sourceRoot) throws IOException {
+        List<CompilationUnit> cus = sourceRoot.getCompilationUnits();
+        List<ParseResult<CompilationUnit>> parseResults = sourceRoot.tryToParse();
+
+        boolean allParsed = parseResults.stream().allMatch(ParseResult::isSuccessful);
+        if (!allParsed) {
+            List<ParseResult<CompilationUnit>> problemResults = parseResults.stream().filter(compilationUnitParseResult -> !compilationUnitParseResult.isSuccessful()).collect(Collectors.toList());
+            for (int i = 0; i < problemResults.size(); i++) {
+                ParseResult<CompilationUnit> parseResult = problemResults.get(i);
+                List<Problem> problems = parseResult.getProblems();
+                System.out.println();
+                System.out.println("Problems (" + (i + 1) + " of " + problemResults.size() + "): ");
+                System.out.println(problems);
+            }
+
+            throw new IllegalStateException("Expected all files to parse.");
+        }
+
+        System.out.println("parseResults.size() = " + parseResults.size());
+
+        return parseResults.stream()
+                .map(ParseResult::getResult)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public String toString() {

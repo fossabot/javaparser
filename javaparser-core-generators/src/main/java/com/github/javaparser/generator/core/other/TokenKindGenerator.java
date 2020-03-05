@@ -37,7 +37,6 @@ import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

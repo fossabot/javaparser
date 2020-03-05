@@ -70,10 +70,10 @@ public class ModifierVisitorGenerator extends VisitorGenerator {
         }
 
         if (node.is(BinaryExpr.class)) {
-            body.addStatement("if (left == null) return right;");
-            body.addStatement("if (right == null) return left;");
+            body.addStatement("if (left == null) { return right; }");
+            body.addStatement("if (right == null) { return left; }");
         } else {
-            final SeparatedItemStringBuilder collapseCheck = new SeparatedItemStringBuilder("if(", "||", ") return null;");
+            final SeparatedItemStringBuilder collapseCheck = new SeparatedItemStringBuilder("if(", "||", ") { return null; }");
             for (PropertyMetaModel property : node.getAllPropertyMetaModels()) {
                 if (property.isRequired() && property.isNode()) {
                     if (property.isNodeList()) {

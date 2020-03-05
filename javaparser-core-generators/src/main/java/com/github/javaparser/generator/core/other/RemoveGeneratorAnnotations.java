@@ -21,8 +21,6 @@
 
 package com.github.javaparser.generator.core.other;
 
-import com.github.javaparser.ParseResult;
-import com.github.javaparser.Problem;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Generated;
 import com.github.javaparser.ast.expr.AnnotationExpr;
@@ -32,8 +30,6 @@ import com.github.javaparser.utils.SourceRoot;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class RemoveGeneratorAnnotations extends AbstractGenerator {
 
@@ -46,32 +42,10 @@ public class RemoveGeneratorAnnotations extends AbstractGenerator {
         Log.info("Running %s", () -> this.getClass().getSimpleName());
 
         try {
-            List<CompilationUnit> cus = this.sourceRoot.getCompilationUnits();
-            List<ParseResult<CompilationUnit>> parseResults = this.sourceRoot.tryToParse();
+            List<CompilationUnit> parsedCus = this.getParsedCompilationUnitsFromSourceRoot(this.sourceRoot);
 
-            boolean allParsesSuccessful = parseResults.stream().allMatch(ParseResult::isSuccessful);
-            if (!allParsesSuccessful) {
-                List<ParseResult<CompilationUnit>> problemResults = parseResults.stream().filter(compilationUnitParseResult -> !compilationUnitParseResult.isSuccessful()).collect(Collectors.toList());
-                for (int i = 0; i < problemResults.size(); i++) {
-                    ParseResult<CompilationUnit> parseResult = problemResults.get(i);
-                    List<Problem> problems = parseResult.getProblems();
-                    System.out.println(
-                            "\nProblems (" + (i + 1) + " of " + problemResults.size() + "): " +
-                            "\n" + problems
-                    );
-                }
-                throw new IllegalStateException("Expected all files to parse.");
-            }
-
-            System.out.println("parseResults.size() = " + parseResults.size());
-
-            List<CompilationUnit> pr = parseResults.stream()
-                    .map(ParseResult::getResult)
-                    .map(Optional::get)
-                    .collect(Collectors.toList());
-
-            System.out.println("pr.size() = " + pr.size());
-            pr.forEach(compilationUnit -> {
+            System.out.println("parsedCus.size() = " + parsedCus.size());
+            parsedCus.forEach(compilationUnit -> {
                 List<AnnotationExpr> allAnnotations = compilationUnit.findAll(AnnotationExpr.class);
                 allAnnotations.stream()
                         .filter(annotationExpr -> annotationExpr.getName().asString().equals(Generated.class.getSimpleName()))
@@ -96,6 +70,8 @@ public class RemoveGeneratorAnnotations extends AbstractGenerator {
 //                }
 
             });
+
+            this.after();
 
             return this.editedCus;
 

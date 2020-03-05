@@ -48,7 +48,7 @@ public class ReplaceMethodGenerator extends NodeGenerator {
 
         final BlockStmt body = replaceNodeMethod.getBody().get();
 
-        body.addStatement("if (node == null) return false;");
+        body.addStatement("if (node == null) { return false; }");
 
         for (PropertyMetaModel property : nodeMetaModel.getDeclaredPropertyMetaModels()) {
             if (!property.isNode()) {

@@ -31,6 +31,7 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -59,27 +60,29 @@ public abstract class VisitorGenerator extends AbstractGenerator {
         this.createMissingVisitMethods = createMissingVisitMethods;
     }
 
-    public final List<CompilationUnit> generate() throws Exception {
+    @Override
+    public final List<CompilationUnit> generate() {
         Log.info("Running %s", () -> this.getClass().getSimpleName());
 
-        final CompilationUnit compilationUnit = this.sourceRoot.tryToParse(this.pkg, this.visitorClassName + ".java").getResult().get();
+        try {
+            final CompilationUnit compilationUnit = this.sourceRoot.tryToParse(this.pkg, this.visitorClassName + ".java").getResult().get();
 
-        Optional<ClassOrInterfaceDeclaration> visitorClassOptional = compilationUnit.getClassByName(this.visitorClassName);
-        if (!visitorClassOptional.isPresent()) {
-            visitorClassOptional = compilationUnit.getInterfaceByName(this.visitorClassName);
+            Optional<ClassOrInterfaceDeclaration> visitorClassOptional = compilationUnit.getClassByName(this.visitorClassName);
+            if (!visitorClassOptional.isPresent()) {
+                visitorClassOptional = compilationUnit.getInterfaceByName(this.visitorClassName);
+            }
+            final ClassOrInterfaceDeclaration visitorClass = visitorClassOptional.get();
+
+            JavaParserMetaModel.getNodeMetaModels().stream()
+                    .filter((baseNodeMetaModel) -> !baseNodeMetaModel.isAbstract())
+                    .forEach(node -> this.generateVisitMethodForNode(node, visitorClass, compilationUnit));
+            this.after();
+
+            return Collections.singletonList(compilationUnit);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error parsing the file -- IOException (see stack trace for details)", e);
         }
-        final ClassOrInterfaceDeclaration visitorClass = visitorClassOptional.get();
-
-        JavaParserMetaModel.getNodeMetaModels().stream()
-                .filter((baseNodeMetaModel) -> !baseNodeMetaModel.isAbstract())
-                .forEach(node -> this.generateVisitMethodForNode(node, visitorClass, compilationUnit));
-        this.after();
-
-        return Collections.singletonList(compilationUnit);
-    }
-
-    protected void after() throws Exception {
-
     }
 
     private void generateVisitMethodForNode(BaseNodeMetaModel node, ClassOrInterfaceDeclaration visitorClass, CompilationUnit compilationUnit) {

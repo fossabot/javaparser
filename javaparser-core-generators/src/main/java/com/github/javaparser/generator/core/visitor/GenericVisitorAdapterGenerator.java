@@ -49,7 +49,7 @@ public class GenericVisitorAdapterGenerator extends VisitorGenerator {
 
         body.addStatement("R result;");
 
-        final String resultCheck = "if (result != null) return result;";
+        final String resultCheck = "if (result != null) { return result; }";
 
         for (PropertyMetaModel field : node.getAllPropertyMetaModels()) {
             final String getter = field.getGetterMethodName() + "()";
