@@ -51,7 +51,7 @@ public class VoidVisitorAdapterGenerator extends VisitorGenerator {
             final String getter = field.getGetterMethodName() + "()";
             if (field.getNodeReference().isPresent()) {
                 if (field.isOptional() && field.isNodeList()) {
-                    body.addStatement(f("n.%s.ifPresent( l -> l.forEach( v -> v.accept(this, arg)));", getter));
+                    body.addStatement(f("n.%s.ifPresent(l -> l.forEach(v -> v.accept(this, arg)));", getter));
                 } else if (field.isOptional()) {
                     body.addStatement(f("n.%s.ifPresent(l -> l.accept(this, arg));", getter));
                 } else if (field.isNodeList()) {
