@@ -55,13 +55,12 @@ public class CoreGenerator {
 //                                .setAttributeComments(false)
 //                                .setLexicalPreservationEnabled(true)
             ;
-
-    protected final List<SourceRoot> sourceRoots;
     private final SourceRoot jpCoreSourceRoot;
     private final SourceRoot jssLogicSourceRoot;
     private final SourceRoot jssModelSourceRoot;
     private final SourceRoot jssSourceRoot;
     private final SourceRoot generatedJavaCcSourceRoot;
+    protected final List<SourceRoot> sourceRoots;
     public static final String GENERATOR_INIT_TIMESTAMP = String.valueOf(System.currentTimeMillis()) + "L";
 
 

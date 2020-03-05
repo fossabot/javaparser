@@ -36,6 +36,7 @@ import com.github.javaparser.generator.AbstractGenerator;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,6 +44,7 @@ import java.util.List;
  * Generates the TokenKind enum from {@link com.github.javaparser.GeneratedJavaParserConstants}
  */
 public class TokenKindGenerator extends AbstractGenerator {
+
     private final SourceRoot generatedJavaCcSourceRoot;
 
     public TokenKindGenerator(SourceRoot sourceRoot, SourceRoot generatedJavaCcSourceRoot) {
@@ -52,19 +54,19 @@ public class TokenKindGenerator extends AbstractGenerator {
 
     @Override
     public List<CompilationUnit> generate() {
-        Log.info("Running %s", () -> getClass().getSimpleName());
-        
-        final CompilationUnit javaTokenCu = sourceRoot.parse("com.github.javaparser", "JavaToken.java");
+        Log.info("Running %s", () -> this.getClass().getSimpleName());
+
+        final CompilationUnit javaTokenCu = this.sourceRoot.parse("com.github.javaparser", "JavaToken.java");
         final ClassOrInterfaceDeclaration javaToken = javaTokenCu.getClassByName("JavaToken").orElseThrow(() -> new AssertionError("Can't find class in java file."));
         final EnumDeclaration kindEnum = javaToken.findFirst(EnumDeclaration.class, e -> e.getNameAsString().equals("Kind")).orElseThrow(() -> new AssertionError("Can't find class in java file."));
 
         kindEnum.getEntries().clear();
-        annotateGenerated(kindEnum);
+        this.annotateGenerated(kindEnum);
 
         final SwitchStmt valueOfSwitch = kindEnum.findFirst(SwitchStmt.class).orElseThrow(() -> new AssertionError("Can't find valueOf switch."));
         valueOfSwitch.findAll(SwitchEntry.class).stream().filter(e -> e.getLabels().isNonEmpty()).forEach(Node::remove);
 
-        final CompilationUnit constantsCu = generatedJavaCcSourceRoot.parse("com.github.javaparser", "GeneratedJavaParserConstants.java");
+        final CompilationUnit constantsCu = this.generatedJavaCcSourceRoot.parse("com.github.javaparser", "GeneratedJavaParserConstants.java");
         final ClassOrInterfaceDeclaration constants = constantsCu.getInterfaceByName("GeneratedJavaParserConstants").orElseThrow(() -> new AssertionError("Can't find class in java file."));
         for (BodyDeclaration<?> member : constants.getMembers()) {
             member.toFieldDeclaration()
@@ -76,12 +78,15 @@ public class TokenKindGenerator extends AbstractGenerator {
                     .ifPresent(var -> {
                         final String name = var.getNameAsString();
                         final IntegerLiteralExpr kind = var.getInitializer().get().asIntegerLiteralExpr();
-                        generateEnumEntry(kindEnum, name, kind);
-                        generateValueOfEntry(valueOfSwitch, name, kind);
+                        this.generateEnumEntry(kindEnum, name, kind);
+                        this.generateValueOfEntry(valueOfSwitch, name, kind);
                     });
         }
 
-        return Collections.emptyList();
+        ArrayList<CompilationUnit> touchedCus = new ArrayList<>();
+        touchedCus.add(javaTokenCu);
+
+        return touchedCus;
     }
 
     private void generateValueOfEntry(SwitchStmt valueOfSwitch, String name, IntegerLiteralExpr kind) {

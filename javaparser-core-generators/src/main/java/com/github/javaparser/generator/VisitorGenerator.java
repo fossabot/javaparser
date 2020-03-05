@@ -43,6 +43,7 @@ import static com.github.javaparser.ast.Modifier.Keyword.PUBLIC;
  * and will ask you to fill in the bodies of the visit methods.
  */
 public abstract class VisitorGenerator extends AbstractGenerator {
+
     private final String pkg;
     private final String visitorClassName;
     private final String returnType;
@@ -59,22 +60,22 @@ public abstract class VisitorGenerator extends AbstractGenerator {
     }
 
     public final List<CompilationUnit> generate() throws Exception {
-        Log.info("Running %s", () -> getClass().getSimpleName());
+        Log.info("Running %s", () -> this.getClass().getSimpleName());
 
-        final CompilationUnit compilationUnit = sourceRoot.tryToParse(pkg, visitorClassName + ".java").getResult().get();
+        final CompilationUnit compilationUnit = this.sourceRoot.tryToParse(this.pkg, this.visitorClassName + ".java").getResult().get();
 
-        Optional<ClassOrInterfaceDeclaration> visitorClassOptional = compilationUnit.getClassByName(visitorClassName);
+        Optional<ClassOrInterfaceDeclaration> visitorClassOptional = compilationUnit.getClassByName(this.visitorClassName);
         if (!visitorClassOptional.isPresent()) {
-            visitorClassOptional = compilationUnit.getInterfaceByName(visitorClassName);
+            visitorClassOptional = compilationUnit.getInterfaceByName(this.visitorClassName);
         }
         final ClassOrInterfaceDeclaration visitorClass = visitorClassOptional.get();
 
         JavaParserMetaModel.getNodeMetaModels().stream()
                 .filter((baseNodeMetaModel) -> !baseNodeMetaModel.isAbstract())
-                .forEach(node -> generateVisitMethodForNode(node, visitorClass, compilationUnit));
-        after();
+                .forEach(node -> this.generateVisitMethodForNode(node, visitorClass, compilationUnit));
+        this.after();
 
-        return Collections.emptyList();
+        return Collections.singletonList(compilationUnit);
     }
 
     protected void after() throws Exception {
@@ -88,20 +89,20 @@ public abstract class VisitorGenerator extends AbstractGenerator {
                 .findFirst();
 
         if (existingVisitMethod.isPresent()) {
-            annotateGenerated(existingVisitMethod.get());
-            generateVisitMethodBody(node, existingVisitMethod.get(), compilationUnit);
-        } else if (createMissingVisitMethods) {
+            this.generateVisitMethodBody(node, existingVisitMethod.get(), compilationUnit);
+            this.annotateGenerated(existingVisitMethod.get());
+        } else if (this.createMissingVisitMethods) {
             MethodDeclaration newVisitMethod = visitorClass.addMethod("visit")
                     .addParameter(node.getTypeNameGenerified(), "n")
-                    .addParameter(argumentType, "arg")
-                    .setType(returnType);
-            annotateGenerated(newVisitMethod);
+                    .addParameter(this.argumentType, "arg")
+                    .setType(this.returnType);
             if (!visitorClass.isInterface()) {
                 newVisitMethod
                         .addAnnotation(new MarkerAnnotationExpr(new Name("Override")))
                         .addModifier(PUBLIC);
             }
-            generateVisitMethodBody(node, newVisitMethod, compilationUnit);
+            this.generateVisitMethodBody(node, newVisitMethod, compilationUnit);
+            this.annotateGenerated(newVisitMethod);
         }
     }
 

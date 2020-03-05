@@ -44,8 +44,8 @@ public class BndGenerator extends AbstractGenerator {
 
     @Override
     public List<CompilationUnit> generate() throws IOException {
-        Log.info("Running %s", () -> getClass().getSimpleName());
-        Path root = sourceRoot.getRoot();
+        Log.info("Running %s", () -> this.getClass().getSimpleName());
+        Path root = this.sourceRoot.getRoot();
         Path projectRoot = root.getParent().getParent().getParent();
         String lineSeparator = System.getProperty("line.separator");
         String packagesList = Files.walk(root)
@@ -54,7 +54,7 @@ public class BndGenerator extends AbstractGenerator {
                 .distinct()
                 .sorted()
                 .reduce(null, (packageList, packageName) ->
-                        concatPackageName(packageName, packageList, lineSeparator));
+                        this.concatPackageName(packageName, packageList, lineSeparator));
         Path output = projectRoot.resolve("bnd.bnd");
         try(Writer writer = Files.newBufferedWriter(output)) {
             Path templateFile = projectRoot.resolve("bnd.bnd.template");
