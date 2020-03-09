@@ -47,7 +47,7 @@ public class CoreGenerator {
             .setLanguageLevel(RAW)
 //                                .setStoreTokens(false)
 //                                .setAttributeComments(false)
-//                                .setLexicalPreservationEnabled(true)
+                                .setLexicalPreservationEnabled(true)
             ;
 
     public static void main(String[] args) throws Exception {
