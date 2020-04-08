@@ -143,12 +143,12 @@ public final class JavaParser {
         final GeneratedJavaParser parser = getParserForProvider(provider);
         try {
             N resultNode = start.parse(parser);
-//            eventContext.setAttribute("resultNode", resultNode);
+            eventContext.setAttribute("resultNode", resultNode);
 //            eventContext.setAttribute("resultNodeTokenRange", resultNode.getTokenRange().get().iterator().toString());
 
             List<JavaToken> tokens = StreamSupport.stream(resultNode.getTokenRange().get().spliterator(), false).collect(Collectors.toList());
 //            eventContext.setAttribute("resultNodeTokens", tokens.stream().map(JavaToken::toString).collect(Collectors.joining("\n")));
-            eventContext.setAttribute("resultNodeTokens", tokens);
+//            eventContext.setAttribute("resultNodeTokens", tokens);
 
 
             ParseResult<N> result = new ParseResult<>(resultNode, parser.problems, parser.getCommentsCollection());

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
@@ -20,7 +21,7 @@ public class EventContext {
     public EventContext(String message) {
         this.message = message;
         this.logEntries = new ArrayList<>();
-        this.attributes = new HashMap<>();
+        this.attributes = new TreeMap<>(); // TreeMap, so that the keys are sorted (thus printed) in order
     }
 
     public void addLogEntry(LogEntry logEntry) {
