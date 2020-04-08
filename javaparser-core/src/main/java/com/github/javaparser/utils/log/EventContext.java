@@ -14,11 +14,11 @@ public class EventContext {
     private Instant endTimestamp;
 
     private List<LogEntry> logEntries;
-    private Map<String, Object> properties;
+    private Map<String, Object> attributes;
 
     public EventContext() {
         this.logEntries = new ArrayList<>();
-        this.properties = new HashMap<>();
+        this.attributes = new HashMap<>();
     }
 
     public void addLogEntry(LogEntry logEntry) {
@@ -30,12 +30,12 @@ public class EventContext {
         this.endTimestamp = Instant.now();
     }
 
-    public Object getProperty(String key) {
-        return this.properties.get(key);
+    public Object getAttribute(String key) {
+        return this.attributes.get(key);
     }
 
-    public void setProperty(String key, Object value) {
-        this.properties.put(key, value);
+    public void setAttribute(String key, Object value) {
+        this.attributes.put(key, value);
     }
 
     public void start() {

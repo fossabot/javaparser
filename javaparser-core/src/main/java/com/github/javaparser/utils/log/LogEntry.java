@@ -4,6 +4,10 @@ import java.time.Instant;
 
 public class LogEntry {
 
+    public enum LogLevel {
+        TRACE, DEBUG, INFO, WARN, ERROR
+    }
+
     private final Instant timestamp;
     private final LogLevel logLevel;
     private final String message;
@@ -34,10 +38,6 @@ public class LogEntry {
 
     public Throwable getThrowable() {
         return throwable;
-    }
-
-    public enum LogLevel {
-        TRACE, DEBUG, INFO, WARN, ERROR
     }
 
     @Override
