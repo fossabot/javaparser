@@ -342,4 +342,21 @@ public class ParserConfiguration {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "ParserConfiguration{" +
+                "storeTokens=" + storeTokens +
+                ", attributeComments=" + attributeComments +
+                ", characterEncoding=" + characterEncoding +
+                ", doNotAssignCommentsPrecedingEmptyLines=" + doNotAssignCommentsPrecedingEmptyLines +
+                ", ignoreAnnotationsWhenAttributingComments=" + ignoreAnnotationsWhenAttributingComments +
+                ", languageLevel=" + languageLevel +
+                ", lexicalPreservationEnabled=" + lexicalPreservationEnabled +
+                ", preprocessUnicodeEscapes=" + preprocessUnicodeEscapes +
+                ", preProcessors (count) =" + preProcessors.size() +
+                ", postProcessors (count) =" + postProcessors.size() +
+                ", symbolResolver=" + symbolResolver +
+                ", tabSize=" + tabSize +
+                '}';
+    }
 }

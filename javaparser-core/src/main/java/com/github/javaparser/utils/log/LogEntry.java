@@ -42,11 +42,17 @@ public class LogEntry {
 
     @Override
     public String toString() {
-        return "LogEntry{" +
-                "timestamp=" + timestamp +
-                ", logLevel=" + logLevel +
-                ", message='" + message + '\'' +
-                ", throwable=" + throwable +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(timestamp);
+        sb.append(" [").append(logLevel).append("]");
+        sb.append(": ");
+        sb.append(message);
+
+        if (throwable != null) {
+            sb.append(", caused by: ");
+            sb.append(throwable);
+        }
+
+        return sb.toString();
     }
 }

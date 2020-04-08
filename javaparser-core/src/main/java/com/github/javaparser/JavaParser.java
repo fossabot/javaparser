@@ -29,7 +29,11 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.TypeDeclaration;
-import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.modules.ModuleDeclaration;
 import com.github.javaparser.ast.modules.ModuleDirective;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -38,10 +42,19 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
+import com.github.javaparser.utils.log.EventContext;
+import com.github.javaparser.utils.log.LogEntry;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.github.javaparser.ParseStart.*;
 import static com.github.javaparser.Problem.PROBLEM_BY_BEGIN_POSITION;
@@ -114,6 +127,15 @@ public final class JavaParser {
         assertNotNull(start);
         assertNotNull(provider);
 
+        EventContext eventContext = new EventContext("Parsing");
+        eventContext.setAttribute("start", start);
+        eventContext.setAttribute("provider", provider);
+        eventContext.setAttribute("configuration", configuration);
+
+        eventContext.start();
+        eventContext.addLogEntry(new LogEntry(LogEntry.LogLevel.TRACE, "Starting"));
+
+        eventContext.addLogEntry(new LogEntry(LogEntry.LogLevel.TRACE, "Running " + configuration.getPreProcessors().size() + " preprocessors."));
         for (PreProcessor preProcessor : configuration.getPreProcessors()) {
             provider = preProcessor.process(provider);
         }
@@ -121,7 +143,16 @@ public final class JavaParser {
         final GeneratedJavaParser parser = getParserForProvider(provider);
         try {
             N resultNode = start.parse(parser);
+//            eventContext.setAttribute("resultNode", resultNode);
+//            eventContext.setAttribute("resultNodeTokenRange", resultNode.getTokenRange().get().iterator().toString());
+
+            List<JavaToken> tokens = StreamSupport.stream(resultNode.getTokenRange().get().spliterator(), false).collect(Collectors.toList());
+//            eventContext.setAttribute("resultNodeTokens", tokens.stream().map(JavaToken::toString).collect(Collectors.joining("\n")));
+            eventContext.setAttribute("resultNodeTokens", tokens);
+
+
             ParseResult<N> result = new ParseResult<>(resultNode, parser.problems, parser.getCommentsCollection());
+            eventContext.setAttribute("parseResult", result);
 
             configuration.getPostProcessors().forEach(postProcessor ->
                     postProcessor.process(result, configuration));
@@ -132,10 +163,14 @@ public final class JavaParser {
         } catch (Exception e) {
             final String message = e.getMessage() == null ? "Unknown error" : e.getMessage();
             parser.problems.add(new Problem(message, null, e));
+
+            eventContext.addLogEntry(new LogEntry(LogEntry.LogLevel.ERROR, message));
             return new ParseResult<>(null, parser.problems, parser.getCommentsCollection());
         } finally {
             try {
                 provider.close();
+                eventContext.end();
+                System.out.println(eventContext.toString());
             } catch (IOException e) {
                 // Since we're done parsing and have our result, we don't care about any errors.
             }
