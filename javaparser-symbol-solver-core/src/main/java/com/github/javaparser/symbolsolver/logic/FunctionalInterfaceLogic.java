@@ -72,7 +72,7 @@ public final class FunctionalInterfaceLogic {
         } else if (methods.size() > 1) {
             // Multiple matches - must disambiguate / select the "most appropriate" per JLS ....
             methods.forEach(methodUsage -> System.out.println("methodUsage = " + methodUsage));
-            throw new UnsupportedOperationException("TODO: Not yet implemented.");
+            throw new UnsupportedOperationException("FIXME/TODO: Not yet implemented -- Expected only a single method in a functional interface.");
         } else {
             // No matches - return empty
             return Optional.empty();
