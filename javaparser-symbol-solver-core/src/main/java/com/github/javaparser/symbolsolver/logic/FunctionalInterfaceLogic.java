@@ -71,6 +71,7 @@ public final class FunctionalInterfaceLogic {
             return Optional.of(methods.iterator().next());
         } else if (methods.size() > 1) {
             // Multiple matches - must disambiguate / select the "most appropriate" per JLS ....
+            methods.forEach(methodUsage -> System.out.println("methodUsage = " + methodUsage));
             throw new UnsupportedOperationException("TODO: Not yet implemented.");
         } else {
             // No matches - return empty

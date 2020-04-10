@@ -22,6 +22,7 @@
 package com.github.javaparser.symbolsolver.javaparsermodel;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -31,6 +32,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import com.github.javaparser.resolution.MethodUsage;
 import com.github.javaparser.resolution.UnsolvedSymbolException;
@@ -38,6 +40,7 @@ import com.github.javaparser.resolution.declarations.ResolvedClassDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import com.github.javaparser.resolution.types.ResolvedArrayType;
 import com.github.javaparser.resolution.types.ResolvedPrimitiveType;
 import com.github.javaparser.resolution.types.ResolvedType;
@@ -158,7 +161,7 @@ public class TypeExtractor extends DefaultVisitorAdapter {
     @Override
     public ResolvedType visit(ClassExpr node, Boolean solveLambdas) {
         // This implementation does not regard the actual type argument of the ClassExpr.
-        com.github.javaparser.ast.type.Type astType = node.getType();
+        Type astType = node.getType();
         ResolvedType jssType = facade.convertToUsage(astType, node.getType());
         return new ReferenceTypeImpl(new ReflectionClassDeclaration(Class.class, typeSolver), ImmutableList.of(jssType), typeSolver);
     }
@@ -225,7 +228,7 @@ public class TypeExtractor extends DefaultVisitorAdapter {
         Optional<Value> value = Optional.empty();
         try {
             value = new SymbolSolver(typeSolver).solveSymbolAsValue(node.getName().getId(), node);
-        } catch (com.github.javaparser.resolution.UnsolvedSymbolException use) {
+        } catch (UnsolvedSymbolException use) {
             // This node may have a package name as part of its fully qualified name.
             // We should solve for the type declaration inside this package.
             SymbolReference<ResolvedReferenceTypeDeclaration> sref = typeSolver.tryToSolveType(node.toString());
@@ -236,7 +239,7 @@ public class TypeExtractor extends DefaultVisitorAdapter {
         if (value.isPresent()) {
             return value.get().getType();
         }
-        throw new com.github.javaparser.resolution.UnsolvedSymbolException(node.getName().getId());
+        throw new UnsolvedSymbolException(node.getName().getId());
     }
 
     @Override
@@ -298,7 +301,7 @@ public class TypeExtractor extends DefaultVisitorAdapter {
         Log.trace("getType on name expr %s", ()-> node);
         Optional<Value> value = new SymbolSolver(typeSolver).solveSymbolAsValue(node.getName().getId(), node);
         if (!value.isPresent()) {
-            throw new com.github.javaparser.resolution.UnsolvedSymbolException("Solving " + node, node.getName().getId());
+            throw new UnsolvedSymbolException("Solving " + node, node.getName().getId());
         } else {
             return value.get().getType();
         }
@@ -307,13 +310,13 @@ public class TypeExtractor extends DefaultVisitorAdapter {
     @Override
     public ResolvedType visit(TypeExpr node, Boolean solveLambdas) {
         Log.trace("getType on type expr %s", ()-> node);
-        if (!(node.getType() instanceof com.github.javaparser.ast.type.ClassOrInterfaceType)) {
+        if (!(node.getType() instanceof ClassOrInterfaceType)) {
             throw new UnsupportedOperationException(node.getType().getClass().getCanonicalName());
         }
         ClassOrInterfaceType classOrInterfaceType = (ClassOrInterfaceType) node.getType();
         SymbolReference<ResolvedTypeDeclaration> typeDeclarationSymbolReference = JavaParserFactory.getContext(classOrInterfaceType, typeSolver).solveType(classOrInterfaceType.getName().getId());
         if (!typeDeclarationSymbolReference.isSolved()) {
-            throw new com.github.javaparser.resolution.UnsolvedSymbolException("Solving " + node, classOrInterfaceType.getName().getId());
+            throw new UnsolvedSymbolException("Solving " + node, classOrInterfaceType.getName().getId());
         } else {
             return new ReferenceTypeImpl(typeDeclarationSymbolReference.getCorrespondingDeclaration().asReferenceType(), typeSolver);
         }
@@ -388,14 +391,15 @@ public class TypeExtractor extends DefaultVisitorAdapter {
 
     @Override
     public ResolvedType visit(LambdaExpr node, Boolean solveLambdas) {
-        if (demandParentNode(node) instanceof MethodCallExpr) {
-            MethodCallExpr callExpr = (MethodCallExpr) demandParentNode(node);
+        final Node parentNode = demandParentNode(node);
+        if (parentNode instanceof MethodCallExpr) {
+            MethodCallExpr callExpr = (MethodCallExpr) parentNode;
             int pos = JavaParserSymbolDeclaration.getParamPos(node);
             SymbolReference<ResolvedMethodDeclaration> refMethod = facade.solve(callExpr);
             if (!refMethod.isSolved()) {
-                throw new com.github.javaparser.resolution.UnsolvedSymbolException(demandParentNode(node).toString(), callExpr.getName().getId());
+                throw new UnsolvedSymbolException(parentNode.toString(), callExpr.getName().getId());
             }
-            Log.trace("getType on lambda expr %s", ()-> refMethod.getCorrespondingDeclaration().getName());
+            Log.trace("getType on lambda expr (parent: VariableDeclarator) %s", ()-> refMethod.getCorrespondingDeclaration().getName());
             if (solveLambdas) {
 
                 // The type parameter referred here should be the java.util.stream.Stream.T
@@ -492,6 +496,86 @@ public class TypeExtractor extends DefaultVisitorAdapter {
             } else {
                 return refMethod.getCorrespondingDeclaration().getParam(pos).getType();
             }
+        } else if (parentNode instanceof VariableDeclarator) {
+            VariableDeclarator variableDeclarator = (VariableDeclarator) parentNode;
+            SymbolReference<? extends ResolvedValueDeclaration> resolvedVariableDeclaratorName = facade.solve(variableDeclarator.getName());
+            if (!resolvedVariableDeclaratorName.isSolved()) {
+                throw new UnsolvedSymbolException(parentNode.toString(), variableDeclarator.getName().getId());
+            }
+            Log.trace("getType on lambda expr (parent: VariableDeclarator) %s", ()-> resolvedVariableDeclaratorName.getCorrespondingDeclaration().getType());
+            Log.trace("getType on lambda expr (parent: VariableDeclarator) %s", ()-> resolvedVariableDeclaratorName.getCorrespondingDeclaration().getName());
+            if (solveLambdas) {
+
+                // The type parameter referred here should be the java.util.stream.Stream.T
+                ResolvedType result = resolvedVariableDeclaratorName.getCorrespondingDeclaration().getType();
+
+
+                // We need to replace the type variables
+                Context ctx = JavaParserFactory.getContext(node, typeSolver);
+                result = solveGenericTypes(result, ctx);
+
+                //We should find out which is the functional method (e.g., apply) and replace the params of the
+                //solveLambdas with it, to derive so the values. We should also consider the value returned by the
+                //lambdas
+                Optional<MethodUsage> functionalMethod = FunctionalInterfaceLogic.getFunctionalMethod(result);
+                if (functionalMethod.isPresent()) {
+                    LambdaExpr lambdaExpr = node;
+
+                    InferenceContext lambdaCtx = new InferenceContext(MyObjectProvider.INSTANCE);
+                    InferenceContext funcInterfaceCtx = new InferenceContext(MyObjectProvider.INSTANCE);
+
+                    // At this point parameterType
+                    // if Function<T=? super Stream.T, ? extends map.R>
+                    // we should replace Stream.T
+                    ResolvedType functionalInterfaceType = ReferenceTypeImpl.undeterminedParameters(functionalMethod.get().getDeclaration().declaringType(), typeSolver);
+
+                    lambdaCtx.addPair(result, functionalInterfaceType);
+
+                    ResolvedType actualType;
+
+                    if (lambdaExpr.getBody() instanceof ExpressionStmt) {
+                        actualType = facade.getType(((ExpressionStmt) lambdaExpr.getBody()).getExpression());
+                    } else if (lambdaExpr.getBody() instanceof BlockStmt) {
+                        BlockStmt blockStmt = (BlockStmt) lambdaExpr.getBody();
+
+                        // Get all the return statements in the lambda block
+                        List<ReturnStmt> returnStmts = blockStmt.findAll(ReturnStmt.class);
+
+                        if (returnStmts.size() > 0) {
+                            actualType = returnStmts.stream()
+                                    .map(returnStmt -> returnStmt.getExpression().map(e -> facade.getType(e)).orElse(ResolvedVoidType.INSTANCE))
+                                    .filter(x -> x != null && !x.isVoid() && !x.isNull())
+                                    .findFirst()
+                                    .orElse(ResolvedVoidType.INSTANCE);
+
+                        } else {
+                            return ResolvedVoidType.INSTANCE;
+                        }
+
+
+                    } else {
+                        throw new UnsupportedOperationException();
+                    }
+
+                    ResolvedType formalType = functionalMethod.get().returnType();
+
+                    // Infer the functional interfaces' return vs actual type
+                    funcInterfaceCtx.addPair(formalType, actualType);
+                    // Substitute to obtain a new type
+                    ResolvedType functionalTypeWithReturn = funcInterfaceCtx.resolve(funcInterfaceCtx.addSingle(functionalInterfaceType));
+
+                    // if the functional method returns void anyway
+                    // we don't need to bother inferring types
+                    if (!(formalType instanceof ResolvedVoidType)) {
+                        lambdaCtx.addPair(result, functionalTypeWithReturn);
+                        result = lambdaCtx.resolve(lambdaCtx.addSingle(result));
+                    }
+                }
+
+                return result;
+            } else {
+                return resolvedVariableDeclaratorName.getCorrespondingDeclaration().getType();
+            }
         } else {
             throw new UnsupportedOperationException("The type of a lambda expr depends on the position and its return value");
         }
@@ -504,7 +588,7 @@ public class TypeExtractor extends DefaultVisitorAdapter {
             int pos = JavaParserSymbolDeclaration.getParamPos(node);
             SymbolReference<ResolvedMethodDeclaration> refMethod = facade.solve(callExpr, false);
             if (!refMethod.isSolved()) {
-                throw new com.github.javaparser.resolution.UnsolvedSymbolException(demandParentNode(node).toString(), callExpr.getName().getId());
+                throw new UnsolvedSymbolException(demandParentNode(node).toString(), callExpr.getName().getId());
             }
             Log.trace("getType on method reference expr %s", ()-> refMethod.getCorrespondingDeclaration().getName());
             if (solveLambdas) {
