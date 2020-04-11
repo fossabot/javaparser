@@ -229,6 +229,8 @@ public class Issue2595Test {
                 "\n" +
                 "public class Test {\n" +
                 "\n" +
+//                "    ClassMetric<Integer> fdp = (String c) -> {\n" +
+//                "    ClassMetric<Integer> fdp = (c) -> {\n" +
                 "    ClassMetric<Integer> fdp = c -> {\n" +
                 "        List<String> classFieldNames = getAllClassFieldNames(c);\n" +
                 "        return classFieldNames.size();\n" +
@@ -291,6 +293,14 @@ public class Issue2595Test {
         final ArrayList<MethodUsage> firstAncestorDeclaredMethods = new ArrayList<>(firstAncestor.getDeclaredMethods());
         firstAncestorDeclaredMethods.sort((o1, o2) -> o1.getQualifiedSignature().compareToIgnoreCase(o2.getQualifiedSignature()));
         assertEquals(4, firstAncestorDeclaredMethods.size());
+
+/*
+        ResolvedType x = firstAncestorTypeParameters.replaceAll(firstAncestor);
+        final ArrayList<MethodUsage> methodUsages = new ArrayList<>(x.asReferenceType().getDeclaredMethods());
+        methodUsages.sort((o1, o2) -> o1.getQualifiedSignature().compareToIgnoreCase(o2.getQualifiedSignature()));
+        assertEquals("java.lang.String", methodUsages.get(1).returnType().describe(), "FIXME");
+*/
+
 
 //        System.out.println("firstAncestor.describe() = " + firstAncestor.describe());
 //        ResolvedType x = firstAncestorTypeParameters.replaceAll(firstAncestor);
