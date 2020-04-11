@@ -106,11 +106,13 @@ public final class FunctionalInterfaceLogic {
         return getFunctionalMethod(type).isPresent();
     }
 
-    private static String getSignature(Method m) {
+    // FIXME: Temporarily public for testing
+    public static String getSignature(Method m) {
         return String.format("%s(%s)", m.getName(), String.join(", ", Arrays.stream(m.getParameters()).map(p -> toSignature(p)).collect(Collectors.toList())));
     }
 
-    private static String toSignature(Parameter p) {
+    // FIXME: Temporarily public for testing
+    public static String toSignature(Parameter p) {
         return p.getType().getCanonicalName();
     }
 

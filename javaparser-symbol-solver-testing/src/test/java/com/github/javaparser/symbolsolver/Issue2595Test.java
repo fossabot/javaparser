@@ -8,8 +8,14 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.resolution.MethodUsage;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import com.github.javaparser.resolution.types.ResolvedType;
+import com.github.javaparser.resolution.types.parametrization.ResolvedTypeParametersMap;
+import com.github.javaparser.symbolsolver.logic.FunctionalInterfaceLogic;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
@@ -18,9 +24,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.github.javaparser.Providers.provider;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -238,7 +250,108 @@ public class Issue2595Test {
                 "\n" +
                 "";
 
-        parse(sourceCode);
+//        parse(sourceCode);
+        CompilationUnit cu = getCu(sourceCode);
+
+        List<FieldDeclaration> fields = cu.findAll(FieldDeclaration.class);
+        assumeTrue(fields.size() == 1);
+
+        FieldDeclaration field = fields.get(0);
+        final Type commonType = field.getCommonType();
+        assertEquals("ClassMetric<Integer>", commonType.asString());
+
+        ResolvedType resolvedType = commonType.resolve();
+        assertTrue(resolvedType.isReferenceType());
+
+        ResolvedReferenceType resolvedReferenceType = resolvedType.asReferenceType();
+        assertEquals("Test.ClassMetric<java.lang.Integer>", resolvedReferenceType.describe());
+        assertEquals(1, resolvedReferenceType.typeParametersValues().size());
+
+        List<ResolvedReferenceType> allAncestors = resolvedReferenceType.getAllAncestors();
+        assertEquals(2, allAncestors.size());
+
+        List<MethodUsage> declaredMethods_ClassMetric = new ArrayList<>(resolvedReferenceType.getDeclaredMethods());
+        assertEquals(1, declaredMethods_ClassMetric.size());
+        assertEquals("Test.ClassMetric.apply(java.lang.String)", declaredMethods_ClassMetric.get(0).getQualifiedSignature());
+//        assertEquals("java.lang.Integer", declaredMethods_ClassMetric.get(0).returnType().describe(), "FIXME: UNSURE HOW TO GET THIS TO RETURN WHAT HAS BEEN GIVEN VIA TYPE PARAMETER");
+
+        ResolvedReferenceType firstAncestor = allAncestors.get(0);
+        assertEquals("java.util.function.Function<java.lang.String, java.lang.Integer>", firstAncestor.describe());
+
+        ResolvedTypeParametersMap firstAncestorTypeParameters = firstAncestor.typeParametersMap();
+        assertEquals(2, firstAncestorTypeParameters.getNames().size());
+        assertEquals(2, firstAncestorTypeParameters.getTypes().size());
+
+        assertEquals("java.util.function.Function.R", firstAncestorTypeParameters.getNames().get(0));
+        assertEquals("java.util.function.Function.T", firstAncestorTypeParameters.getNames().get(1));
+
+        assertEquals("java.lang.Integer", firstAncestorTypeParameters.getTypes().get(0).describe());
+        assertEquals("java.lang.String", firstAncestorTypeParameters.getTypes().get(1).describe());
+
+        final ArrayList<MethodUsage> firstAncestorDeclaredMethods = new ArrayList<>(firstAncestor.getDeclaredMethods());
+        firstAncestorDeclaredMethods.sort((o1, o2) -> o1.getQualifiedSignature().compareToIgnoreCase(o2.getQualifiedSignature()));
+        assertEquals(4, firstAncestorDeclaredMethods.size());
+
+//        System.out.println("firstAncestor.describe() = " + firstAncestor.describe());
+//        ResolvedType x = firstAncestorTypeParameters.replaceAll(firstAncestor);
+//        System.out.println("x.describe() = " + x.describe());
+
+//        assertEquals("java.util.function.Function.apply(T)", firstAncestorDeclaredMethods.get(1).getQualifiedSignature(), "FIXME");
+        final MethodUsage methodUsage = firstAncestorDeclaredMethods.get(1);
+//        assertEquals("java.lang.String", methodUsage.returnType().describe(), "FIXME");
+
+        final ResolvedType returnType = methodUsage.returnType();
+//        assertEquals("java.util.function.Function.apply(java.lang.String)", methodUsage.getQualifiedSignature(), "FIXME");
+
+        final ResolvedType returnType_replaced = firstAncestorTypeParameters.replaceAll(returnType);  // FIXME: This seems hacky?
+        assertEquals("java.lang.Integer", returnType_replaced.describe());
+
+        ResolvedMethodDeclaration declaration = methodUsage.getDeclaration();
+        assertEquals(1, declaration.getNumberOfParams());
+        ResolvedParameterDeclaration param = declaration.getParam(0);
+
+//        assertEquals("java.lang.String", param.describeType(), "FIXME");
+        ResolvedType param_replaced = firstAncestorTypeParameters.replaceAll(param.getType());
+        assertEquals("java.lang.String", param_replaced.describe());
+
+
+        assertEquals(16, firstAncestor.getAllMethods().size());
+        assertEquals(15, firstAncestor.getAllMethodsVisibleToInheritors().size());
+
+        assertEquals(29, resolvedReferenceType.getAllMethods().size());
+        assertEquals(29, new HashSet<>(resolvedReferenceType.getAllMethods()).size());
+
+        List<String> objectMethodSignatures = Arrays.stream(Object.class.getDeclaredMethods())
+                .map(FunctionalInterfaceLogic::getSignature)
+                .collect(Collectors.toList());
+
+        List<ResolvedMethodDeclaration> nonObjectMethods = resolvedReferenceType.getAllMethods()
+                .stream()
+                .filter(m -> !objectMethodSignatures.contains(m.getSignature()))
+                .collect(Collectors.toList());
+
+        assertEquals(5, nonObjectMethods.size());
+
+        nonObjectMethods.forEach(m -> Log.info(m.getQualifiedSignature() + " : " + m.getReturnType().describe()));
+
+        List<ResolvedMethodDeclaration> nonObjectAbstractMethods = nonObjectMethods.stream()
+                .filter(ResolvedMethodDeclaration::isAbstract)
+                .collect(Collectors.toList());
+
+        assertEquals(1, nonObjectAbstractMethods.size(), "FIXME: This is expected to be a size of one -- issue above with type parameters not propagating to parent classes?");
+
+
+//        List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
+//        assumeFalse(methodCalls.isEmpty());
+//        for (int i = methodCalls.size() - 1; i >= 0; i--) {
+//            MethodCallExpr methodCallExpr = methodCalls.get(i);
+//            Log.info("");
+//            Log.info("[PARSE RESULT] methodCallExpr = " + methodCallExpr);
+//            Log.info("[PARSE RESULT] methodCallExpr.resolve() = " + methodCallExpr.resolve());
+//            Log.info("[PARSE RESULT] methodCallExpr.calculateResolvedType() = " + methodCallExpr.calculateResolvedType());
+//        }
+
+
     }
 
     @Test
