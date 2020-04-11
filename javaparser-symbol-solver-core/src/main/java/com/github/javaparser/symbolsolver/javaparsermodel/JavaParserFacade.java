@@ -343,6 +343,7 @@ public class JavaParserFacade {
     public ResolvedType getType(Node node, boolean solveLambdas) {
         if (solveLambdas) {
             if (!node.containsData(TYPE_WITH_LAMBDAS_RESOLVED)) {
+                Log.trace("About to get the resolved type of node: %s", () -> node.toString());
                 ResolvedType res = getTypeConcrete(node, solveLambdas);
 
                 node.setData(TYPE_WITH_LAMBDAS_RESOLVED, res);

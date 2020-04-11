@@ -30,6 +30,7 @@ import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
 import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
+import com.github.javaparser.utils.Log;
 
 import java.util.Optional;
 
@@ -58,7 +59,9 @@ public class JavaParserFieldDeclaration implements ResolvedFieldDeclaration {
 
     @Override
     public ResolvedType getType() {
-        return JavaParserFacade.get(typeSolver).convert(variableDeclarator.getType(), wrappedNode);
+        final ResolvedType resolvedType = JavaParserFacade.get(typeSolver).convert(variableDeclarator.getType(), wrappedNode);
+        Log.info("Getting type of FieldDeclaration inside %s: %s", () -> wrappedNode.toString().replaceAll("\\n", "\\\\n").replaceAll("\\r", "\\\\r"), () -> resolvedType.describe());
+        return resolvedType;
     }
 
     @Override

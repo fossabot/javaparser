@@ -292,8 +292,9 @@ public class TypeExtractor extends DefaultVisitorAdapter {
         MethodUsage ref = facade.solveMethodAsUsage(node);
         Log.trace("getType on method call %s resolved to %s", ()-> node, ()-> ref);
         Log.trace("getType on method call %s return type is %s", ()-> node, ref::returnType);
-        return ref.returnType();
+
         // the type is the return type of the method
+        return ref.returnType();
     }
 
     @Override
@@ -399,7 +400,8 @@ public class TypeExtractor extends DefaultVisitorAdapter {
             if (!refMethod.isSolved()) {
                 throw new UnsolvedSymbolException(parentNode.toString(), callExpr.getName().getId());
             }
-            Log.trace("getType on lambda expr (parent: VariableDeclarator) %s", ()-> refMethod.getCorrespondingDeclaration().getName());
+            Log.trace("TypeExtractor -- LambdaExpr --(parent: MethodCallExpr) %s", ()-> refMethod.getCorrespondingDeclaration().getReturnType());
+            Log.trace("TypeExtractor -- LambdaExpr --(parent: MethodCallExpr) %s", ()-> refMethod.getCorrespondingDeclaration().getName());
             if (solveLambdas) {
 
                 // The type parameter referred here should be the java.util.stream.Stream.T
@@ -502,8 +504,8 @@ public class TypeExtractor extends DefaultVisitorAdapter {
             if (!resolvedVariableDeclaratorName.isSolved()) {
                 throw new UnsolvedSymbolException(parentNode.toString(), variableDeclarator.getName().getId());
             }
-            Log.trace("getType on lambda expr (parent: VariableDeclarator) %s", ()-> resolvedVariableDeclaratorName.getCorrespondingDeclaration().getType());
-            Log.trace("getType on lambda expr (parent: VariableDeclarator) %s", ()-> resolvedVariableDeclaratorName.getCorrespondingDeclaration().getName());
+            Log.trace("TypeExtractor -- LambdaExpr --(parent: VariableDeclarator) %s", ()-> resolvedVariableDeclaratorName.getCorrespondingDeclaration().getType());
+            Log.trace("TypeExtractor -- LambdaExpr --(parent: VariableDeclarator) %s", ()-> resolvedVariableDeclaratorName.getCorrespondingDeclaration().getName());
             if (solveLambdas) {
 
                 // The type parameter referred here should be the java.util.stream.Stream.T

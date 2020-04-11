@@ -286,6 +286,7 @@ public class JavaParserInterfaceDeclaration extends AbstractTypeDeclaration
                 }
             }
         }
+        // TODO: Can an "InterfaceDeclaration" ever implement a type?
         if (wrappedNode.getImplementedTypes() != null) {
             for (ClassOrInterfaceType implemented : wrappedNode.getImplementedTypes()) {
                 try {
