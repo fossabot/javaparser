@@ -22,7 +22,9 @@
 package com.github.javaparser.symbolsolver.logic;
 
 import com.github.javaparser.resolution.MethodUsage;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
+import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import com.github.javaparser.resolution.types.ResolvedType;
 
 import java.lang.reflect.Method;
@@ -32,7 +34,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Federico Tomassetti
@@ -48,11 +49,34 @@ public final class FunctionalInterfaceLogic {
      */
     public static Optional<MethodUsage> getFunctionalMethod(ResolvedType type) {
         if (type.isReferenceType() && type.asReferenceType().getTypeDeclaration().isInterface()) {
+//            return getFunctionalMethod(type.asReferenceType());
             return getFunctionalMethod(type.asReferenceType().getTypeDeclaration());
         } else {
             return Optional.empty();
         }
     }
+
+//    /**
+//     * Get the functional method defined by the type, if any.
+//     */
+//    public static Optional<MethodUsage> getFunctionalMethod(ResolvedReferenceType resolvedReferenceType) {
+//        //We need to find all abstract methods
+//        // Remove methods inherited by Object:
+//        // Consider the case of Comparator which define equals. It would be considered a functional method.
+//        Set<ResolvedMethodDeclaration> methods = resolvedReferenceType.getAllMethods().stream()
+//                .filter(ResolvedMethodDeclaration::isAbstract)
+//                .filter(resolvedMethodDeclaration -> !declaredOnObject(resolvedMethodDeclaration))
+//                .collect(Collectors.toSet());
+//
+//        if (methods.size() == 1) {
+//            // Only one match - return that
+//            return Optional.of(new MethodUsage(methods.iterator().next()));
+//        } else {
+//            // No matches, or more than one match - return empty
+//            return Optional.empty();
+//        }
+//    }
+
 
     /**
      * Get the functional method defined by the type, if any.
@@ -69,12 +93,8 @@ public final class FunctionalInterfaceLogic {
         if (methods.size() == 1) {
             // Only one match - return that
             return Optional.of(methods.iterator().next());
-        } else if (methods.size() > 1) {
-            // Multiple matches - must disambiguate / select the "most appropriate" per JLS ....
-            methods.forEach(methodUsage -> System.out.println("methodUsage = " + methodUsage));
-            throw new UnsupportedOperationException("FIXME/TODO: Not yet implemented -- Expected only a single method in a functional interface.");
         } else {
-            // No matches - return empty
+            // No matches, or more than one match - return empty
             return Optional.empty();
         }
     }
@@ -101,4 +121,9 @@ public final class FunctionalInterfaceLogic {
     private static boolean declaredOnObject(MethodUsage m) {
         return OBJECT_METHODS_SIGNATURES.contains(m.getDeclaration().getSignature());
     }
+
+//    private static boolean declaredOnObject(ResolvedMethodDeclaration resolvedMethodDeclaration) {
+//        return OBJECT_METHODS_SIGNATURES.contains(resolvedMethodDeclaration.getSignature());
+//    }
+
 }

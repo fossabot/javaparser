@@ -402,8 +402,8 @@ public class TypeExtractor extends DefaultVisitorAdapter {
             }
             Log.trace("TypeExtractor -- LambdaExpr --(parent: MethodCallExpr) %s", ()-> refMethod.getCorrespondingDeclaration().getReturnType());
             Log.trace("TypeExtractor -- LambdaExpr --(parent: MethodCallExpr) %s", ()-> refMethod.getCorrespondingDeclaration().getName());
-            if (solveLambdas) {
 
+            if (solveLambdas) {
                 // The type parameter referred here should be the java.util.stream.Stream.T
                 ResolvedType result = refMethod.getCorrespondingDeclaration().getParam(pos).getType();
 
@@ -433,6 +433,7 @@ public class TypeExtractor extends DefaultVisitorAdapter {
                 }
 
                 // We need to replace the type variables
+//                Context ctx = JavaParserFactory.getContext(node.getParentNode().get(), typeSolver);
                 Context ctx = JavaParserFactory.getContext(node, typeSolver);
                 result = solveGenericTypes(result, ctx);
 
@@ -513,6 +514,7 @@ public class TypeExtractor extends DefaultVisitorAdapter {
 
 
                 // We need to replace the type variables
+//                Context ctx = JavaParserFactory.getContext(node.getParentNode().get(), typeSolver);
                 Context ctx = JavaParserFactory.getContext(node, typeSolver);
                 result = solveGenericTypes(result, ctx);
 
