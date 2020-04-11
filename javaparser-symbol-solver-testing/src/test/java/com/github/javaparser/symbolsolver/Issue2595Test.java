@@ -86,9 +86,9 @@ public class Issue2595Test {
                 "}\n" +
                 "\n" +
                 "@FunctionalInterface\n" +
-                "interface ClassMetric<T> extends Function<String, T> {\n" +
+                "interface ClassMetric<T_CM> extends Function<String, T_CM> {\n" +
                 "    @Override\n" +
-                "    T apply(String c);\n" +
+                "    T_CM apply(String c);\n" +
                 "}\n";
 
         CompilationUnit cu = getCu(sourceCode);
@@ -137,9 +137,9 @@ public class Issue2595Test {
                 "}\n" +
                 "\n" +
 //                "@FunctionalInterface\n" +
-                "interface ClassMetric<T> extends Function<String, T> {\n" +
+                "interface ClassMetric<T_CM> extends Function<String, T_CM> {\n" +
                 "    @Override\n" +
-                "    T apply(String c);\n" +
+                "    T_CM apply(String c);\n" +
                 "}\n";
 
         CompilationUnit cu = getCu(sourceCode);
@@ -229,12 +229,14 @@ public class Issue2595Test {
                 "\n" +
                 "\n" +
                 "    @FunctionalInterface\n" +
-                "    public interface ClassMetric<T> extends Function<String, T> {\n" +
+                "    public interface ClassMetric<T_CM> extends Function<String, T_CM> {\n" +
                 "        @Override\n" +
-                "        T apply(String c);\n" +
+                "        T_CM apply(String c);\n" +
                 "    }\n" +
                 "\n" +
-                "}\n";
+                "}\n" +
+                "\n" +
+                "";
 
         parse(sourceCode);
     }
