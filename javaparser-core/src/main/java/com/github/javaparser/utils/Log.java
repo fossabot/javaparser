@@ -34,18 +34,23 @@ import static com.github.javaparser.utils.CodeGenerationUtils.f;
  * See <a href="http://javaparser.org/javaparsers-logging-framework-in-one-file/">a blog about this</a>
  */
 public class Log {
+
+    public static enum Level {
+        TRACE, INFO, ERROR
+    }
+
     /**
      * This adapter logs to standard out and standard error.
      */
     public static class StandardOutStandardErrorAdapter implements Adapter {
         @Override
         public void info(Supplier<String> messageSupplier) {
-            System.out.println(messageSupplier.get());
+            System.out.println("[" + Level.INFO + "] " + messageSupplier.get());
         }
 
         @Override
         public void trace(Supplier<String> messageSupplier) {
-            System.out.println(messageSupplier.get());
+            System.out.println("[" + Level.TRACE + "] " + messageSupplier.get());
         }
 
         @Override
@@ -53,12 +58,12 @@ public class Log {
             Throwable throwable = throwableSupplier.get();
             String message = messageSupplier.get();
             if (message == null) {
-                System.err.println(throwable.getMessage());
+                System.err.println("[" + Level.ERROR + "] " + throwable.getMessage());
                 printStackTrace(throwable);
             } else if (throwable == null) {
-                System.err.println(message);
+                System.err.println("[" + Level.ERROR + "] " + message);
             } else {
-                System.err.println(message + ":" + throwable.getMessage());
+                System.err.println("[" + Level.ERROR + "] " + message + ":" + throwable.getMessage());
                 printStackTrace(throwable);
             }
         }
