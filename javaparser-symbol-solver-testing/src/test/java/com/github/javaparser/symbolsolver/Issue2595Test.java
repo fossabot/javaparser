@@ -5,8 +5,11 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParseStart;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.resolution.types.ResolvedReferenceType;
+import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
@@ -23,9 +26,12 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class Issue2595Test {
 
+    private Log.Adapter testAdapter = new Log.StandardOutStandardErrorAdapter();
+
+
     @BeforeEach
     void setAdapter() {
-//        Log.setAdapter(new Log.StandardOutStandardErrorAdapter());
+        Log.setAdapter(testAdapter);
     }
 
     @AfterEach
@@ -57,8 +63,8 @@ public class Issue2595Test {
 //        parse(sourceCode);
 
         List<LambdaExpr> lambdas = cu.findAll(LambdaExpr.class);
-        System.out.println("lambdas = " + lambdas);
-        System.out.println(lambdas.get(0).calculateResolvedType());
+        Log.info("lambdas = " + lambdas);
+        Log.info(lambdas.get(0).calculateResolvedType().toString());
     }
 
 
@@ -71,23 +77,104 @@ public class Issue2595Test {
                 "public class Test {\n" +
                 "\n" +
                 "    ClassMetric<Integer> fieldName_ClassMetric = lambdaParam -> {\n" +
+                "        ClassMetric<Double> fieldName_ClassMetric2 = lambdaParam2 -> {\n" +
+                "            return 0.0;\n" +
+                "        };\n" +
                 "        return 0;\n" +
                 "    };\n" +
                 "\n" +
-                "    @FunctionalInterface\n" +
-                "    public interface ClassMetric<T> extends Function<String, T> {\n" +
-                "        @Override\n" +
-                "        T apply(String c);\n" +
-                "    }\n" +
+                "}\n" +
                 "\n" +
+                "@FunctionalInterface\n" +
+                "interface ClassMetric<T> extends Function<String, T> {\n" +
+                "    @Override\n" +
+                "    T apply(String c);\n" +
                 "}\n";
 
         CompilationUnit cu = getCu(sourceCode);
 //        parse(sourceCode);
 
+//        List<VariableDeclarator> fds = cu.findAll(VariableDeclarator.class);
+//        fds.forEach(fd -> {
+//            Log.info("");
+//            Log.info("----VARIABLE DECLARATOR----");
+//            Log.info("");
+//            Log.info("[VAR.DEC] fd = " + fd);
+//            Log.info("[VAR.DEC] fd.getCommonType().asString() = " + fd.getType().asString());
+//            Log.info("[VAR.DEC] fd.getCommonType().resolve() = " + fd.getType().resolve());
+//
+//            Log.info("");
+//            ResolvedType resolvedFdType = fd.getType().resolve();
+//            Log.info("[VAR.DEC] resolvedFdType.describe() = " + resolvedFdType.describe());
+//            List<ResolvedReferenceType> directAncestors = resolvedFdType.asReferenceType().getDirectAncestors();
+//            Log.info("[VAR.DEC] directAncestors = " + directAncestors);
+//            directAncestors.forEach(resolvedReferenceType -> Log.info(resolvedReferenceType.describe()));
+//        });
+
+
         List<LambdaExpr> lambdas = cu.findAll(LambdaExpr.class);
-        System.out.println("lambdas = " + lambdas);
-        System.out.println(lambdas.get(0).calculateResolvedType());
+        lambdas.forEach(lambdaExpr -> {
+
+            Log.info("");
+            Log.info("----LAMBDA----");
+            Log.info("");
+            Log.info("[LAMBDA] lambdaExpr = " + lambdaExpr);
+            Log.info("[LAMBDA] lambdaExpr.calculateResolvedType() = " + lambdaExpr.calculateResolvedType());
+            Log.info("[LAMBDA] lambdaExpr.calculateResolvedType().describe() = " + lambdaExpr.calculateResolvedType().describe());
+        });
+    }
+
+    @Test
+    public void test_definingLambdaAsField_withIntermediateGeneric_NotNestedInterface() {
+        String sourceCode = "" +
+                "\n" +
+                "import java.util.function.Function;\n" +
+                "\n" +
+                "public class Test {\n" +
+                "\n" +
+                "    ClassMetric<Integer> fieldName_ClassMetric;\n" +
+                "\n" +
+                "}\n" +
+                "\n" +
+//                "@FunctionalInterface\n" +
+                "interface ClassMetric<T> extends Function<String, T> {\n" +
+                "    @Override\n" +
+                "    T apply(String c);\n" +
+                "}\n";
+
+        CompilationUnit cu = getCu(sourceCode);
+//        parse(sourceCode);
+
+//
+//        List<ClassOrInterfaceDeclaration> coids = cu.findAll(ClassOrInterfaceDeclaration.class);
+//        List<ClassOrInterfaceDeclaration> interfaces = coids.stream()
+//                .filter(ClassOrInterfaceDeclaration::isInterface)
+//                .collect(Collectors.toList());
+//        Log.info("interfaces = " + interfaces);
+//
+//        interfaces.forEach(interfaceDeclaration -> {
+//            Log.info("interfaceDeclaration.getTypeParameters() = " + interfaceDeclaration.getTypeParameters());
+//        });
+
+        List<FieldDeclaration> fds = cu.findAll(FieldDeclaration.class);
+        fds.forEach(fd -> {
+            Log.info("fd = " + fd);
+            Log.info("fd.getCommonType().asString() = " + fd.getCommonType().asString());
+            Log.info("fd.getCommonType().resolve() = " + fd.getCommonType().resolve());
+
+            Log.info("");
+            ResolvedType resolvedFdType = fd.getCommonType().resolve();
+            Log.info("resolvedFdType.describe() = " + resolvedFdType.describe());
+
+            Log.info("");
+            List<ResolvedReferenceType> directAncestors = resolvedFdType.asReferenceType().getDirectAncestors();
+            Log.info("directAncestors = " + directAncestors);
+            directAncestors.forEach(resolvedReferenceType -> Log.info(resolvedReferenceType.describe()));
+        });
+
+//        List<LambdaExpr> lambdas = cu.findAll(LambdaExpr.class);
+//        Log.info("lambdas = " + lambdas);
+//        Log.info(lambdas.get(0).calculateResolvedType());
     }
 
 
@@ -117,8 +204,8 @@ public class Issue2595Test {
 //        parse(sourceCode);
 
         List<LambdaExpr> lambdas = cu.findAll(LambdaExpr.class);
-        System.out.println("lambdas = " + lambdas);
-        System.out.println(lambdas.get(0).calculateResolvedType());
+        Log.info("lambdas = " + lambdas);
+        Log.info(lambdas.get(0).calculateResolvedType().toString());
     }
 
     @Test
@@ -243,7 +330,7 @@ public class Issue2595Test {
         assumeTrue(result.getResult().isPresent());
 
         CompilationUnit cu = result.getResult().get();
-//        System.out.println(cu);
+//        Log.info(cu);
 
         return cu;
     }
@@ -255,10 +342,10 @@ public class Issue2595Test {
         assumeFalse(methodCalls.isEmpty());
         for (int i = methodCalls.size() - 1; i >= 0; i--) {
             MethodCallExpr methodCallExpr = methodCalls.get(i);
-            System.out.println();
-            System.out.println("methodCallExpr = " + methodCallExpr);
-            System.out.println("methodCallExpr.resolve() = " + methodCallExpr.resolve());
-            System.out.println("methodCallExpr.calculateResolvedType() = " + methodCallExpr.calculateResolvedType());
+            Log.info("");
+            Log.info("[PARSE RESULT] methodCallExpr = " + methodCallExpr);
+            Log.info("[PARSE RESULT] methodCallExpr.resolve() = " + methodCallExpr.resolve());
+            Log.info("[PARSE RESULT] methodCallExpr.calculateResolvedType() = " + methodCallExpr.calculateResolvedType());
         }
     }
 
