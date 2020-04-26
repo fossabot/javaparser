@@ -1,7 +1,9 @@
 package com.github.javaparser.issues;
 
+import com.github.javaparser.JavaToken;
 import com.github.javaparser.Range;
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -85,9 +87,21 @@ public class Issue2627Test {
             Optional<Range> optionalRange = comment.getRange();
             if (optionalRange.isPresent()) {
                 Range range = optionalRange.get();
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                System.out.println();
                 System.out.println(i + ": ");
                 System.out.println("range = " + range);
-                System.out.println(comment.getContent());
+                System.out.println("comment = " + "\n" + comment.getContent());
+                final TokenRange tokens = comment.getTokenRange().get();
+                int tokenIndex = 0;
+                for (JavaToken token : tokens) {
+                    System.out.println("token " + tokenIndex + " = " + token);
+                    tokenIndex++;
+                }
+                System.out.println(tokens);
             }
         }
 
