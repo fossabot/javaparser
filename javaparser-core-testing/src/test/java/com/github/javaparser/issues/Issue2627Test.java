@@ -23,8 +23,8 @@ public class Issue2627Test {
 
     private static Stream<Arguments> arguments_minimal() {
         return Stream.of(
-                Arguments.of("batchToSpace", 796, 799),
-                Arguments.of("batchToSpaceNd", 911, 914)
+                Arguments.of("batchToSpaceNd", 911, 914),
+                Arguments.of("batchToSpace", 796, 799)
         );
     }
 
