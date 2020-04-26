@@ -23,8 +23,8 @@ public class Issue2627Test {
 
     private static Stream<Arguments> arguments_minimal() {
         return Stream.of(
-                Arguments.of("methodA", 193, 194),
-                Arguments.of("methodB", 98, 99),
+                Arguments.of("methodA", 195, 196),
+                Arguments.of("methodB", 94, 95),
                 Arguments.of("methodC", 3, 4)
         );
     }
