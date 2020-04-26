@@ -12,8 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Issue2627Test {
 
-    private void assertMethodInExpectedLines(MethodDeclaration md, int expectedStartLine, int expectedEndLine) {
-        Range range = md.getRange().get();
+    private static final String RESOURCE_PATH_STRING_MINIMAL = "com/github/javaparser/issue_samples/issue_2627/Ops_minimal.java";
+    private static final String RESOURCE_PATH_STRING_ORIGINAL = "com/github/javaparser/issue_samples/issue_2627/Ops.java";
+
+    private void assertMethodInExpectedLines(CompilationUnit cu, String name, int expectedStartLine, int expectedEndLine) {
+        MethodDeclaration node = getFirstMethodDeclarationByName(cu, name);
+
+        Range range = node.getRange().get();
         System.out.println("range = " + range);
 
         assertEquals(796, range.begin.line);
@@ -29,47 +34,38 @@ public class Issue2627Test {
 
     @Test
     public void method_minimal_batchToSpace() throws IOException {
-        CompilationUnit cu = StaticJavaParser.parseResource("com/github/javaparser/issue_samples/issue_2627/Ops_minimal.java");
-        assertMethodInExpectedLines(
-                getFirstMethodDeclarationByName(cu, "batchToSpace"),
-                796,
-                799
-        );
+        CompilationUnit cu = StaticJavaParser.parseResource(RESOURCE_PATH_STRING_MINIMAL);
+        assertMethodInExpectedLines(cu, "batchToSpace", 796, 799);
     }
 
     @Test
     public void method_minimal_batchToSpaceNd() throws IOException {
-        CompilationUnit cu = StaticJavaParser.parseResource("com/github/javaparser/issue_samples/issue_2627/Ops_minimal.java");
-        MethodDeclaration node = getFirstMethodDeclarationByName(cu, "batchToSpaceNd");
-        assertMethodInExpectedLines(node, 911, 914);
+        CompilationUnit cu = StaticJavaParser.parseResource(RESOURCE_PATH_STRING_MINIMAL);
+        assertMethodInExpectedLines(cu, "batchToSpaceNd", 911, 914);
     }
 
     @Test
     public void method_minimal_placeHolder() throws IOException {
-        CompilationUnit cu = StaticJavaParser.parseResource("com/github/javaparser/issue_samples/issue_2627/Ops_minimal.java");
-        MethodDeclaration node = getFirstMethodDeclarationByName(cu, "placeholder");
-        assertMethodInExpectedLines(node, 3686, 3689);
+        CompilationUnit cu = StaticJavaParser.parseResource(RESOURCE_PATH_STRING_MINIMAL);
+        assertMethodInExpectedLines(cu, "placeholder", 3686, 3689);
     }
 
     @Test
     public void method_original_batchToSpace() throws IOException {
-        CompilationUnit cu = StaticJavaParser.parseResource("com/github/javaparser/issue_samples/issue_2627/Ops.java");
-        MethodDeclaration node = getFirstMethodDeclarationByName(cu, "batchToSpace");
-        assertMethodInExpectedLines(node, 786, 799);
+        CompilationUnit cu = StaticJavaParser.parseResource(RESOURCE_PATH_STRING_ORIGINAL);
+        assertMethodInExpectedLines(cu, "batchToSpace", 786, 799);
     }
 
     @Test
     public void method_original_batchToSpaceNd() throws IOException {
-        CompilationUnit cu = StaticJavaParser.parseResource("com/github/javaparser/issue_samples/issue_2627/Ops.java");
-        MethodDeclaration node = getFirstMethodDeclarationByName(cu, "batchToSpaceNd");
-        assertMethodInExpectedLines(node, 911, 914);
+        CompilationUnit cu = StaticJavaParser.parseResource(RESOURCE_PATH_STRING_ORIGINAL);
+        assertMethodInExpectedLines(cu, "batchToSpaceNd", 911, 914);
     }
 
     @Test
     public void method_original_placeHolder() throws IOException {
-        CompilationUnit cu = StaticJavaParser.parseResource("com/github/javaparser/issue_samples/issue_2627/Ops.java");
-        MethodDeclaration node = getFirstMethodDeclarationByName(cu, "placeholder");
-        assertMethodInExpectedLines(node, 3686, 3689);
+        CompilationUnit cu = StaticJavaParser.parseResource(RESOURCE_PATH_STRING_ORIGINAL);
+        assertMethodInExpectedLines(cu, "placeholder", 3686, 3689);
     }
 
 }
