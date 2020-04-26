@@ -23,9 +23,8 @@ public class Issue2627Test {
 
     private static Stream<Arguments> arguments_minimal() {
         return Stream.of(
-                Arguments.of("batchToSpace", 796, 799),
-                Arguments.of("batchToSpaceNd", 911, 914),
-                Arguments.of("placeholder", 3686, 3689)
+                Arguments.of("batchToSpace", 522, 525),
+                Arguments.of("batchToSpaceNd", 637, 640)
         );
     }
 
@@ -43,8 +42,8 @@ public class Issue2627Test {
         Range range = node.getRange().get();
         System.out.println("range = " + range);
 
-        assertEquals(796, range.begin.line);
-        assertEquals(799, range.end.line);
+        assertEquals(expectedStartLine, range.begin.line);
+        assertEquals(expectedEndLine, range.end.line);
     }
 
     private MethodDeclaration getFirstMethodDeclarationByName(CompilationUnit cu, String name) {
