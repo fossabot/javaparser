@@ -799,9 +799,7 @@ public final class Ops {
   }
 
   /**
-   * BatchToSpace for N-D tensors of type T.
    *  <p>
-   *  This operation reshapes the "batch" dimension 0 into `M + 1` dimensions of shape
    *  `block_shape + [batch]`, interleaves these blocks back into the grid defined by
    *  the spatial dimensions `[1, ..., M]`, to obtain a result with the same rank as
    *  the input.  The spatial dimensions of this intermediate result are then
@@ -906,7 +904,6 @@ public final class Ops {
    *       [[[9],  [10], [11],  [12]],
    *        [[13], [14], [15],  [16]]]]
    *  }</pre>
-   * @return a new instance of BatchToSpaceNd
    */
   public <T extends TType, U extends TNumber, V extends TNumber> BatchToSpaceNd<T> batchToSpaceNd(
       Operand<T> input, Operand<U> blockShape, Operand<V> crops) {
