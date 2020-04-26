@@ -3,12 +3,17 @@ package com.github.javaparser.issues;
 import com.github.javaparser.Range;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.Comment;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,16 +43,13 @@ public class Issue2627Test {
     }
 
     private void assertMethodInExpectedLines(CompilationUnit cu, String name, int expectedStartLine, int expectedEndLine) {
-        final Range cuRange = cu.getRange().get();
-        System.out.println("cu.getRange().get() = " + cuRange);
-
-        int lineCount = cuRange.end.line - cuRange.begin.line;
-        System.out.println("lineCount = " + lineCount);
-//        assertEquals(145, lineCount);
-
         MethodDeclaration node = getFirstMethodDeclarationByName(cu, name);
+        assertNodeInExpectedLines(node, expectedStartLine, expectedEndLine);
+    }
+
+    private void assertNodeInExpectedLines(Node node, int expectedStartLine, int expectedEndLine) {
         Range range = node.getRange().get();
-        System.out.println("range (" + name + ") = " + range);
+        System.out.println("range = " + range);
 
         assertEquals(expectedStartLine, range.begin.line);
         assertEquals(expectedEndLine, range.end.line);
@@ -58,6 +60,39 @@ public class Issue2627Test {
                 .filter(n -> name.equals(n.getNameAsString()))
                 .findFirst()
                 .get();
+    }
+
+    @Test
+    public void cuLength_minimal() throws IOException {
+        CompilationUnit cu = StaticJavaParser.parseResource(RESOURCE_PATH_STRING_MINIMAL);
+
+        final Range cuRange = cu.getRange().get();
+        System.out.println("cu.getRange().get() = " + cuRange);
+
+        int lineCount = cuRange.end.line - cuRange.begin.line;
+        System.out.println("lineCount = " + lineCount);
+
+        assertNodeInExpectedLines(cu, 1, 288);
+    }
+
+    @Test
+    public void commentPositions_minimal() throws IOException {
+        CompilationUnit cu = StaticJavaParser.parseResource(RESOURCE_PATH_STRING_MINIMAL);
+
+        List<Comment> allComments = cu.getAllComments();
+        for (int i = 0; i < allComments.size(); i++) {
+            Comment comment = allComments.get(i);
+            Optional<Range> optionalRange = comment.getRange();
+            if (optionalRange.isPresent()) {
+                Range range = optionalRange.get();
+                System.out.println(i + ": ");
+                System.out.println("range = " + range);
+                System.out.println(comment.getContent());
+            }
+        }
+
+
+//        assertNodeInExpectedLines(cu, 1, 288);
     }
 
     @ParameterizedTest
