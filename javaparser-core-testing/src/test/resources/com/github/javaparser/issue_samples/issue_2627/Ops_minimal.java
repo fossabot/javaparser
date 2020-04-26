@@ -1,79 +1,16 @@
 package org.tensorflow.op;
 
 public final class Ops {
-
-  private Ops(Scope scope) {
-    this.scope = scope;
-    nn = new NnOps(scope);
-    summary = new SummaryOps(scope);
-    image = new ImageOps(scope);
-    data = new DataOps(scope);
-    io = new IoOps(scope);
-    dtypes = new DtypesOps(scope);
-    linalg = new LinalgOps(scope);
-    random = new RandomOps(scope);
-    strings = new StringsOps(scope);
-    sparse = new SparseOps(scope);
-    bitwise = new BitwiseOps(scope);
-    math = new MathOps(scope);
-    audio = new AudioOps(scope);
-    signal = new SignalOps(scope);
-    train = new TrainOps(scope);
-    quantization = new QuantizationOps(scope);
-  }
-
-
-    /**
-     * BatchToSpace for 4-D tensors of type T.
-     * <p>
-     * This is a legacy version of the more general BatchToSpaceND.
-     * <p>
-     * Rearranges (permutes) data from batch into blocks of spatial data, followed by
-     * cropping. This is the reverse transformation of SpaceToBatch. More specifically,
-     * this op outputs a copy of the input tensor where values from the `batch`
-     * dimension are moved in spatial blocks to the `height` and `width` dimensions,
-     * followed by cropping along the `height` and `width` dimensions.
-     *
-     * @param <T>       data type for {@code output()} output
-     * @param input     4-D tensor with shape
-     *                  `[batch<i>block_size</i>block_size, height_pad/block_size, width_pad/block_size,
-     *                  depth]`. Note that the batch size of the input tensor must be divisible by
-     *                  `block_size * block_size`.
-     * @param crops     2-D tensor of non-negative integers with shape `[2, 2]`. It specifies
-     *                  how many elements to crop from the intermediate result across the spatial
-     *                  dimensions as follows:
-     *                  <p>
-     *                  crops = [[crop_top, crop_bottom], [crop_left, crop_right]]
-     * @param blockSize
-     * @return a new instance of BatchToSpace
-     */
     public <T extends TType, U extends TNumber> BatchToSpace<T> batchToSpace(Operand<T> input, Operand<U> crops, Long blockSize) {
         return BatchToSpace.create(scope, input, crops, blockSize);
     }
 
     /**
-     * <p>
-     * `block_shape + [batch]`, interleaves these blocks back into the grid defined by
-     * the spatial dimensions `[1, ..., M]`, to obtain a result with the same rank as
-     * the input.  The spatial dimensions of this intermediate result are then
-     * optionally cropped according to `crops` to produce the output.  This is the
-     * reverse of SpaceToBatch.  See below for a precise description.
      *
-     * @param <T>        data type for {@code output()} output
      * @param input      N-D with shape `input_shape = [batch] + spatial_shape + remaining_shape`,
      *                   where spatial_shape has M dimensions.
      * @param blockShape 1-D with shape `[M]`, all values must be >= 1.
      * @param crops      2-D with shape `[M, 2]`, all values must be >= 0.
-     *                   `crops[i] = [crop_start, crop_end]` specifies the amount to crop from input
-     *                   dimension `i + 1`, which corresponds to spatial dimension `i`.  It is
-     *                   required that
-     *                   `crop_start[i] + crop_end[i] <= block_shape[i] * input_shape[i + 1]`.
-     *                   <p>
-     *                   This operation is equivalent to the following steps:
-     *                   <p>
-     *                   1. Reshape `input` to `reshaped` of shape:
-     *                   [block_shape[0], ..., block_shape[M-1],
-     *                   batch / prod(block_shape),
      *                   input_shape[1], ..., input_shape[N-1]]
      *                   <p>
      *                   2. Permute dimensions of `reshaped` to produce `permuted` of shape
