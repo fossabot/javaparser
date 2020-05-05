@@ -27,6 +27,11 @@ options {
   JAVA_TEMPLATE_TYPE = "modern";
 }
 
+
+/*
+ * GeneratedJavaParser.java is generated,
+ * based on the template within this PARSER_BEGIN/PARSER_END block.
+ */
 PARSER_BEGIN(GeneratedJavaParser)
 /*
  * Copyright (C) 2007-2010 Júlio Vilmar Gesser.
@@ -91,6 +96,7 @@ final class GeneratedJavaParser extends GeneratedJavaParserBase {
 
 PARSER_END(GeneratedJavaParser)
 
+
 /* WHITE SPACE */
 
 SPECIAL_TOKEN :
@@ -102,6 +108,11 @@ SPECIAL_TOKEN :
 | <OLD_MAC_EOL: "\r">
 }
 
+
+/*
+ * GeneratedJavaParserTokenManager.java is generated,
+ * based on the template within this TOKEN_MGR_DECLS block.
+ */
 TOKEN_MGR_DECLS :
 {
     private List<JavaToken> tokens = new ArrayList<JavaToken>();
@@ -170,6 +181,7 @@ TOKEN_MGR_DECLS :
     }
 }
 
+
 /* COMMENTS */
 
 SPECIAL_TOKEN :
@@ -201,6 +213,7 @@ MORE :
 {
   <COMMENT_CONTENT: ~[] >
 }
+
 
 /* RESERVED WORDS AND LITERALS */
 
@@ -368,6 +381,7 @@ MORE: { <ENTER_TEXT_BLOCK: "\"\"\"" >: IN_TEXT_BLOCK }
 // which might match that doublequote with following doublequotes.
 <IN_TEXT_BLOCK> MORE :{ <TEXT_BLOCK_CONTENT:  ( "\\" "\"" | ~[] ) > }
 
+
 /* IDENTIFIERS */
 
 TOKEN :
@@ -534,6 +548,7 @@ TOKEN :
   >
 }
 
+
 /* SEPARATORS */
 
 TOKEN :
@@ -549,6 +564,7 @@ TOKEN :
 | < DOT: "." >
 | < AT: "@" >
 }
+
 
 /* OPERATORS */
 
@@ -592,6 +608,7 @@ TOKEN :
 | < ARROW: "->" >
 | < DOUBLECOLON: "::" >
 }
+
 
 /* >'s need special attention due to generics syntax. */
 TOKEN :
@@ -2584,7 +2601,8 @@ void RSIGNEDSHIFT():
   )
 }
 
-/* Annotation syntax follows. */
+
+/*  ANNOTATION SYNTAX - Annotation syntax follows. */
 
 NodeList<AnnotationExpr> Annotations():
 {
@@ -2670,7 +2688,7 @@ Expression  MemberValueArrayInitializer():
 }
 
 
-/* Annotation Types. */
+/* ANNOTATION TYPES */
 
 AnnotationDeclaration AnnotationTypeDeclaration(ModifierHolder modifier):
 {
@@ -2748,8 +2766,8 @@ Expression DefaultValue():
   { return ret; }
 }
 
-/* Module syntax follows */
 
+/* MODULES - Module syntax follows */
 
 ModuleDirective ModuleDirective():
 {
@@ -2797,11 +2815,12 @@ ModuleDeclaration ModuleDeclaration(ModifierHolder modifier):
     { return new ModuleDeclaration(range(begin, token()), modifier.annotations, name, open, directives); }
 }
 
+
 /* Rules for matching partial inputs.
-These rules are needed to properly terminate them -
-if we simply use the usual rules, they will ignore everything in the provider
-after they matched their desired input, which will lead to unexpected behaviour
-*/
+ * These rules are needed to properly terminate them -
+ * if we simply use the usual rules, they will ignore everything in the provider
+ * after they matched their desired input, which will lead to unexpected behaviour
+ */
 
 
 BlockStmt BlockParseStart():
