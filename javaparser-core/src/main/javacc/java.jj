@@ -960,14 +960,14 @@ Pair<SimpleName, List<ArrayBracketPair>> VariableDeclaratorId():
 	SimpleName name;
 	JavaToken begin;
 	ArrayBracketPair arrayBracketPair;
-	List<ArrayBracketPair> arrayBracketPairs = new ArrayList(0);
+	List<ArrayBracketPair> arrayBracketPairs = new ArrayList<>(0);
 }
 {
     name = SimpleName() { begin=token();}  ( arrayBracketPair = ArrayBracketPair(Origin.NAME) { arrayBracketPairs=add(arrayBracketPairs, arrayBracketPair); } )*
     {
         if(storeTokens) {
             name.setTokenRange(name.getTokenRange().get().withEnd(token()));
-        }    
+        }
         return new Pair(name, arrayBracketPairs);
     }
 }
@@ -1003,7 +1003,7 @@ MethodDeclaration MethodDeclaration(ModifierHolder modifier):
 	SimpleName name;
 	Pair<NodeList<Parameter>, ReceiverParameter> parameters = new Pair<NodeList<Parameter>, ReceiverParameter>(emptyList(), null);
 	ArrayBracketPair arrayBracketPair;
-	List<ArrayBracketPair> arrayBracketPairs = new ArrayList(0);
+	List<ArrayBracketPair> arrayBracketPairs = new ArrayList<>(0);
 	NodeList<ReferenceType> throws_ = emptyList();
 	BlockStmt body = null;
 	NodeList<AnnotationExpr> annotations;
@@ -1019,7 +1019,7 @@ MethodDeclaration MethodDeclaration(ModifierHolder modifier):
     [ "throws" throwType = AnnotatedReferenceType() { throws_ = add(throws_, throwType); }
       ("," throwType = AnnotatedReferenceType() { throws_ = add(throws_, throwType); } )* ]
     ( body = Block() | ";" )
-    { 
+    {
         type = juggleArrayType(type, arrayBracketPairs);
         return new MethodDeclaration(range(begin, token()), modifier.modifiers, modifier.annotations, typeParameters.list, type, name, parameters.a, throws_, body, parameters.b);
     }
@@ -1031,7 +1031,7 @@ ReferenceType AnnotatedReferenceType():
 	ReferenceType type;
 }
 {
-    annotations = Annotations() 
+    annotations = Annotations()
     type = ReferenceType(annotations)
     { return type; }
 }
@@ -1042,7 +1042,7 @@ Type AnnotatedType():
 	Type type;
 }
 {
-    annotations = Annotations() 
+    annotations = Annotations()
     type = Type(annotations)
     { return type; }
 }
@@ -1055,13 +1055,13 @@ Pair<NodeList<Parameter>, ReceiverParameter> Parameters():
 }
 {
     "("
-    [ 
+    [
         ( LOOKAHEAD(ReceiverParameter())
             rp = ReceiverParameter()
             |
             par = Parameter() { ret = add(ret, par); }
-        ) 
-        ( "," par = Parameter() { ret = add(ret, par); } )* 
+        )
+        ( "," par = Parameter() { ret = add(ret, par); } )*
     ]
     ")"
     { return new Pair(ret, rp); }
@@ -1099,7 +1099,7 @@ Parameter Parameter():
 	NodeList<AnnotationExpr> varArgAnnotations = emptyList();
 }
 {
-    modifier = Modifiers() partialType = Type(emptyList()) [ varArgAnnotations = Annotations() "..." { isVarArg = true;} ] 
+    modifier = Modifiers() partialType = Type(emptyList()) [ varArgAnnotations = Annotations() "..." { isVarArg = true;} ]
     id = VariableDeclaratorId()
     {
         JavaToken begin = orIfInvalid(modifier.begin, partialType);
@@ -1115,7 +1115,7 @@ ReceiverParameter ReceiverParameter():
 }
 {
     annotations = Annotations()
-    partialType = Type(emptyList()) 
+    partialType = Type(emptyList())
     id = ReceiverParameterId()
     {
         return new ReceiverParameter(range(partialType, token()), annotations, partialType, id);
@@ -1127,7 +1127,7 @@ Name ReceiverParameterId():
 	Name ret = null;
 }
 {
-    [ LOOKAHEAD(Name()) ret = Name() "."] "this" 
+    [ LOOKAHEAD(Name()) ret = Name() "."] "this"
     { return new Name(tokenRange(), ret, token.image); }
 }
 
@@ -1205,7 +1205,7 @@ InitializerDeclaration InitializerDeclaration():
 	boolean isStatic = false;
 }
 {
-  [ "static" { isStatic = true; begin=token();} ] 
+  [ "static" { isStatic = true; begin=token();} ]
   body = Block() {begin = orIfInvalid(begin, body);}
   { return new InitializerDeclaration(range(begin, token()), isStatic, body); }
 }
@@ -1232,7 +1232,7 @@ ReferenceType ReferenceType(NodeList<AnnotationExpr> annotations):
 {
 	Type type;
 	ArrayBracketPair arrayBracketPair;
-	List<ArrayBracketPair> arrayBracketPairs = new ArrayList(0);
+	List<ArrayBracketPair> arrayBracketPairs = new ArrayList<>(0);
 }
 {
   (

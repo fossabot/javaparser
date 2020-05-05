@@ -1027,7 +1027,7 @@ JavaToken begin = orIfInvalid(modifier.begin, partialType);
   final public Pair<SimpleName, List<ArrayBracketPair>> VariableDeclaratorId() throws ParseException {SimpleName name;
  JavaToken begin;
  ArrayBracketPair arrayBracketPair;
- List<ArrayBracketPair> arrayBracketPairs = new ArrayList(0);
+ List<ArrayBracketPair> arrayBracketPairs = new ArrayList<>(0);
     name = SimpleName();
 begin=token();
     label_13:
@@ -1201,7 +1201,7 @@ values = add(values, val);
  SimpleName name;
  Pair<NodeList<Parameter>, ReceiverParameter> parameters = new Pair<NodeList<Parameter>, ReceiverParameter>(emptyList(), null);
  ArrayBracketPair arrayBracketPair;
- List<ArrayBracketPair> arrayBracketPairs = new ArrayList(0);
+ List<ArrayBracketPair> arrayBracketPairs = new ArrayList<>(0);
  NodeList<ReferenceType> throws_ = emptyList();
  BlockStmt body = null;
  NodeList<AnnotationExpr> annotations;
@@ -1723,7 +1723,7 @@ Type Type(NodeList<AnnotationExpr> annotations) throws ParseException {Type ret;
 
   final public ReferenceType ReferenceType(NodeList<AnnotationExpr> annotations) throws ParseException {Type type;
  ArrayBracketPair arrayBracketPair;
- List<ArrayBracketPair> arrayBracketPairs = new ArrayList(0);
+ List<ArrayBracketPair> arrayBracketPairs = new ArrayList<>(0);
     switch (jj_ntk == -1 ? jj_ntk_f() : jj_ntk) {
     case BOOLEAN:
     case BYTE:
