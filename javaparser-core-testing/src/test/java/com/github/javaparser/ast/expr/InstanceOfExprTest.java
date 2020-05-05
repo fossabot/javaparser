@@ -31,6 +31,18 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 /**
  * See JEP305 for switch pattern matching for instanceof
  * https://bugs.openjdk.java.net/browse/JDK-8181287
+ *
+ * <pre>
+ * The instanceof grammar is extended accordingly:
+ *
+ * RelationalExpression:
+ *      ...
+ *      RelationalExpression instanceof ReferenceType
+ *      RelationalExpression instanceof Pattern
+ *
+ * Pattern:
+ *      ReferenceType Identifier
+ * </pre>
  */
 class InstanceOfExprTest {
 
@@ -51,4 +63,26 @@ class InstanceOfExprTest {
         // TODO: Can we get the relevant parts out of it?
 
     }
+
+
+
+    /*
+     * resolution / scoping tests?
+     *
+     * <pre>
+     * {@code
+     * if (!(obj instanceof String s)) {
+     *     .. s.contains(..) ..
+     * } else {
+     *     .. s.contains(..) ..
+     * }
+     * }
+     * </pre>
+     *
+     * Allowed / in scope: {@code if (obj instanceof String s && s.length() > 5) {..}}
+     * Not in scope:       {@code if (obj instanceof String s || s.length() > 5) {..}}
+     *
+     */
+
+
 }
