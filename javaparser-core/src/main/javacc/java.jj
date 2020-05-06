@@ -848,13 +848,11 @@ EnumConstantDeclaration EnumConstantDeclaration():
     JavaToken begin = INVALID;
 }
 {
-  {  }
-  ( ann = Annotation() { annotations = add(annotations, ann); begin = orIfInvalid(begin, ann); } )*
-  name = SimpleName() { begin = orIfInvalid(begin, token()); }
-  [ args = Arguments() ] [ classBody = ClassOrInterfaceBody() ]
-  {
-      return new EnumConstantDeclaration(range(begin, token()), annotations, name, args, classBody);
-  }
+    (ann = Annotation() { annotations = add(annotations, ann); begin = orIfInvalid(begin, ann); })*
+    name = SimpleName() { begin = orIfInvalid(begin, token()); }
+    [ args = Arguments() ] [ classBody = ClassOrInterfaceBody() ]
+
+    { return new EnumConstantDeclaration(range(begin, token()), annotations, name, args, classBody); }
 }
 
 /**
@@ -919,28 +917,28 @@ BodyDeclaration<?> ClassOrInterfaceBodyDeclaration():
    BodyDeclaration<?> ret;
 }
 {
-  (
-      LOOKAHEAD(2)
-      ret = InitializerDeclaration()
-    |
-      // Just get all the modifiers out of the way. If you want to do
-      // more checks, pass the modifiers down to the member
-      modifier = Modifiers()
-      (
-          ret = ClassOrInterfaceDeclaration(modifier)
-        | LOOKAHEAD("enum")
-          ret = EnumDeclaration(modifier)
-        | LOOKAHEAD("@" "interface")
-          ret = AnnotationTypeDeclaration(modifier)
-        | LOOKAHEAD( [ TypeParameters() ] Identifier() "(" )
-          ret = ConstructorDeclaration(modifier)
-        | LOOKAHEAD( Type() Identifier() ( ArrayBracketPair() )* ("," | "=" | ";") )
-          ret = FieldDeclaration(modifier)
-        |
-          ret = MethodDeclaration(modifier)
-      )
-  )
-  { return ret; }
+    (
+        LOOKAHEAD(2)
+        ret = InitializerDeclaration()
+      |
+        // Just get all the modifiers out of the way. If you want to do
+        // more checks, pass the modifiers down to the member
+        modifier = Modifiers()
+        (
+            ret = ClassOrInterfaceDeclaration(modifier)
+          | LOOKAHEAD("enum")
+            ret = EnumDeclaration(modifier)
+          | LOOKAHEAD("@" "interface")
+            ret = AnnotationTypeDeclaration(modifier)
+          | LOOKAHEAD( [ TypeParameters() ] Identifier() "(" )
+            ret = ConstructorDeclaration(modifier)
+          | LOOKAHEAD( Type() Identifier() ( ArrayBracketPair() )* ("," | "=" | ";") )
+            ret = FieldDeclaration(modifier)
+          |
+            ret = MethodDeclaration(modifier)
+        )
+    )
+    { return ret; }
 }
 
 FieldDeclaration FieldDeclaration(ModifierHolder modifier):
@@ -1086,8 +1084,8 @@ Pair<NodeList<Parameter>, ReceiverParameter> Parameters():
 
 NodeList<Parameter> LambdaParameters():
 {
-  NodeList<Parameter> ret = null;
-  Parameter par;
+    NodeList<Parameter> ret = null;
+    Parameter par;
 }
 {
     par = Parameter() { ret = add(ret, par); }
@@ -1512,21 +1510,21 @@ AssignExpr.Operator AssignmentOperator():
     AssignExpr.Operator ret;
 }
 {
-  (
-      "="    { ret = AssignExpr.Operator.ASSIGN; }
-    | "*="   { ret = AssignExpr.Operator.MULTIPLY; }
-    | "/="   { ret = AssignExpr.Operator.DIVIDE; }
-    | "%="   { ret = AssignExpr.Operator.REMAINDER; }
-    | "+="   { ret = AssignExpr.Operator.PLUS; }
-    | "-="   { ret = AssignExpr.Operator.MINUS; }
-    | "<<="  { ret = AssignExpr.Operator.LEFT_SHIFT; }
-    | ">>="  { ret = AssignExpr.Operator.SIGNED_RIGHT_SHIFT; }
-    | ">>>=" { ret = AssignExpr.Operator.UNSIGNED_RIGHT_SHIFT; }
-    | "&="   { ret = AssignExpr.Operator.BINARY_AND; }
-    | "^="   { ret = AssignExpr.Operator.XOR; }
-    | "|="   { ret = AssignExpr.Operator.BINARY_OR; }
-  )
-  { return ret; }
+   (
+       "="    { ret = AssignExpr.Operator.ASSIGN; }
+     | "*="   { ret = AssignExpr.Operator.MULTIPLY; }
+     | "/="   { ret = AssignExpr.Operator.DIVIDE; }
+     | "%="   { ret = AssignExpr.Operator.REMAINDER; }
+     | "+="   { ret = AssignExpr.Operator.PLUS; }
+     | "-="   { ret = AssignExpr.Operator.MINUS; }
+     | "<<="  { ret = AssignExpr.Operator.LEFT_SHIFT; }
+     | ">>="  { ret = AssignExpr.Operator.SIGNED_RIGHT_SHIFT; }
+     | ">>>=" { ret = AssignExpr.Operator.UNSIGNED_RIGHT_SHIFT; }
+     | "&="   { ret = AssignExpr.Operator.BINARY_AND; }
+     | "^="   { ret = AssignExpr.Operator.XOR; }
+     | "|="   { ret = AssignExpr.Operator.BINARY_OR; }
+   )
+   { return ret; }
 }
 
 Expression ConditionalExpression():
@@ -1789,14 +1787,16 @@ Expression PostfixExpression():
     UnaryExpr.Operator op;
 }
 {
-  ret = PrimaryExpression()
-  [
-      LOOKAHEAD(2)
-    ( "++" { op = UnaryExpr.Operator.POSTFIX_INCREMENT; } |
-      "--" { op = UnaryExpr.Operator.POSTFIX_DECREMENT; }
-    ) { ret = new UnaryExpr(range(ret, token()), ret, op); }
-  ]
-  { return ret; }
+    ret = PrimaryExpression()
+   [
+       LOOKAHEAD(2)
+       (
+           "++" { op = UnaryExpr.Operator.POSTFIX_INCREMENT; }
+           | "--" { op = UnaryExpr.Operator.POSTFIX_DECREMENT; }
+       )
+       { ret = new UnaryExpr(range(ret, token()), ret, op); }
+   ]
+   { return ret; }
 }
 
 Expression CastExpression():
@@ -1809,26 +1809,24 @@ Expression CastExpression():
     NodeList<ReferenceType> typesOfMultiCast = emptyList();
 }
 {
-  "(" {begin=token();}
-  annotations = Annotations()
-  (
-        LOOKAHEAD(2)
-        primitiveType = PrimitiveType(annotations) ")" ret = UnaryExpression() { ret = new CastExpr(range(begin, token()), primitiveType, ret); }
-      |
-        referenceType = ReferenceType(annotations) { typesOfMultiCast = add(typesOfMultiCast, referenceType); }
-        ( "&" referenceType = AnnotatedReferenceType() {
-          typesOfMultiCast = add(typesOfMultiCast, referenceType);
-          }
-        )*
-        ")" ret = UnaryExpressionNotPlusMinus() {
-          if (typesOfMultiCast.size() > 1) {
-              ret = new CastExpr(range(begin, token()), new IntersectionType(range(typesOfMultiCast.get(0), typesOfMultiCast.get(typesOfMultiCast.size() -1)), typesOfMultiCast), ret);
-          } else {
-              ret = new CastExpr(range(begin, token()), referenceType, ret);
-          }
-        }
- )
-  { return ret; }
+    "(" {begin=token();}
+    annotations = Annotations()
+    (
+          LOOKAHEAD(2)
+          primitiveType = PrimitiveType(annotations) ")" ret = UnaryExpression() { ret = new CastExpr(range(begin, token()), primitiveType, ret); }
+        |
+            referenceType = ReferenceType(annotations) { typesOfMultiCast = add(typesOfMultiCast, referenceType); }
+            ("&" referenceType = AnnotatedReferenceType() {typesOfMultiCast = add(typesOfMultiCast, referenceType);})*
+            ")"
+            ret = UnaryExpressionNotPlusMinus() {
+                if (typesOfMultiCast.size() > 1) {
+                    ret = new CastExpr(range(begin, token()), new IntersectionType(range(typesOfMultiCast.get(0), typesOfMultiCast.get(typesOfMultiCast.size() -1)), typesOfMultiCast), ret);
+                } else {
+                    ret = new CastExpr(range(begin, token()), referenceType, ret);
+                }
+            }
+    )
+    { return ret; }
 }
 
 
@@ -1868,67 +1866,67 @@ Expression PrimaryPrefix():
     SimpleName id = null;
 }
 {
-  (
-      ret = Literal()
-    |
-      <THIS> { ret = new ThisExpr(tokenRange(), null); }
-    |
-      <SUPER> { ret = new SuperExpr(tokenRange(), null); }
-      (
-         "."
-      [ typeArgs = TypeArguments() ]
-      name = SimpleName()
-      [ args = Arguments() {hasArgs=true;} ]
-          {
-            if (hasArgs) {
-                  ret = new MethodCallExpr(range(ret, token()), ret, typeArgs.list, name, args);
-            } else {
-                  ret = new FieldAccessExpr(range(ret, token()), ret, emptyList(), name);
+    (
+        ret = Literal()
+      |
+        <THIS> { ret = new ThisExpr(tokenRange(), null); }
+      |
+        <SUPER> { ret = new SuperExpr(tokenRange(), null); }
+        (
+           "."
+        [ typeArgs = TypeArguments() ]
+        name = SimpleName()
+        [ args = Arguments() {hasArgs=true;} ]
+            {
+              if (hasArgs) {
+                    ret = new MethodCallExpr(range(ret, token()), ret, typeArgs.list, name, args);
+              } else {
+                    ret = new FieldAccessExpr(range(ret, token()), ret, emptyList(), name);
+              }
             }
+       |
+          "::" [typeArgs = TypeArguments() ] (Identifier() | "new")
+          {
+            ret = new MethodReferenceExpr(range(ret, token()), ret, typeArgs.list, token.image);
           }
-     |
-        "::" [typeArgs = TypeArguments() ] (Identifier() | "new")
+        )
+      |
+          "(" {begin=token();}
+          (
+              ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
+          | LOOKAHEAD(Parameter())
+              params = LambdaParameters() ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
+          | LOOKAHEAD(VariableDeclaratorId() ",")
+              params = InferredLambdaParameters() ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
+          |
+              // This could still be a lambda expression, but this is handled after matching -> elsewhere
+              ret = Expression() ")" { ret = new EnclosedExpr(range(begin, token()), ret); }
+          )
+      |
+        ret = AllocationExpression(null)
+      |
+        LOOKAHEAD( ResultType() "." "class" )
+        type = ResultType(emptyList())  "." "class" { ret = new ClassExpr(range(type, token()), type); }
+   
+      | LOOKAHEAD (AnnotatedType() "::" )
+        type = AnnotatedType() "::" [typeArgs = TypeArguments() ] (Identifier() | "new")
         {
+          ret = new TypeExpr(range(type, type), type);
           ret = new MethodReferenceExpr(range(ret, token()), ret, typeArgs.list, token.image);
         }
-      )
-    |
-        "(" {begin=token();}
-        (
-            ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
-        | LOOKAHEAD(Parameter())
-            params = LambdaParameters() ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
-        | LOOKAHEAD(VariableDeclaratorId() ",")
-            params = InferredLambdaParameters() ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
-        |
-            // This could still be a lambda expression, but this is handled after matching -> elsewhere
-            ret = Expression() ")" { ret = new EnclosedExpr(range(begin, token()), ret); }
-        )
-    |
-      ret = AllocationExpression(null)
-    |
-      LOOKAHEAD( ResultType() "." "class" )
-      type = ResultType(emptyList())  "." "class" { ret = new ClassExpr(range(type, token()), type); }
 
-    | LOOKAHEAD (AnnotatedType() "::" )
-      type = AnnotatedType() "::" [typeArgs = TypeArguments() ] (Identifier() | "new")
-      {
-        ret = new TypeExpr(range(type, type), type);
-        ret = new MethodReferenceExpr(range(ret, token()), ret, typeArgs.list, token.image);
-      }
-
-    |
-        name = SimpleName() {begin=token();}
-        [ args = Arguments() { hasArgs=true; } ]
-        {
-            if (hasArgs) {
-                ret = new MethodCallExpr(range(begin, token()), null, null, name, args);
-            } else {
-                ret = new NameExpr(name);
-            }
-        }
-  )
-  { return ret; }
+      |
+          name = SimpleName() {begin=token();}
+          [ args = Arguments() { hasArgs=true; } ]
+          {
+              if (hasArgs) {
+                  ret = new MethodCallExpr(range(begin, token()), null, null, name, args);
+              } else {
+                  ret = new NameExpr(name);
+              }
+          }
+    )
+    { return ret; }
 }
 
 Expression PrimarySuffix(Expression scope):
@@ -1953,29 +1951,29 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
     SimpleName name;
 }
 {
-  (
-      "."
-      (
-        "this" { ret = new ThisExpr(range(scope, token()), scopeToName(scope)); }
-      |
-          ret = AllocationExpression(scope)
-      |
-          LOOKAHEAD( [ TypeArguments() ] Identifier() )
-          [ typeArgs = TypeArguments() ]
-          name = SimpleName()
-          [ args = Arguments() {hasArgs=true;} ]
-          {
-              if (hasArgs) {
-                  ret = new MethodCallExpr(range(scope, token()), scope, typeArgs.list, name, args);
-              } else {
-                  ret =  new FieldAccessExpr(range(scope, token()), scope, typeArgs.list, name);
-              }
-          }
+    (
+        "."
+        (
+              "this" { ret = new ThisExpr(range(scope, token()), scopeToName(scope)); }
+            |
+                ret = AllocationExpression(scope)
+            |
+                LOOKAHEAD( [ TypeArguments() ] Identifier() )
+                [ typeArgs = TypeArguments() ]
+                name = SimpleName()
+                [ args = Arguments() {hasArgs=true;} ]
+                {
+                    if (hasArgs) {
+                        ret = new MethodCallExpr(range(scope, token()), scope, typeArgs.list, name, args);
+                    } else {
+                        ret =  new FieldAccessExpr(range(scope, token()), scope, typeArgs.list, name);
+                    }
+                }
+        )
+        |
+        "["ret = Expression() "]" { ret = new ArrayAccessExpr(range(scope, token()), scope, ret); }
     )
-    |
-      "["ret = Expression() "]" { ret = new ArrayAccessExpr(range(scope, token()), scope, ret); }
-  )
-  { return ret; }
+    { return ret; }
 }
 
 Expression Literal():
@@ -1983,36 +1981,17 @@ Expression Literal():
     Expression ret;
 }
 {
-  (
-      <INTEGER_LITERAL> {
-              ret = new IntegerLiteralExpr(tokenRange(), token.image);
-      }
-    |
-      <LONG_LITERAL> {
-              ret = new LongLiteralExpr(tokenRange(), token.image);
-      }
-    |
-      <FLOATING_POINT_LITERAL> {
-              ret = new DoubleLiteralExpr(tokenRange(), token.image);
-      }
-    |
-      <CHARACTER_LITERAL> {
-          ret = new CharLiteralExpr(tokenRange(), unquote(token.image));
-      }
-    |
-      <STRING_LITERAL> {
-          ret = new StringLiteralExpr(tokenRange(), unquote(token.image));
-      }
-    |
-      <TEXT_BLOCK_LITERAL> {
-          ret = new TextBlockLiteralExpr(tokenRange(), unTripleQuote(token.image));
-      }
-    |
-      ret = BooleanLiteral()
-    |
-      ret = NullLiteral()
-  )
-  { return ret; }
+    (
+        <INTEGER_LITERAL> { ret = new IntegerLiteralExpr(tokenRange(), token.image); }
+      | <LONG_LITERAL> { ret = new LongLiteralExpr(tokenRange(), token.image); }
+      | <FLOATING_POINT_LITERAL> { ret = new DoubleLiteralExpr(tokenRange(), token.image); }
+      | <CHARACTER_LITERAL> { ret = new CharLiteralExpr(tokenRange(), unquote(token.image)); }
+      | <STRING_LITERAL> { ret = new StringLiteralExpr(tokenRange(), unquote(token.image)); }
+      | <TEXT_BLOCK_LITERAL> { ret = new TextBlockLiteralExpr(tokenRange(), unTripleQuote(token.image)); }
+      | ret = BooleanLiteral()
+      | ret = NullLiteral()
+    )
+    { return ret; }
 }
 
 Expression BooleanLiteral():
@@ -2020,12 +1999,12 @@ Expression BooleanLiteral():
     Expression ret;
 }
 {
-  (
-      "true" { ret = new BooleanLiteralExpr(tokenRange(), true); }
-      |
-      "false" { ret = new BooleanLiteralExpr(tokenRange(), false); }
-  )
-  { return ret; }
+    (
+        "true" { ret = new BooleanLiteralExpr(tokenRange(), true); }
+        |
+        "false" { ret = new BooleanLiteralExpr(tokenRange(), false); }
+    )
+    { return ret; }
 }
 
 Expression NullLiteral():
@@ -2313,7 +2292,7 @@ SwitchStmt SwitchStatement():
         (entry = SwitchEntry() { entries = add(entries, entry); })*
     "}"
 
-  { return new SwitchStmt(range(begin, token()), selector, entries); }
+    { return new SwitchStmt(range(begin, token()), selector, entries); }
 }
 
 SwitchExpr SwitchExpression():
@@ -2328,7 +2307,7 @@ SwitchExpr SwitchExpression():
         (entry = SwitchEntry() { entries = add(entries, entry); })*
     "}"
 
-  { return new SwitchExpr(range(begin, token()), selector, entries); }
+    { return new SwitchExpr(range(begin, token()), selector, entries); }
 }
 
 SwitchEntry SwitchEntry():
@@ -2404,8 +2383,8 @@ WhileStmt WhileStatement():
     JavaToken begin;
 }
 {
-  "while" {begin=token();} "(" condition = Expression() ")" body = Statement()
-  { return new WhileStmt(range(begin, token()),condition, body); }
+    "while" {begin=token();} "(" condition = Expression() ")" body = Statement()
+    { return new WhileStmt(range(begin, token()),condition, body); }
 }
 
 DoStmt DoStatement():
@@ -2415,8 +2394,8 @@ DoStmt DoStatement():
     JavaToken begin;
 }
 {
-  "do" {begin=token();} body = Statement() "while" "(" condition = Expression() ")" ";"
-  { return new DoStmt(range(begin, token()),body, condition); }
+    "do" {begin=token();} body = Statement() "while" "(" condition = Expression() ")" ";"
+    { return new DoStmt(range(begin, token()),body, condition); }
 }
 
 Statement ForStatement():
@@ -2429,23 +2408,23 @@ Statement ForStatement():
     JavaToken begin;
 }
 {
-  "for" {begin=token();} "("
+    "for" {begin=token();}
+    "("
+    (
+            LOOKAHEAD(VariableDeclarationExpression() ":")
+            varExpr = VariableDeclarationExpression() ":" expr = Expression()
+        |
+            [ init = ForInit() ] ";" [ expr = Expression() ] ";" [ update = ForUpdate() ]
+    )
+    ")"
+    body = Statement()
 
-  (
-      LOOKAHEAD(VariableDeclarationExpression() ":")
-      varExpr = VariableDeclarationExpression() ":" expr = Expression()
-    |
-     [ init = ForInit() ] ";" [ expr = Expression() ] ";" [ update = ForUpdate() ]
-  )
-
-  ")" body = Statement()
-
-  {
-      if (varExpr != null) {
-          return new ForEachStmt(range(begin, token()),varExpr, expr, body);
-      }
-    return new ForStmt(range(begin, token()),init, expr, update, body);
-  }
+    {
+        if (varExpr != null) {
+            return new ForEachStmt(range(begin, token()),varExpr, expr, body);
+        }
+        return new ForStmt(range(begin, token()),init, expr, update, body);
+    }
 }
 
 NodeList<Expression> ForInit():
@@ -2454,13 +2433,13 @@ NodeList<Expression> ForInit():
     Expression expr;
 }
 {
-  (
-      LOOKAHEAD( Modifiers() Type() Identifier() )
-      expr = VariableDeclarationExpression() { ret = new NodeList<Expression>(); ret.add(expr); }
+    (
+        LOOKAHEAD( Modifiers() Type() Identifier() )
+        expr = VariableDeclarationExpression() { ret = new NodeList<Expression>(); ret.add(expr); }
     |
-      ret = ExpressionList()
-  )
-  { return ret; }
+        ret = ExpressionList()
+    )
+    { return ret; }
 }
 
 NodeList<Expression> ExpressionList():
@@ -2469,10 +2448,10 @@ NodeList<Expression> ExpressionList():
     Expression expr;
 }
 {
-  expr = Expression() { ret.add(expr); }
-  ("," expr = Expression()  { ret.add(expr); })*
+    expr = Expression() { ret.add(expr); }
+    ("," expr = Expression()  { ret.add(expr); })*
 
-  { return ret; }
+    { return ret; }
 }
 
 NodeList<Expression> ForUpdate():
@@ -2480,9 +2459,8 @@ NodeList<Expression> ForUpdate():
     NodeList<Expression> ret;
 }
 {
-  ret = ExpressionList()
-
-  { return ret; }
+    ret = ExpressionList()
+    { return ret; }
 }
 
 BreakStmt BreakStatement():
@@ -2491,8 +2469,8 @@ BreakStmt BreakStatement():
     JavaToken begin;
 }
 {
-  "break" {begin=token();} [ label = SimpleName() ] ";"
-  { return new BreakStmt(range(begin, token()), label); }
+    "break" {begin=token();} [ label = SimpleName() ] ";"
+    { return new BreakStmt(range(begin, token()), label); }
 }
 
 YieldStmt YieldStatement():
@@ -2501,8 +2479,8 @@ YieldStmt YieldStatement():
     JavaToken begin;
 }
 {
-  "yield" {begin=token();} value = Expression() ";"
-  { return new YieldStmt(range(begin, token()), value); }
+    "yield" {begin=token();} value = Expression() ";"
+    { return new YieldStmt(range(begin, token()), value); }
 }
 
 ContinueStmt ContinueStatement():
@@ -2511,8 +2489,8 @@ ContinueStmt ContinueStatement():
     JavaToken begin;
 }
 {
-  "continue" {begin=token();} [ label = SimpleName() ] ";"
-  { return new ContinueStmt(range(begin, token()), label); }
+    "continue" {begin=token();} [ label = SimpleName() ] ";"
+    { return new ContinueStmt(range(begin, token()), label); }
 }
 
 ReturnStmt ReturnStatement():
@@ -2521,8 +2499,8 @@ ReturnStmt ReturnStatement():
     JavaToken begin;
 }
 {
-  "return" {begin=token();} [ expr = Expression() ] ";"
-  { return new ReturnStmt(range(begin, token()),expr); }
+    "return" {begin=token();} [ expr = Expression() ] ";"
+    { return new ReturnStmt(range(begin, token()),expr); }
 }
 
 ThrowStmt ThrowStatement():
@@ -2531,8 +2509,8 @@ ThrowStmt ThrowStatement():
     JavaToken begin;
 }
 {
-  "throw" {begin=token();} expr = Expression() ";"
-  { return new ThrowStmt(range(begin, token()),expr); }
+    "throw" {begin=token();} expr = Expression() ";"
+    { return new ThrowStmt(range(begin, token()),expr); }
 }
 
 SynchronizedStmt SynchronizedStatement():
@@ -2542,8 +2520,8 @@ SynchronizedStmt SynchronizedStatement():
     JavaToken begin;
 }
 {
-  "synchronized" {begin=token();} "(" expr = Expression() ")" body = Block()
-  { return new SynchronizedStmt(range(begin, token()),expr, body); }
+    "synchronized" {begin=token();} "(" expr = Expression() ")" body = Block()
+    { return new SynchronizedStmt(range(begin, token()),expr, body); }
 }
 
 TryStmt TryStatement():
@@ -2598,14 +2576,14 @@ TryStmt TryStatement():
 
 NodeList<Expression> ResourceSpecification() :
 {
-  NodeList<Expression> variables;
+    NodeList<Expression> variables;
 }
 {
-  "("
-  variables = Resources()
-  (LOOKAHEAD(2) ";")?
-  ")"
-  { return variables; }
+    "("
+    variables = Resources()
+    (LOOKAHEAD(2) ";")?
+    ")"
+    { return variables; }
 }
 
 
@@ -2781,22 +2759,21 @@ BodyDeclaration<?> AnnotationBodyDeclaration():
    BodyDeclaration ret;
 }
 {
-  (
     modifier = Modifiers()
     (
-       LOOKAHEAD(Type() Identifier() "(")
-       ret = AnnotationTypeMemberDeclaration(modifier)
+          LOOKAHEAD(Type() Identifier() "(")
+          ret = AnnotationTypeMemberDeclaration(modifier)
       |
-       ret = ClassOrInterfaceDeclaration(modifier)
-      | LOOKAHEAD("enum")
-       ret = EnumDeclaration(modifier)
+          ret = ClassOrInterfaceDeclaration(modifier)
       |
-       ret = AnnotationTypeDeclaration(modifier)
+          LOOKAHEAD("enum")
+          ret = EnumDeclaration(modifier)
       |
-       ret = FieldDeclaration(modifier)
+          ret = AnnotationTypeDeclaration(modifier)
+      |
+          ret = FieldDeclaration(modifier)
     )
-  )
-  { return ret; }
+    { return ret; }
 }
 
 AnnotationMemberDeclaration AnnotationTypeMemberDeclaration(ModifierHolder modifier):
