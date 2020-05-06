@@ -701,6 +701,13 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
     }
 
     @Override
+    public void visit(final PatternExpr n, final Void arg) {
+        n.getType().accept(this, arg);
+        printer.print(" ");
+        n.getName().accept(this, arg);
+    }
+
+    @Override
     public void visit(final CharLiteralExpr n, final Void arg) {
         printOrphanCommentsBeforeThisChildNode(n);
         printComment(n.getComment(), arg);
