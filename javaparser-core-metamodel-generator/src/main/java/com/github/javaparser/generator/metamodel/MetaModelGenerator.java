@@ -164,6 +164,7 @@ public class MetaModelGenerator {
         add(NormalAnnotationExpr.class);
         add(NullLiteralExpr.class);
         add(ObjectCreationExpr.class);
+        add(PatternExpr.class);
         add(SimpleName.class);
         add(SingleMemberAnnotationExpr.class);
         add(SuperExpr.class);

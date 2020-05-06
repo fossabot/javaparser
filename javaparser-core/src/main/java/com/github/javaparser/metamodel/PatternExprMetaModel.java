@@ -22,10 +22,10 @@ package com.github.javaparser.metamodel;
 
 import java.util.Optional;
 
-public class PatternExprMetaModel extends NodeMetaModel {
+public class PatternExprMetaModel extends ExpressionMetaModel {
 
     PatternExprMetaModel(Optional<BaseNodeMetaModel> superBaseNodeMetaModel) {
-        super(superBaseNodeMetaModel, com.github.javaparser.ast.expr.PatternExpr.class, "Pattern", "com.github.javaparser.ast.expr", false, false);
+        super(superBaseNodeMetaModel, com.github.javaparser.ast.expr.PatternExpr.class, "PatternExpr", "com.github.javaparser.ast.expr", false, false);
     }
 
     public PropertyMetaModel namePropertyMetaModel;

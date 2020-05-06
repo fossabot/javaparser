@@ -29,6 +29,12 @@ import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 
 /**
+ * As part of JEP305, instanceofexpr can now include what they refer to as a "pattern" instead of just a type.
+ * An option in the future is to allow patterns within e.g. switch statements.
+ *
+ * e.g. {@code String s} from the instanceof expression:
+ * {@code obj instanceof String s}
+ *
  * @author Roger Howell
  */
 public class PatternExpr extends Expression {
@@ -36,7 +42,6 @@ public class PatternExpr extends Expression {
     private SimpleName name;
 
     private ReferenceType type;
-
 
     public PatternExpr() {
         this(null, new ClassOrInterfaceType(), new SimpleName());
@@ -47,37 +52,35 @@ public class PatternExpr extends Expression {
         this(null, type, name);
     }
 
-
-    /**
-     * This constructor is used by the parser and is considered private.
-     */
-    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public PatternExpr(TokenRange tokenRange, final ReferenceType type, SimpleName name) {
         super(tokenRange);
 //        setType(ReferenceType)
         customInitialization();
     }
 
-    /**
-     * Accept method for visitor support.
-     *
-     * @param v   the visitor implementation
-     * @param arg the argument passed to the visitor (of type A)
-     * @return the result of the visit (of type R)
-     */
     @Override
     public <R, A> R accept(GenericVisitor<R, A> v, A arg) {
         return null;
     }
 
-    /**
-     * Accept method for visitor support.
-     *
-     * @param v   the visitor implementation
-     * @param arg any value relevant for the visitor (of type A)
-     */
     @Override
     public <A> void accept(VoidVisitor<A> v, A arg) {
 
+    }
+
+    public SimpleName getName() {
+        return name;
+    }
+
+    public ReferenceType getType() {
+        return type;
+    }
+
+    public void setName(SimpleName name) {
+        this.name = name;
+    }
+
+    public void setType(ReferenceType type) {
+        this.type = type;
     }
 }

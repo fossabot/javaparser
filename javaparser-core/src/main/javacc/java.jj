@@ -1628,7 +1628,7 @@ Expression EqualityExpression():
     { return ret; }
 }
 
-Expression PatternExpression() :
+PatternExpr PatternExpression():
 {
     ReferenceType type;
     SimpleName name;
@@ -1636,7 +1636,7 @@ Expression PatternExpression() :
 {
     type = AnnotatedReferenceType()
     name = SimpleName()
-    { return new PatternExpr(range(type, token()), type, name) }
+    { return new PatternExpr(range(type, token()), type, name); }
 }
 
 Expression InstanceOfExpression():
@@ -1644,6 +1644,7 @@ Expression InstanceOfExpression():
     Expression ret;
     ReferenceType type;
     NodeList<AnnotationExpr> annotations;
+    PatternExpr pattern;
 }
 {
     ret = RelationalExpression()

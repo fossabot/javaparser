@@ -27,6 +27,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumConstantDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.generator.NodeGenerator;
 import com.github.javaparser.metamodel.BaseNodeMetaModel;
@@ -61,6 +62,10 @@ public class PropertyGenerator extends NodeGenerator {
             generateGetter(nodeMetaModel, nodeCoid, property);
             generateSetter(nodeMetaModel, nodeCoid, property);
         }
+        // Ensure the relevant imports have been added for the methods/annotations used
+        nodeCu.addImport(ObservableProperty.class);
+        nodeCu.addImport("com.github.javaparser.utils.Utils.assertNotNull", true, false);
+
         nodeMetaModel.getDerivedPropertyMetaModels().forEach(p -> derivedProperties.put(p.getName(), p));
     }
 
