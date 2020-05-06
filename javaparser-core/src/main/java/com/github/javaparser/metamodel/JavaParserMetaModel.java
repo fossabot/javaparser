@@ -555,6 +555,8 @@ public final class JavaParserMetaModel {
         fieldAccessExprMetaModel.getDerivedPropertyMetaModels().add(fieldAccessExprMetaModel.usingDiamondOperatorPropertyMetaModel);
         instanceOfExprMetaModel.expressionPropertyMetaModel = new PropertyMetaModel(instanceOfExprMetaModel, "expression", com.github.javaparser.ast.expr.Expression.class, Optional.of(expressionMetaModel), false, false, false, false);
         instanceOfExprMetaModel.getDeclaredPropertyMetaModels().add(instanceOfExprMetaModel.expressionPropertyMetaModel);
+        instanceOfExprMetaModel.namePropertyMetaModel = new PropertyMetaModel(instanceOfExprMetaModel, "name", com.github.javaparser.ast.expr.SimpleName.class, Optional.of(simpleNameMetaModel), true, false, false, false);
+        instanceOfExprMetaModel.getDeclaredPropertyMetaModels().add(instanceOfExprMetaModel.namePropertyMetaModel);
         instanceOfExprMetaModel.typePropertyMetaModel = new PropertyMetaModel(instanceOfExprMetaModel, "type", com.github.javaparser.ast.type.ReferenceType.class, Optional.of(referenceTypeMetaModel), false, false, false, false);
         instanceOfExprMetaModel.getDeclaredPropertyMetaModels().add(instanceOfExprMetaModel.typePropertyMetaModel);
         lambdaExprMetaModel.bodyPropertyMetaModel = new PropertyMetaModel(lambdaExprMetaModel, "body", com.github.javaparser.ast.stmt.Statement.class, Optional.of(statementMetaModel), false, false, false, false);

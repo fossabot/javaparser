@@ -37,10 +37,13 @@ import com.github.javaparser.TokenRange;
 import java.util.function.Consumer;
 import java.util.Optional;
 import com.github.javaparser.ast.Generated;
+import com.github.javaparser.metamodel.OptionalProperty;
 
 /**
  * Usage of the instanceof operator.
  * <br>{@code tool instanceof Drill}
+ * <br>JEP305 introduced the ability to assign a name to a matched node.
+ * <br>{@code tool instanceof Drill d}
  *
  * @author Julio Vilmar Gesser
  */
@@ -49,6 +52,9 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     private Expression expression;
 
     private ReferenceType type;
+
+    @OptionalProperty
+    private SimpleName name;
 
     public InstanceOfExpr() {
         this(null, new NameExpr(), new ClassOrInterfaceType());
@@ -125,6 +131,12 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     public boolean remove(Node node) {
         if (node == null)
             return false;
+        if (name != null) {
+            if (node == name) {
+                removeName();
+                return true;
+            }
+        }
         return super.remove(node);
     }
 
@@ -148,6 +160,12 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
         if (node == expression) {
             setExpression((Expression) replacementNode);
             return true;
+        }
+        if (name != null) {
+            if (node == name) {
+                setName((SimpleName) replacementNode);
+                return true;
+            }
         }
         if (node == type) {
             setType((ReferenceType) replacementNode);
@@ -177,5 +195,39 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public Optional<InstanceOfExpr> toInstanceOfExpr() {
         return Optional.of(this);
+    }
+
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public Optional<SimpleName> getName() {
+        return Optional.ofNullable(name);
+    }
+
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public InstanceOfExpr setName(final SimpleName name) {
+        if (name == this.name) {
+            return (InstanceOfExpr) this;
+        }
+        notifyPropertyChange(ObservableProperty.NAME, this.name, name);
+        if (this.name != null)
+            this.name.setParentNode(null);
+        this.name = name;
+        setAsParentNodeOf(name);
+        return this;
+    }
+
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
+    public InstanceOfExpr removeName() {
+        return setName((SimpleName) null);
+    }
+
+    /**
+     * This constructor is used by the parser and is considered private.
+     */
+    public InstanceOfExpr(TokenRange tokenRange, Expression expression, ReferenceType type, SimpleName name) {
+        super(tokenRange);
+        setExpression(expression);
+        setType(type);
+        setName(name);
+        customInitialization();
     }
 }

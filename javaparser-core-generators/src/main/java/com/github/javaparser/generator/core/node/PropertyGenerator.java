@@ -108,7 +108,7 @@ public class PropertyGenerator extends NodeGenerator {
         } else {
             body.addStatement(f("return this;"));
         }
-        replaceWhenSameSignature(nodeCoid, setter);
+        addOrReplaceWhenSameSignature(nodeCoid, setter);
         if (property.getContainingNodeMetaModel().hasWildcard()) {
             annotateSuppressWarnings(setter);
         }
@@ -123,7 +123,7 @@ public class PropertyGenerator extends NodeGenerator {
         } else {
             body.addStatement(f("return %s;", property.getName()));
         }
-        replaceWhenSameSignature(nodeCoid, getter);
+        addOrReplaceWhenSameSignature(nodeCoid, getter);
     }
 
     private void generateObservableProperty(EnumDeclaration observablePropertyEnum, PropertyMetaModel property, boolean derived) {

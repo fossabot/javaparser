@@ -1633,7 +1633,7 @@ Expression InstanceOfExpression():
     Expression ret;
     ReferenceType type;
     NodeList<AnnotationExpr> annotations;
-    String identifier;
+    SimpleName name;
 }
 {
     ret = RelationalExpression()
@@ -1642,7 +1642,7 @@ Expression InstanceOfExpression():
         type = AnnotatedReferenceType(){ ret = new InstanceOfExpr(range(ret, token()), ret, type); }
         // OPTIONALLY GET THE IDENTIFIER, IF LOOKAHEAD (VIA []) INDICATES  THAT IT IS THERE...
         // IF SO, REPLACE THE PREVIOUS RET WITH THES ONE WHICH DOES TAKE THE IDNETIFIRER INTO ACCOUNT...
-        [identifier = Identifier(){ ret = new InstanceOfExpr(range(ret, token()), ret, type); }]
+        [name = SimpleName() { ret = new InstanceOfExpr(range(ret, token()), ret, type); }]
     ]
     { return ret; }
 }
@@ -2737,7 +2737,8 @@ AnnotationDeclaration AnnotationTypeDeclaration(ModifierHolder modifier):
 }
 {
     "@" { begin=orIfInvalid(begin, token()); }
-    "interface" name = SimpleName() members = AnnotationTypeBody()
+    "interface" name = SimpleName()
+    members = AnnotationTypeBody()
     { return new AnnotationDeclaration(range(begin, token()), modifier.modifiers, modifier.annotations, name, members); }
 }
 

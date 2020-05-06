@@ -2538,7 +2538,7 @@ ret = new BinaryExpr(range(ret, token()), ret, right, op);
   final public Expression InstanceOfExpression() throws ParseException {Expression ret;
     ReferenceType type;
     NodeList<AnnotationExpr> annotations;
-    String identifier;
+    SimpleName name;
     ret = RelationalExpression();
     switch (jj_ntk == -1 ? jj_ntk_f() : jj_ntk) {
     case INSTANCEOF:{
@@ -2560,7 +2560,7 @@ ret = new InstanceOfExpr(range(ret, token()), ret, type);
       case PROVIDES:
       case TRANSITIVE:
       case IDENTIFIER:{
-        identifier = Identifier();
+        name = SimpleName();
 ret = new InstanceOfExpr(range(ret, token()), ret, type);
         break;
         }
@@ -8449,16 +8449,16 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
     return false;
   }
 
-  private boolean jj_3R_335()
- {
-    if (jj_3R_76()) return true;
-    return false;
-  }
-
   private boolean jj_3R_447()
  {
     if (jj_scan_token(BIT_OR)) return true;
     if (jj_3R_251()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_335()
+ {
+    if (jj_3R_76()) return true;
     return false;
   }
 
@@ -8777,7 +8777,7 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
 
   private boolean jj_3R_400()
  {
-    if (jj_3R_76()) return true;
+    if (jj_3R_90()) return true;
     return false;
   }
 
@@ -9110,18 +9110,6 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
     return false;
   }
 
-  private boolean jj_3R_408()
- {
-    if (jj_scan_token(LBRACE)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_418()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(RBRACE)) return true;
-    return false;
-  }
-
   private boolean jj_3R_171()
  {
     Token xsp;
@@ -9136,6 +9124,18 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
     }
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_408()
+ {
+    if (jj_scan_token(LBRACE)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_418()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_scan_token(RBRACE)) return true;
     return false;
   }
 
@@ -9192,6 +9192,12 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
     return false;
   }
 
+  private boolean jj_3R_211()
+ {
+    if (jj_3R_203()) return true;
+    return false;
+  }
+
   private boolean jj_3R_445()
  {
     if (jj_3R_110()) return true;
@@ -9210,12 +9216,6 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
     }
     }
     }
-    return false;
-  }
-
-  private boolean jj_3R_211()
- {
-    if (jj_3R_203()) return true;
     return false;
   }
 
@@ -9246,12 +9246,6 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
   private boolean jj_3R_448()
  {
     if (jj_3R_453()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_449()
- {
-    if (jj_3R_195()) return true;
     return false;
   }
 
@@ -9302,6 +9296,12 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
     return false;
   }
 
+  private boolean jj_3R_449()
+ {
+    if (jj_3R_195()) return true;
+    return false;
+  }
+
   private boolean jj_3R_450()
  {
     if (jj_3R_359()) return true;
@@ -9314,6 +9314,12 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
     return false;
   }
 
+  private boolean jj_3R_60()
+ {
+    if (jj_scan_token(PUBLIC)) return true;
+    return false;
+  }
+
   private boolean jj_3_55()
  {
     if (jj_3R_77()) return true;
@@ -9322,22 +9328,16 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
     return false;
   }
 
-  private boolean jj_3R_60()
+  private boolean jj_3R_260()
  {
-    if (jj_scan_token(PUBLIC)) return true;
+    if (jj_scan_token(DECR)) return true;
+    if (jj_3R_171()) return true;
     return false;
   }
 
   private boolean jj_3R_452()
  {
     if (jj_3R_362()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_260()
- {
-    if (jj_scan_token(DECR)) return true;
-    if (jj_3R_171()) return true;
     return false;
   }
 
@@ -9689,12 +9689,6 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
     return false;
   }
 
-  private boolean jj_3_58()
- {
-    if (jj_3R_86()) return true;
-    return false;
-  }
-
   private boolean jj_3R_359()
  {
     if (jj_scan_token(ENUM)) return true;
@@ -9716,6 +9710,12 @@ BlockStmt BlockParseStart() throws ParseException {BlockStmt ret;
   private boolean jj_3_31()
  {
     if (jj_3R_100()) return true;
+    return false;
+  }
+
+  private boolean jj_3_58()
+ {
+    if (jj_3R_86()) return true;
     return false;
   }
 

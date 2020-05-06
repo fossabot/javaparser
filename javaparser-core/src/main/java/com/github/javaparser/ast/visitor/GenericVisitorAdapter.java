@@ -882,6 +882,11 @@ public abstract class GenericVisitorAdapter<R, A> implements GenericVisitor<R, A
             if (result != null)
                 return result;
         }
+        if (n.getName().isPresent()) {
+            result = n.getName().get().accept(this, arg);
+            if (result != null)
+                return result;
+        }
         {
             result = n.getType().accept(this, arg);
             if (result != null)

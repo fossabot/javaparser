@@ -648,6 +648,8 @@ public class EqualsVisitor implements GenericVisitor<Boolean, Visitable> {
         final InstanceOfExpr n2 = (InstanceOfExpr) arg;
         if (!nodeEquals(n.getExpression(), n2.getExpression()))
             return false;
+        if (!nodeEquals(n.getName(), n2.getName()))
+            return false;
         if (!nodeEquals(n.getType(), n2.getType()))
             return false;
         if (!nodeEquals(n.getComment(), n2.getComment()))

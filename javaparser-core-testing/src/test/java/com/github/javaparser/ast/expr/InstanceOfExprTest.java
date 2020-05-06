@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.github.javaparser.ParserConfiguration.LanguageLevel;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * See JEP305 for switch pattern matching for instanceof
@@ -65,8 +66,26 @@ class InstanceOfExprTest {
         String x = "obj instanceof String s";
         InstanceOfExpr expr = TestParser.parseExpression(LanguageLevel.JAVA_14, x);
 
-        // TODO: Does this compile/parse?
-        // TODO: Can we get the relevant parts out of it?
+        assertEquals("obj", expr.getExpression().toString());
+        assertEquals(String.class.getSimpleName(), expr.getType().asString());
+        assertTrue(expr.getName().isPresent());
+
+        expr.getTokenRange().ifPresent(javaTokens -> {
+            javaTokens.forEach(javaToken -> {
+                System.out.println("javaToken = " + javaToken);
+            });
+        });
+
+    }
+
+    @Test
+    void instanceOfReferenceTypeExpression() {
+        String x = "obj instanceof String";
+        InstanceOfExpr expr = TestParser.parseExpression(LanguageLevel.JAVA_14, x);
+
+        assertEquals("obj", expr.getExpression().toString());
+        assertEquals(String.class.getSimpleName(), expr.getType().asString());
+        assertFalse(expr.getName().isPresent());
 
         expr.getTokenRange().ifPresent(javaTokens -> {
             javaTokens.forEach(javaToken -> {
