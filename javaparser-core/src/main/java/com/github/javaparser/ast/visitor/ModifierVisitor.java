@@ -1259,4 +1259,17 @@ public class ModifierVisitor<A> implements GenericVisitor<Visitable, A> {
         n.setComment(comment);
         return n;
     }
+
+    @Override
+    public Visitable visit(final PatternExpr n, final A arg) {
+        SimpleName name = (SimpleName) n.getName().accept(this, arg);
+        ReferenceType type = (ReferenceType) n.getType().accept(this, arg);
+        Comment comment = n.getComment().map(s -> (Comment) s.accept(this, arg)).orElse(null);
+        if (name == null || type == null)
+            return null;
+        n.setName(name);
+        n.setType(type);
+        n.setComment(comment);
+        return n;
+    }
 }

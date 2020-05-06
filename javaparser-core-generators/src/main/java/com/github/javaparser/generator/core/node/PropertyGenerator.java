@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.Modifier.Keyword.FINAL;
@@ -62,14 +63,13 @@ public class PropertyGenerator extends NodeGenerator {
             generateGetter(nodeMetaModel, nodeCoid, property);
             generateSetter(nodeMetaModel, nodeCoid, property);
         }
-        // Ensure the relevant imports have been added for the methods/annotations used
-        nodeCu.addImport(ObservableProperty.class);
-        nodeCu.addImport("com.github.javaparser.utils.Utils.assertNotNull", true, false);
-
         nodeMetaModel.getDerivedPropertyMetaModels().forEach(p -> derivedProperties.put(p.getName(), p));
     }
 
     private void generateSetter(BaseNodeMetaModel nodeMetaModel, ClassOrInterfaceDeclaration nodeCoid, PropertyMetaModel property) {
+        // Ensure the relevant imports have been added for the methods/annotations used
+        nodeCoid.findCompilationUnit().get().addImport(ObservableProperty.class);
+
         final String name = property.getName();
         // Fill body
         final String observableName = camelCaseToScreaming(name.startsWith("is") ? name.substring(2) : name);
@@ -93,8 +93,10 @@ public class PropertyGenerator extends NodeGenerator {
         if (property.isRequired()) {
             Class<?> type = property.getType();
             if (property.isNonEmpty() && property.isSingular()) {
+                nodeCoid.findCompilationUnit().get().addImport("com.github.javaparser.utils.Utils.assertNonEmpty", true, false);
                 body.addStatement(f("assertNonEmpty(%s);", name));
             } else if (type != boolean.class && type != int.class) {
+                nodeCoid.findCompilationUnit().get().addImport("com.github.javaparser.utils.Utils.assertNotNull", true, false);
                 body.addStatement(f("assertNotNull(%s);", name));
             }
         }
@@ -124,6 +126,8 @@ public class PropertyGenerator extends NodeGenerator {
         final BlockStmt body = getter.getBody().get();
         body.getStatements().clear();
         if (property.isOptional()) {
+            // Ensure imports have been included.
+            nodeCoid.findCompilationUnit().get().addImport(Optional.class);
             body.addStatement(f("return Optional.ofNullable(%s);", property.getName()));
         } else {
             body.addStatement(f("return %s;", property.getName()));

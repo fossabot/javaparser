@@ -35,10 +35,8 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.metamodel.InstanceOfExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.metamodel.OptionalProperty;
-
 import java.util.Optional;
 import java.util.function.Consumer;
-
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
 /**
@@ -57,7 +55,6 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     private SimpleName name;
 
     private ReferenceType type;
-
 
     public InstanceOfExpr() {
         this(null, new NameExpr(), new ClassOrInterfaceType(), null);
@@ -108,7 +105,6 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
         return (InstanceOfExpr) accept(new CloneVisitor(), null);
     }
 
-    @Override
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Expression getExpression() {
         return expression;
@@ -125,13 +121,11 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
         return Optional.ofNullable(name);
     }
 
-    @Override
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ReferenceType getType() {
         return type;
     }
 
-    @Override
     @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public void ifInstanceOfExpr(Consumer<InstanceOfExpr> action) {
         action.accept(this);
@@ -159,7 +153,7 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
 
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public InstanceOfExpr removeName() {
-        return setName(null);
+        return setName((SimpleName) null);
     }
 
     @Override
@@ -184,12 +178,11 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
         return super.replace(node, replacementNode);
     }
 
-    @Override
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public InstanceOfExpr setExpression(final Expression expression) {
         assertNotNull(expression);
         if (expression == this.expression) {
-            return this;
+            return (InstanceOfExpr) this;
         }
         notifyPropertyChange(ObservableProperty.EXPRESSION, this.expression, expression);
         if (this.expression != null)
@@ -202,7 +195,7 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public InstanceOfExpr setName(final SimpleName name) {
         if (name == this.name) {
-            return this;
+            return (InstanceOfExpr) this;
         }
         notifyPropertyChange(ObservableProperty.NAME, this.name, name);
         if (this.name != null)
@@ -212,12 +205,11 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
         return this;
     }
 
-    @Override
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public InstanceOfExpr setType(final ReferenceType type) {
         assertNotNull(type);
         if (type == this.type) {
-            return this;
+            return (InstanceOfExpr) this;
         }
         notifyPropertyChange(ObservableProperty.TYPE, this.type, type);
         if (this.type != null)
@@ -232,5 +224,4 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     public Optional<InstanceOfExpr> toInstanceOfExpr() {
         return Optional.of(this);
     }
-
 }

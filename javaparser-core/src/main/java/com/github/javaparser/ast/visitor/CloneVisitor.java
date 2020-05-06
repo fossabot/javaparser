@@ -1230,4 +1230,16 @@ public class CloneVisitor implements GenericVisitor<Visitable, Object> {
         copyData(n, r);
         return r;
     }
+
+    @Override
+    public Visitable visit(final PatternExpr n, final Object arg) {
+        SimpleName name = cloneNode(n.getName(), arg);
+        ReferenceType type = cloneNode(n.getType(), arg);
+        Comment comment = cloneNode(n.getComment(), arg);
+        PatternExpr r = new PatternExpr(n.getTokenRange().orElse(null), type, name);
+        r.setComment(comment);
+        n.getOrphanComments().stream().map(Comment::clone).forEach(r::addOrphanComment);
+        copyData(n, r);
+        return r;
+    }
 }

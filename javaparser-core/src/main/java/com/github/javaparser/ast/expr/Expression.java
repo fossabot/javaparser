@@ -771,4 +771,19 @@ public abstract class Expression extends Node {
     @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
     public void ifTextBlockLiteralExpr(Consumer<TextBlockLiteralExpr> action) {
     }
+
+    public boolean isPatternExpr() {
+        return false;
+    }
+
+    public PatternExpr asPatternExpr() {
+        throw new IllegalStateException(f("%s is not an PatternExpr", this));
+    }
+
+    public Optional<PatternExpr> toPatternExpr() {
+        return Optional.empty();
+    }
+
+    public void ifPatternExpr(Consumer<PatternExpr> action) {
+    }
 }

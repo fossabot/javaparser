@@ -27,13 +27,37 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
+import java.util.Optional;
+import java.util.function.Consumer;
+import com.github.javaparser.ast.observer.ObservableProperty;
+import static com.github.javaparser.utils.Utils.assertNotNull;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.visitor.CloneVisitor;
+import com.github.javaparser.metamodel.PatternExprMetaModel;
+import com.github.javaparser.metamodel.JavaParserMetaModel;
 
 /**
  * As part of JEP305, instanceofexpr can now include what they refer to as a "pattern" instead of just a type.
  * An option in the future is to allow patterns within e.g. switch statements.
- *
+ * <br>
+ * <br>
  * e.g. {@code String s} from the instanceof expression:
  * {@code obj instanceof String s}
+ * <br>
+ * https://bugs.openjdk.java.net/browse/JDK-8181287
+ * <br>
+ * <br>
+ * <pre><code>
+ * The instanceof grammar is extended accordingly:
+ *
+ * RelationalExpression:
+ *      ...
+ *      RelationalExpression instanceof ReferenceType
+ *      RelationalExpression instanceof Pattern
+ *
+ * Pattern:
+ *      ReferenceType Identifier
+ * </code></pre>
  *
  * @author Roger Howell
  */
@@ -52,35 +76,115 @@ public class PatternExpr extends Expression {
         this(null, type, name);
     }
 
-    public PatternExpr(TokenRange tokenRange, final ReferenceType type, SimpleName name) {
+    /**
+     * This constructor is used by the parser and is considered private.
+     */
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public PatternExpr(TokenRange tokenRange, ReferenceType type, SimpleName name) {
         super(tokenRange);
-//        setType(ReferenceType)
+        setType(type);
+        setName(name);
         customInitialization();
     }
 
     @Override
-    public <R, A> R accept(GenericVisitor<R, A> v, A arg) {
-        return null;
+    @Generated("com.github.javaparser.generator.core.node.AcceptGenerator")
+    public <R, A> R accept(final GenericVisitor<R, A> v, final A arg) {
+        return v.visit(this, arg);
     }
 
     @Override
-    public <A> void accept(VoidVisitor<A> v, A arg) {
-
+    @Generated("com.github.javaparser.generator.core.node.AcceptGenerator")
+    public <A> void accept(final VoidVisitor<A> v, final A arg) {
+        v.visit(this, arg);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public SimpleName getName() {
         return name;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ReferenceType getType() {
         return type;
     }
 
-    public void setName(SimpleName name) {
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public PatternExpr setName(final SimpleName name) {
+        assertNotNull(name);
+        if (name == this.name) {
+            return (PatternExpr) this;
+        }
+        notifyPropertyChange(ObservableProperty.NAME, this.name, name);
+        if (this.name != null)
+            this.name.setParentNode(null);
         this.name = name;
+        setAsParentNodeOf(name);
+        return this;
     }
 
-    public void setType(ReferenceType type) {
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public PatternExpr setType(final ReferenceType type) {
+        assertNotNull(type);
+        if (type == this.type) {
+            return (PatternExpr) this;
+        }
+        notifyPropertyChange(ObservableProperty.TYPE, this.type, type);
+        if (this.type != null)
+            this.type.setParentNode(null);
         this.type = type;
+        setAsParentNodeOf(type);
+        return this;
+    }
+
+    @Override
+    public boolean isPatternExpr() {
+        return true;
+    }
+
+    @Override
+    public PatternExpr asPatternExpr() {
+        return this;
+    }
+
+    @Override
+    public Optional<PatternExpr> toPatternExpr() {
+        return Optional.of(this);
+    }
+
+    public void ifPatternExpr(Consumer<PatternExpr> action) {
+        action.accept(this);
+    }
+
+    @Override
+    public boolean remove(Node node) {
+        if (node == null)
+            return false;
+        return super.remove(node);
+    }
+
+    @Override
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == name) {
+            setName((SimpleName) replacementNode);
+            return true;
+        }
+        if (node == type) {
+            setType((ReferenceType) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
+    }
+
+    @Override
+    public PatternExpr clone() {
+        return (PatternExpr) accept(new CloneVisitor(), null);
+    }
+
+    @Override
+    public PatternExprMetaModel getMetaModel() {
+        return JavaParserMetaModel.patternExprMetaModel;
     }
 }
