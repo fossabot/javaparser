@@ -60,9 +60,13 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
         this(null, new NameExpr(), new ClassOrInterfaceType());
     }
 
-    @AllFieldsConstructor
     public InstanceOfExpr(final Expression expression, final ReferenceType type) {
         this(null, expression, type);
+    }
+
+    @AllFieldsConstructor
+    public InstanceOfExpr(final Expression expression, final ReferenceType type, final SimpleName name) {
+        this(null, expression, type, name);
     }
 
     /**
@@ -223,6 +227,7 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     /**
      * This constructor is used by the parser and is considered private.
      */
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public InstanceOfExpr(TokenRange tokenRange, Expression expression, ReferenceType type, SimpleName name) {
         super(tokenRange);
         setExpression(expression);

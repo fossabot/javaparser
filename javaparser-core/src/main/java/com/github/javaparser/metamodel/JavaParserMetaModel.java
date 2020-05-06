@@ -154,6 +154,7 @@ public final class JavaParserMetaModel {
         fieldAccessExprMetaModel.getConstructorParameters().add(fieldAccessExprMetaModel.namePropertyMetaModel);
         instanceOfExprMetaModel.getConstructorParameters().add(instanceOfExprMetaModel.expressionPropertyMetaModel);
         instanceOfExprMetaModel.getConstructorParameters().add(instanceOfExprMetaModel.typePropertyMetaModel);
+        instanceOfExprMetaModel.getConstructorParameters().add(instanceOfExprMetaModel.namePropertyMetaModel);
         integerLiteralExprMetaModel.getConstructorParameters().add(literalStringValueExprMetaModel.valuePropertyMetaModel);
         lambdaExprMetaModel.getConstructorParameters().add(lambdaExprMetaModel.parametersPropertyMetaModel);
         lambdaExprMetaModel.getConstructorParameters().add(lambdaExprMetaModel.bodyPropertyMetaModel);

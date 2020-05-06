@@ -506,7 +506,7 @@ public class CloneVisitor implements GenericVisitor<Visitable, Object> {
         SimpleName name = cloneNode(n.getName(), arg);
         ReferenceType type = cloneNode(n.getType(), arg);
         Comment comment = cloneNode(n.getComment(), arg);
-        InstanceOfExpr r = new InstanceOfExpr(n.getTokenRange().orElse(null), expression, type);
+        InstanceOfExpr r = new InstanceOfExpr(n.getTokenRange().orElse(null), expression, type, name);
         r.setComment(comment);
         n.getOrphanComments().stream().map(Comment::clone).forEach(r::addOrphanComment);
         copyData(n, r);

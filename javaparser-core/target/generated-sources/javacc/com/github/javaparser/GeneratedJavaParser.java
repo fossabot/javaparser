@@ -2544,7 +2544,7 @@ ret = new BinaryExpr(range(ret, token()), ret, right, op);
     case INSTANCEOF:{
       jj_consume_token(INSTANCEOF);
       type = AnnotatedReferenceType();
-ret = new InstanceOfExpr(range(ret, token()), ret, type);
+ret = new InstanceOfExpr(range(ret, token()), ret, type, null);
       switch (jj_ntk == -1 ? jj_ntk_f() : jj_ntk) {
       case ENUM:
       case STRICTFP:
@@ -2561,7 +2561,7 @@ ret = new InstanceOfExpr(range(ret, token()), ret, type);
       case TRANSITIVE:
       case IDENTIFIER:{
         name = SimpleName();
-ret = new InstanceOfExpr(range(ret, token()), ret, type);
+ret = new InstanceOfExpr(range(ret, token()), ret, type, name);
         break;
         }
       default:
