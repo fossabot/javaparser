@@ -1633,12 +1633,16 @@ Expression InstanceOfExpression():
     Expression ret;
     ReferenceType type;
     NodeList<AnnotationExpr> annotations;
+    String identifier;
 }
 {
     ret = RelationalExpression()
     [
         "instanceof"
-        type = AnnotatedReferenceType() { ret = new InstanceOfExpr(range(ret, token()), ret, type); }
+        type = AnnotatedReferenceType(){ ret = new InstanceOfExpr(range(ret, token()), ret, type); }
+        // OPTIONALLY GET THE IDENTIFIER, IF LOOKAHEAD (VIA []) INDICATES  THAT IT IS THERE...
+        // IF SO, REPLACE THE PREVIOUS RET WITH THES ONE WHICH DOES TAKE THE IDNETIFIRER INTO ACCOUNT...
+        [identifier = Identifier(){ ret = new InstanceOfExpr(range(ret, token()), ret, type); }]
     ]
     { return ret; }
 }

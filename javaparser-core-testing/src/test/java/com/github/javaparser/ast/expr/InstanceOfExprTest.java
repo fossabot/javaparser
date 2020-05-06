@@ -50,6 +50,12 @@ class InstanceOfExprTest {
     void annotationsOnTheType() {
         InstanceOfExpr expr = StaticJavaParser.parseExpression("s instanceof @A @DA String");
 
+        expr.getTokenRange().ifPresent(javaTokens -> {
+            javaTokens.forEach(javaToken -> {
+                System.out.println("javaToken = " + javaToken);
+            });
+        });
+
         assertThat(expr.getType().getAnnotations()).containsExactly(new MarkerAnnotationExpr("A"), new MarkerAnnotationExpr("DA"));
     }
 
@@ -61,6 +67,12 @@ class InstanceOfExprTest {
 
         // TODO: Does this compile/parse?
         // TODO: Can we get the relevant parts out of it?
+
+        expr.getTokenRange().ifPresent(javaTokens -> {
+            javaTokens.forEach(javaToken -> {
+                System.out.println("javaToken = " + javaToken);
+            });
+        });
 
     }
 
