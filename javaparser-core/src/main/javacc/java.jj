@@ -2555,7 +2555,7 @@ TryStmt TryStatement():
               "catch" {catchBegin=token();}
               "(" exceptModifier = Modifiers() { typesBegin = exceptModifier.begin; }
             exceptionType = ReferenceType(emptyList()) { exceptionTypes.add(exceptionType); typesBegin = orIfInvalid(typesBegin, token()); }
-              ( "|" exceptionType = AnnotatedReferenceType() { exceptionTypes.add(exceptionType); } )*
+              ("|" exceptionType = AnnotatedReferenceType() { exceptionTypes.add(exceptionType); })*
               exceptId = VariableDeclaratorId() { paramEnd = token(); }
               ")"
 
