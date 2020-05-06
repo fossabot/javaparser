@@ -48,51 +48,49 @@ import static org.junit.jupiter.api.Assertions.*;
 class InstanceOfExprTest {
 
     @Test
-    void annotationsOnTheType() {
-        InstanceOfExpr expr = StaticJavaParser.parseExpression("s instanceof @A @DA String");
-
-        expr.getTokenRange().ifPresent(javaTokens -> {
-            javaTokens.forEach(javaToken -> {
-                System.out.println("javaToken = " + javaToken);
-            });
-        });
-
-        assertThat(expr.getType().getAnnotations()).containsExactly(new MarkerAnnotationExpr("A"), new MarkerAnnotationExpr("DA"));
-    }
-
-
-    @Test
-    void instanceOfPatternExpression() {
-        String x = "obj instanceof String s";
-        InstanceOfExpr expr = TestParser.parseExpression(LanguageLevel.JAVA_14, x);
-
-        expr.getTokenRange().ifPresent(javaTokens -> {
-            javaTokens.forEach(javaToken -> {
-                System.out.println("javaToken = " + javaToken);
-            });
-        });
+    void annotationsOnTheType_patternExpression() {
+        InstanceOfExpr expr = StaticJavaParser.parseExpression("obj instanceof @A @DA String s");
 
         assertEquals("obj", expr.getExpression().toString());
         assertEquals("String", expr.getType().asString());
         assertTrue(expr.getName().isPresent());
 
+        assertThat(expr.getType().getAnnotations())
+                .containsExactly(
+                        new MarkerAnnotationExpr("A"),
+                        new MarkerAnnotationExpr("DA")
+                );
     }
 
     @Test
-    void instanceOfReferenceTypeExpression() {
-        String x = "obj instanceof String";
+    void annotationsOnTheType_referenceTypeExpression() {
+        InstanceOfExpr expr = StaticJavaParser.parseExpression("obj instanceof @A @DA String");
+
+        assertEquals("obj", expr.getExpression().toString());
+        assertEquals("String", expr.getType().asString());
+        assertFalse(expr.getName().isPresent());
+
+        assertThat(expr.getType().getAnnotations()).containsExactly(new MarkerAnnotationExpr("A"), new MarkerAnnotationExpr("DA"));
+    }
+
+    @Test
+    void instanceOf_patternExpression() {
+        String x = "obj instanceof String s";
         InstanceOfExpr expr = TestParser.parseExpression(LanguageLevel.JAVA_14, x);
 
-        expr.getTokenRange().ifPresent(javaTokens -> {
-            javaTokens.forEach(javaToken -> {
-                System.out.println("javaToken = " + javaToken);
-            });
-        });
+        assertEquals("obj", expr.getExpression().toString());
+        assertEquals("String", expr.getType().asString());
+        assertTrue(expr.getName().isPresent());
+    }
+
+    @Test
+    void instanceOf_referenceTypeExpression() {
+        String x = "obj instanceof String";
+        InstanceOfExpr expr = TestParser.parseExpression(LanguageLevel.JAVA_14, x);
 
         assertEquals("obj", expr.getExpression().toString());
         assertEquals(String.class.getSimpleName(), expr.getType().asString());
         assertFalse(expr.getName().isPresent());
-
     }
 
 
