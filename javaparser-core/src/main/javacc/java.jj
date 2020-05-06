@@ -1639,9 +1639,8 @@ Expression InstanceOfExpression():
 {
     ret = RelationalExpression()
     [
-        "instanceof" type = AnnotatedReferenceType() {
-            ret = new InstanceOfExpr(range(ret, token()), ret, type);
-        }
+        "instanceof"
+        type = AnnotatedReferenceType() { ret = new InstanceOfExpr(range(ret, token()), ret, type); }
     ]
     { return ret; }
 }
