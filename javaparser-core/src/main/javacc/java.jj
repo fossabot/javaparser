@@ -1628,21 +1628,30 @@ Expression EqualityExpression():
     { return ret; }
 }
 
+Expression PatternExpression() :
+{
+    ReferenceType type;
+    SimpleName name;
+}
+{
+    type = AnnotatedReferenceType()
+    name = SimpleName()
+    { return new PatternExpr(range(type, token()), type, name) }
+}
+
 Expression InstanceOfExpression():
 {
     Expression ret;
     ReferenceType type;
     NodeList<AnnotationExpr> annotations;
-    SimpleName name;
 }
 {
     ret = RelationalExpression()
     [
         "instanceof"
-        (LOOKAHEAD(AnnotatedReferenceType() SimpleName())
-            type = AnnotatedReferenceType()
-            name = SimpleName()
-            { ret = new InstanceOfExpr(range(ret, token()), ret, type, name); }
+        (LOOKAHEAD(PatternExpression())
+            pattern = PatternExpression()
+            { ret = new InstanceOfExpr(range(ret, token()), ret, pattern.getType(), pattern.getName()); }
         |
             type = AnnotatedReferenceType()
             { ret = new InstanceOfExpr(range(ret, token()), ret, type, null); }
