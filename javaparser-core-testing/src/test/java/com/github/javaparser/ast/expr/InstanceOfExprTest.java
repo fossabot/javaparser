@@ -72,9 +72,9 @@ class InstanceOfExprTest {
             });
         });
 
-//        assertEquals("obj", expr.getExpression().toString());
+        assertEquals("obj", expr.getExpression().toString());
         assertEquals("String", expr.getType().asString());
-//        assertTrue(expr.getName().isPresent());
+        assertTrue(expr.getName().isPresent());
 
     }
 

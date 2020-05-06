@@ -1639,10 +1639,14 @@ Expression InstanceOfExpression():
     ret = RelationalExpression()
     [
         "instanceof"
-        type = AnnotatedReferenceType(){ ret = new InstanceOfExpr(range(ret, token()), ret, type, null); }
-        // OPTIONALLY GET THE IDENTIFIER, IF LOOKAHEAD (VIA []) INDICATES  THAT IT IS THERE...
-        // IF SO, REPLACE THE PREVIOUS RET WITH THES ONE WHICH DOES TAKE THE IDNETIFIRER INTO ACCOUNT...
-        [name = SimpleName() { ret = new InstanceOfExpr(range(ret, token()), ret, type, name); }]
+        (LOOKAHEAD(AnnotatedReferenceType() SimpleName())
+            type = AnnotatedReferenceType()
+            name = SimpleName()
+            { ret = new InstanceOfExpr(range(ret, token()), ret, type, name); }
+        |
+            type = AnnotatedReferenceType()
+            { ret = new InstanceOfExpr(range(ret, token()), ret, type, null); }
+        )
     ]
     { return ret; }
 }
