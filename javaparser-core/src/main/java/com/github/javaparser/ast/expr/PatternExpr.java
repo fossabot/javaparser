@@ -23,6 +23,8 @@ package com.github.javaparser.ast.expr;
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Generated;
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.visitor.GenericVisitor;
@@ -61,7 +63,7 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
  *
  * @author Roger Howell
  */
-public class PatternExpr extends Expression {
+public class PatternExpr extends Expression implements NodeWithSimpleName<PatternExpr>, NodeWithType<PatternExpr, ReferenceType> {
 
     private SimpleName name;
 
