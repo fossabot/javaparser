@@ -81,6 +81,22 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
         customInitialization();
     }
 
+    /**
+     * Helper method which, if this is an expression with a pattern, returns the identifier/name.
+     * <br>
+     * <br>For example:
+     * <br>{@code obj instanceof String stringName}
+     * <br>
+     * <br>In this example, {@code getName()} returns {@code stringName}
+     */
+    public Optional<SimpleName> getName() {
+        if (pattern == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(pattern.getName());
+        }
+    }
+
     @Override
     @Generated("com.github.javaparser.generator.core.node.AcceptGenerator")
     public <R, A> R accept(final GenericVisitor<R, A> v, final A arg) {

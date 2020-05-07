@@ -81,6 +81,10 @@ class InstanceOfExprTest {
         PatternExpr patternExpr = expr.getPattern().get();
         assertEquals("String", patternExpr.getType().asString());
         assertEquals("s", patternExpr.getName().asString());
+
+        //
+        assertTrue(expr.getName().isPresent());
+        assertEquals("s", expr.getName().get().asString());
     }
 
     @Test
@@ -91,6 +95,9 @@ class InstanceOfExprTest {
         assertEquals("obj", expr.getExpression().toString());
         assertEquals(String.class.getSimpleName(), expr.getType().asString());
         assertFalse(expr.getPattern().isPresent());
+
+        //
+        assertFalse(expr.getName().isPresent());
     }
 
 
