@@ -40,12 +40,59 @@ import java.util.function.Consumer;
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
 /**
- * Usage of the instanceof operator.
+ * <h1>The instanceof statement</h1>
+ *
+ * <h2>Java ?? to 13</h2>
+ * The {@code instanceof} expression is a
+ * <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.20">relational operator</a>,
+ * evaluating to true if the object on the left hand side
+ * is an instance of the type ({@link ReferenceType}) on the right hand side.
+ * <br>
+ * <br>
+ * Example:
  * <br>{@code tool instanceof Drill}
- * <br>JEP305 introduced the ability to assign a name to a matched node.
+ * <br>
+ * <br>This is then used wherever a conditional/boolean value can be used. For example:
+ * <br>
+ * <pre>{@code if (obj instanceof String) {
+ *     String s = (String) obj;
+ *     // use s
+ * }}</pre>
+ * <br>
+ * <h2>Java 14</h2>
+ * Since JDK14, it is possible to bind a variable that is cast to the type being tested against.
+ * This is referred to as a {@code Pattern} within <a href="https://bugs.openjdk.java.net/browse/JDK-8181287">JEP305</a>,
+ * and avoids the need to cast to the desired type.
+ * <br>
+ * Example:
  * <br>{@code tool instanceof Drill d}
+ * <br>
+ * <br>This is then used wherever a conditional/boolean value can be used. The scope of the variable created can vary, and is defined further within
+ * <a href="https://bugs.openjdk.java.net/browse/JDK-8181287">JEP305</a>.
+ * <br>
+ * <pre>{@code if (obj instanceof String s) {
+ *     // can use s here
+ * } else {
+ *     // can't use s here
+ * }}</pre>
+ * <br>
+ * <br>
+ * <h3>JDK14 Grammar</h3>
+ * Per JEP305:
+ * <br>
+ * <pre>{@code RelationalExpression:
+ *      ...
+ *      RelationalExpression instanceof ReferenceType
+ *      RelationalExpression instanceof Pattern
+ *
+ * Pattern:
+ *      ReferenceType Identifier}</pre>
  *
  * @author Julio Vilmar Gesser
+ *
+ * @see com.github.javaparser.ast.expr.PatternExpr
+ * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8181287">JEP305: https://bugs.openjdk.java.net/browse/JDK-8181287</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.20">https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.20</a>
  */
 public class InstanceOfExpr extends Expression implements NodeWithType<InstanceOfExpr, ReferenceType>, NodeWithExpression<InstanceOfExpr> {
 

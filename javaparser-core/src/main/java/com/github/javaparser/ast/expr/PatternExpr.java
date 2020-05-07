@@ -63,6 +63,41 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
  *
  * @author Roger Howell
  */
+
+/**
+ * <h1>The instanceof statement</h1>
+ *
+ * <h2>Java 1.0 to 13</h2>
+ * Not available.
+ * <br>
+ * <h2>Java 14</h2>
+ * Since JDK14, it is possible to bind a variable that is cast to the type being tested against.
+ * This is referred to as a {@code Pattern} within <a href="https://bugs.openjdk.java.net/browse/JDK-8181287">JEP305</a>,
+ * and avoids the need to cast to the desired type.
+ * <br>
+ * Example:
+ * <br>
+ * <pre>{@code
+ * tool instanceof Drill d
+ *                 ^^^^^^^
+ *                 Pattern
+ * }</pre>
+ * <br>Note: While this is exclusively used within {@code instanceof} operators for now, JEP305 suggests this might
+ * be used more widely in the future (e.g. in switch expressions/statements).
+ * <br>
+ * <br>
+ * <h3>JDK14 Grammar</h3>
+ * Per JEP305 (not currently listed within the JLS):
+ * <br>
+ * <pre>{@code Pattern:
+ *      ReferenceType Identifier}</pre>
+ *
+ * @author Roger Howell
+ *
+ * @see com.github.javaparser.ast.expr.InstanceOfExpr
+ * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8181287">JEP305: https://bugs.openjdk.java.net/browse/JDK-8181287</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.20">https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.20</a>
+ */
 public class PatternExpr extends Expression implements NodeWithSimpleName<PatternExpr>, NodeWithType<PatternExpr, ReferenceType> {
 
     private SimpleName name;
