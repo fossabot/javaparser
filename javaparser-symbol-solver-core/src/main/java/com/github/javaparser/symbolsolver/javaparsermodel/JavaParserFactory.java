@@ -34,6 +34,7 @@ import com.github.javaparser.symbolsolver.javaparsermodel.declarations.*;
 import com.github.javaparser.symbolsolver.javaparsermodel.declarators.FieldSymbolDeclarator;
 import com.github.javaparser.symbolsolver.javaparsermodel.declarators.NoSymbolDeclarator;
 import com.github.javaparser.symbolsolver.javaparsermodel.declarators.ParameterSymbolDeclarator;
+import com.github.javaparser.symbolsolver.javaparsermodel.declarators.PatternSymbolDeclarator;
 import com.github.javaparser.symbolsolver.javaparsermodel.declarators.VariableSymbolDeclarator;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.SymbolDeclarator;
@@ -127,6 +128,11 @@ public class JavaParserFactory {
                 return new NoSymbolDeclarator<>(expressionStmt, typeSolver);
             }
         } else if (node instanceof IfStmt) {
+            if(node.findAll(PatternExpr.class).size() == 1) {
+                PatternExpr patternExpr = node.findAll(PatternExpr.class).get(0);
+                return new PatternSymbolDeclarator(patternExpr, typeSolver);
+            }
+            // else if() -- FIXME: some logic to figure out which one is relevant...
             return new NoSymbolDeclarator<>((IfStmt) node, typeSolver);
         } else if (node instanceof ForEachStmt) {
             ForEachStmt foreachStmt = (ForEachStmt) node;
