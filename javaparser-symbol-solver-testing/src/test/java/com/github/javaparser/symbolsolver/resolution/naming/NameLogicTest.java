@@ -305,6 +305,12 @@ class NameLogicTest extends AbstractNameLogicTest {
     }
 
     @Test
+    void instanceOfPatternTypeName() {
+        assertNameInCodeIsSyntactically("void myMethod() { if (myValue instanceof Foo f) { }; }", "Foo",
+                NameCategory.TYPE_NAME, ParseStart.CLASS_BODY);
+    }
+
+    @Test
     void methodReferenceTypeName() {
         assertNameInCodeIsSyntactically("void myMethod() { Object o = Foo::myMethod; }", "Foo",
                 NameCategory.TYPE_NAME, ParseStart.CLASS_BODY);
@@ -813,6 +819,12 @@ class NameLogicTest extends AbstractNameLogicTest {
     @Test
     void classifyRoleInstanceOfTypeName() {
         assertNameInCodeHasRole("void myMethod() { if (myValue instanceof Foo) { }; }", "Foo",
+                REFERENCE, ParseStart.CLASS_BODY);
+    }
+
+    @Test
+    void classifyRoleInstanceOfPatternTypeName() {
+        assertNameInCodeHasRole("void myMethod() { if (myValue instanceof Foo f) { }; }", "Foo",
                 REFERENCE, ParseStart.CLASS_BODY);
     }
 
