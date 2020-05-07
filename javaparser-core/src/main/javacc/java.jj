@@ -1652,7 +1652,7 @@ Expression InstanceOfExpression():
         "instanceof"
         (LOOKAHEAD(PatternExpression())
             pattern = PatternExpression()
-            { ret = new InstanceOfExpr(range(ret, token()), ret, pattern.getType(), pattern.getName()); }
+            { ret = new InstanceOfExpr(range(ret, token()), ret, pattern.getType(), pattern); }
         |
             type = AnnotatedReferenceType()
             { ret = new InstanceOfExpr(range(ret, token()), ret, type, null); }

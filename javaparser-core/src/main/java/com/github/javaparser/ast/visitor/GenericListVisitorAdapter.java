@@ -955,8 +955,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
             if (tmp != null)
                 result.addAll(tmp);
         }
-        if (n.getName().isPresent()) {
-            tmp = n.getName().get().accept(this, arg);
+        if (n.getPattern().isPresent()) {
+            tmp = n.getPattern().get().accept(this, arg);
             if (tmp != null)
                 result.addAll(tmp);
         }

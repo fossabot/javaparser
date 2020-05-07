@@ -52,7 +52,7 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     private Expression expression;
 
     @OptionalProperty
-    private SimpleName name;
+    private PatternExpr pattern;
 
     private ReferenceType type;
 
@@ -65,19 +65,19 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     }
 
     @AllFieldsConstructor
-    public InstanceOfExpr(final Expression expression, final ReferenceType type, final SimpleName name) {
-        this(null, expression, type, name);
+    public InstanceOfExpr(final Expression expression, final ReferenceType type, final PatternExpr pattern) {
+        this(null, expression, type, pattern);
     }
 
     /**
      * This constructor is used by the parser and is considered private.
      */
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
-    public InstanceOfExpr(TokenRange tokenRange, Expression expression, ReferenceType type, SimpleName name) {
+    public InstanceOfExpr(TokenRange tokenRange, Expression expression, ReferenceType type, PatternExpr pattern) {
         super(tokenRange);
         setExpression(expression);
         setType(type);
-        setName(name);
+        setPattern(pattern);
         customInitialization();
     }
 
@@ -117,8 +117,8 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
-    public Optional<SimpleName> getName() {
-        return Optional.ofNullable(name);
+    public Optional<PatternExpr> getPattern() {
+        return Optional.ofNullable(pattern);
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
@@ -142,9 +142,9 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     public boolean remove(Node node) {
         if (node == null)
             return false;
-        if (name != null) {
-            if (node == name) {
-                removeName();
+        if (pattern != null) {
+            if (node == pattern) {
+                removePattern();
                 return true;
             }
         }
@@ -152,8 +152,8 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     }
 
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
-    public InstanceOfExpr removeName() {
-        return setName((SimpleName) null);
+    public InstanceOfExpr removePattern() {
+        return setPattern((PatternExpr) null);
     }
 
     @Override
@@ -165,9 +165,9 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
             setExpression((Expression) replacementNode);
             return true;
         }
-        if (name != null) {
-            if (node == name) {
-                setName((SimpleName) replacementNode);
+        if (pattern != null) {
+            if (node == pattern) {
+                setPattern((PatternExpr) replacementNode);
                 return true;
             }
         }
@@ -193,15 +193,15 @@ public class InstanceOfExpr extends Expression implements NodeWithType<InstanceO
     }
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
-    public InstanceOfExpr setName(final SimpleName name) {
-        if (name == this.name) {
+    public InstanceOfExpr setPattern(final PatternExpr pattern) {
+        if (pattern == this.pattern) {
             return (InstanceOfExpr) this;
         }
-        notifyPropertyChange(ObservableProperty.NAME, this.name, name);
-        if (this.name != null)
-            this.name.setParentNode(null);
-        this.name = name;
-        setAsParentNodeOf(name);
+        notifyPropertyChange(ObservableProperty.PATTERN, this.pattern, pattern);
+        if (this.pattern != null)
+            this.pattern.setParentNode(null);
+        this.pattern = pattern;
+        setAsParentNodeOf(pattern);
         return this;
     }
 

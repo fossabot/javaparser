@@ -526,7 +526,7 @@ public class NoCommentEqualsVisitor implements GenericVisitor<Boolean, Visitable
         final InstanceOfExpr n2 = (InstanceOfExpr) arg;
         if (!nodeEquals(n.getExpression(), n2.getExpression()))
             return false;
-        if (!nodeEquals(n.getName(), n2.getName()))
+        if (!nodeEquals(n.getPattern(), n2.getPattern()))
             return false;
         if (!nodeEquals(n.getType(), n2.getType()))
             return false;

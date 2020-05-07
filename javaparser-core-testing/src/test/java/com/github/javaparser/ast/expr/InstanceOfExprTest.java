@@ -51,10 +51,6 @@ class InstanceOfExprTest {
     void annotationsOnTheType_patternExpression() {
         InstanceOfExpr expr = StaticJavaParser.parseExpression("obj instanceof @A @DA String s");
 
-        assertEquals("obj", expr.getExpression().toString());
-        assertEquals("String", expr.getType().asString());
-        assertTrue(expr.getName().isPresent());
-
         assertThat(expr.getType().getAnnotations())
                 .containsExactly(
                         new MarkerAnnotationExpr("A"),
@@ -66,11 +62,11 @@ class InstanceOfExprTest {
     void annotationsOnTheType_referenceTypeExpression() {
         InstanceOfExpr expr = StaticJavaParser.parseExpression("obj instanceof @A @DA String");
 
-        assertEquals("obj", expr.getExpression().toString());
-        assertEquals("String", expr.getType().asString());
-        assertFalse(expr.getName().isPresent());
-
-        assertThat(expr.getType().getAnnotations()).containsExactly(new MarkerAnnotationExpr("A"), new MarkerAnnotationExpr("DA"));
+        assertThat(expr.getType().getAnnotations())
+                .containsExactly(
+                        new MarkerAnnotationExpr("A"),
+                        new MarkerAnnotationExpr("DA")
+                );
     }
 
     @Test
@@ -80,7 +76,11 @@ class InstanceOfExprTest {
 
         assertEquals("obj", expr.getExpression().toString());
         assertEquals("String", expr.getType().asString());
-        assertTrue(expr.getName().isPresent());
+        assertTrue(expr.getPattern().isPresent());
+
+        PatternExpr patternExpr = expr.getPattern().get();
+        assertEquals("String", patternExpr.getType().asString());
+        assertEquals("s", patternExpr.getName().asString());
     }
 
     @Test
@@ -90,7 +90,7 @@ class InstanceOfExprTest {
 
         assertEquals("obj", expr.getExpression().toString());
         assertEquals(String.class.getSimpleName(), expr.getType().asString());
-        assertFalse(expr.getName().isPresent());
+        assertFalse(expr.getPattern().isPresent());
     }
 
 
