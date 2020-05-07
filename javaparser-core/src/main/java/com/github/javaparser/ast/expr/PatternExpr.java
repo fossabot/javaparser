@@ -39,32 +39,6 @@ import com.github.javaparser.metamodel.PatternExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
 
 /**
- * As part of JEP305, instanceofexpr can now include what they refer to as a "pattern" instead of just a type.
- * An option in the future is to allow patterns within e.g. switch statements.
- * <br>
- * <br>
- * e.g. {@code String s} from the instanceof expression:
- * {@code obj instanceof String s}
- * <br>
- * https://bugs.openjdk.java.net/browse/JDK-8181287
- * <br>
- * <br>
- * <pre><code>
- * The instanceof grammar is extended accordingly:
- *
- * RelationalExpression:
- *      ...
- *      RelationalExpression instanceof ReferenceType
- *      RelationalExpression instanceof Pattern
- *
- * Pattern:
- *      ReferenceType Identifier
- * </code></pre>
- *
- * @author Roger Howell
- */
-
-/**
  * <h1>The instanceof statement</h1>
  *
  * <h2>Java 1.0 to 13</h2>
