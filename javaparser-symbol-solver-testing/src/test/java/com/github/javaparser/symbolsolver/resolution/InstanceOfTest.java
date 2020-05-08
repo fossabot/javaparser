@@ -216,6 +216,46 @@ public class InstanceOfTest {
 
     }
 
+    @Test
+    public void binaryExpr_shouldPass() {
+        String x = "class X {\n" +
+                "  public X() {\n" +
+                "    boolean result;\n" +
+                "    String obj = \"abc\";\n" +
+                "    if(obj instanceof String s && s.contains(\"b\")) {\n" +
+                "        // empty block\n" +
+                "    }\n" +
+                "  }\n" +
+                "}\n";
+
+        final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
+        final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
+        assertEquals(1, methodCalls.size());
+
+        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
+
+
+        // Resolving the method call .contains()
+        final ResolvedMethodDeclaration resolve = inScopeMethodCall.resolve();
+        System.out.println("resolve.getQualifiedSignature() = " + resolve.getQualifiedSignature());
+
+        assertEquals("java.lang.String.contains(java.lang.CharSequence)", resolve.getQualifiedSignature());
+        assertEquals("boolean", resolve.getReturnType().describe());
+        assertEquals("contains", resolve.getName());
+        assertEquals(1, resolve.getNumberOfParams());
+        assertEquals("contains(java.lang.CharSequence)", resolve.getSignature());
+
+
+        // Resolving the variable `s`
+        assertTrue(inScopeMethodCall.getScope().isPresent());
+        final Expression expression = inScopeMethodCall.getScope().get();
+
+        final ResolvedType resolvedType = expression.calculateResolvedType();
+        assertEquals("java.lang.String", resolvedType.describe());
+
+
+    }
+
 
 //    @Test
 //    public void givenInstanceOfPattern_andField_thenResolvesToPattern() {
