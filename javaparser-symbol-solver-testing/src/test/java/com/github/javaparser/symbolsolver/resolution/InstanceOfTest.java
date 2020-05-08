@@ -150,6 +150,38 @@ public class InstanceOfTest {
     }
 
 
+//    @Test
+//    public void givenInstanceOfPattern_andField_thenResolvesToPattern() {
+//        String x = "class X {\n" +
+//                "  public X() {\n" +
+//                "    List<Integer> s;\n" +
+//                "    boolean result;\n" +
+//                "    String obj = \"abc\";\n" +
+//                "    if (!(obj instanceof String s) && true) {\n" +
+//                "        result = s.contains(\"b\");\n" +
+//                "    }\n" +
+//                "  }\n" +
+//                " }\n";
+//
+//        final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
+//        final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
+//        assertEquals(1, methodCalls.size());
+//
+//        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
+//
+//        // Resolving the method call .contains()
+//        final ResolvedMethodDeclaration resolve = inScopeMethodCall.resolve();
+//        System.out.println("resolve.getQualifiedSignature() = " + resolve.getQualifiedSignature());
+//
+//        assertEquals("java.lang.String.contains(java.lang.CharSequence)", resolve.getQualifiedSignature());
+//        assertEquals("boolean", resolve.getReturnType().describe());
+//        assertEquals("contains", resolve.getName());
+//        assertEquals(1, resolve.getNumberOfParams());
+//        assertEquals("contains(java.lang.CharSequence)", resolve.getSignature());
+//
+//    }
+
+
     private CompilationUnit parseWithTypeSolver(String code) {
         return parseWithTypeSolver(null, code);
     }

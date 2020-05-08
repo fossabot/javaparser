@@ -26,7 +26,11 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
+import com.github.javaparser.symbolsolver.core.resolution.Context;
+import com.github.javaparser.symbolsolver.model.resolution.SymbolReference;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 
 import java.util.Collections;
@@ -68,5 +72,37 @@ public class BlockStmtContext extends AbstractJavaParserContext<BlockStmt> {
             }
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * With respect to solving, the AST "parent" of a block statement is not necessarily the same as the scope parent.
+     * <br>Example:
+     * <br>
+     * <pre>{@code
+     *  public String x() {
+     *      if(x) {
+     *          // Parent node: the block attached to the method declaration
+     *          // Scope-parent: the block attached to the method declaration
+     *      } else if {
+     *          // Parent node: the if
+     *          // Scope-parent: the block attached to the method declaration
+     *      } else {
+     *          // Parent node: the elseif
+     *          // Scope-parent: the block attached to the method declaration
+     *      }
+     *  }
+     * }</pre>
+     */
+    @Override
+    public SymbolReference<? extends ResolvedValueDeclaration> solveSymbol(String name) {
+        Context parentContext = getParent();
+        while(
+                parentContext instanceof AbstractJavaParserContext
+                        && ((AbstractJavaParserContext) this         ).getWrappedNode() instanceof IfStmt
+                        && ((AbstractJavaParserContext) parentContext).getWrappedNode() instanceof IfStmt // If this is an if inside of an if...
+        ) {
+            parentContext = parentContext.getParent();
+        }
+        return parentContext.solveSymbol(name);
     }
 }
