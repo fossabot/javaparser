@@ -50,36 +50,40 @@ public class InstanceOfTest {
     private final TypeSolver typeSolver = new ReflectionTypeSolver();
 
     @Test
-    public void givenInstanceOfPattern_andField_thenResolvesToPattern() {
-        String x = "class X {\n" +
-                "  public X() {\n" +
-                "    List<Integer> s;\n" +
-                "    boolean result;\n" +
-                "    String obj = \"abc\";\n" +
-                "    if (!(obj instanceof String s) && true) {\n" +
-                "        result = s.contains(\"b\");\n" +
+    public void givenInstanceOfPattern_andField_else_skipBraces_thenResolvesToPattern() {
+        String x = "import java.util.List;\n" +
+                "\n" +
+                "class X {\n" +
+                "    public X() {\n" +
+                "        List<Integer> s;\n" +
+                "        boolean result;\n" +
+                "        String obj = \"abc\";\n" +
+                "        if (!(obj instanceof String s) && true) {\n" +
+                "            // Empty BlockStmt\n" +
+                "        } else\n" +
+                "            result = s.contains(\"b\");\n" +
+                "\n" +
                 "    }\n" +
-                "  }\n" +
-                " }\n";
+                "}\n";
 
         final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
         final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
         assertEquals(1, methodCalls.size());
 
-        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
+//        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
+        MethodCallExpr outOfScopeMethodCall = methodCalls.get(0);
 
         // Resolving the method call .contains()
-        final ResolvedMethodDeclaration resolve = inScopeMethodCall.resolve();
+        final ResolvedMethodDeclaration resolve = outOfScopeMethodCall.resolve();
         System.out.println("resolve.getQualifiedSignature() = " + resolve.getQualifiedSignature());
 
-        assertEquals("java.lang.String.contains(java.lang.CharSequence)", resolve.getQualifiedSignature());
+        assertEquals("java.util.List.contains(java.lang.Object)", resolve.getQualifiedSignature());
         assertEquals("boolean", resolve.getReturnType().describe());
         assertEquals("contains", resolve.getName());
         assertEquals(1, resolve.getNumberOfParams());
-        assertEquals("contains(java.lang.CharSequence)", resolve.getSignature());
+        assertEquals("contains(java.lang.Object)", resolve.getSignature());
 
     }
-
 
     @Test
     public void givenInstanceOfPattern_andField_skipBraces_thenResolvesToPattern() {
@@ -113,41 +117,35 @@ public class InstanceOfTest {
     }
 
     @Test
-    public void givenInstanceOfPattern_andField_else_skipBraces_thenResolvesToPattern() {
-        String x = "import java.util.List;\n" +
-                "\n" +
-                "class X {\n" +
-                "    public X() {\n" +
-                "        List<Integer> s;\n" +
-                "        boolean result;\n" +
-                "        String obj = \"abc\";\n" +
-                "        if (!(obj instanceof String s) && true) {\n" +
-                "            // Empty BlockStmt\n" +
-                "        } else\n" +
-                "            result = s.contains(\"b\");\n" +
-                "\n" +
+    public void givenInstanceOfPattern_andField_thenResolvesToPattern() {
+        String x = "class X {\n" +
+                "  public X() {\n" +
+                "    List<Integer> s;\n" +
+                "    boolean result;\n" +
+                "    String obj = \"abc\";\n" +
+                "    if (!(obj instanceof String s) && true) {\n" +
+                "        result = s.contains(\"b\");\n" +
                 "    }\n" +
-                "}\n";
+                "  }\n" +
+                " }\n";
 
         final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
         final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
         assertEquals(1, methodCalls.size());
 
-//        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
-        MethodCallExpr outOfScopeMethodCall = methodCalls.get(0);
+        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
 
         // Resolving the method call .contains()
-        final ResolvedMethodDeclaration resolve = outOfScopeMethodCall.resolve();
+        final ResolvedMethodDeclaration resolve = inScopeMethodCall.resolve();
         System.out.println("resolve.getQualifiedSignature() = " + resolve.getQualifiedSignature());
 
-        assertEquals("java.util.List.contains(java.lang.String)", resolve.getQualifiedSignature());
+        assertEquals("java.lang.String.contains(java.lang.CharSequence)", resolve.getQualifiedSignature());
         assertEquals("boolean", resolve.getReturnType().describe());
         assertEquals("contains", resolve.getName());
         assertEquals(1, resolve.getNumberOfParams());
-        assertEquals("contains(java.lang.String)", resolve.getSignature());
+        assertEquals("contains(java.lang.CharSequence)", resolve.getSignature());
 
     }
-
 
     @Test
     public void givenInstanceOfPattern_thenCorrectNumberOfMethodCalls() {
@@ -156,6 +154,19 @@ public class InstanceOfTest {
 
         System.out.println(methodCalls);
         assertEquals(2, methodCalls.size());
+    }
+
+    @Test
+    public void givenInstanceOfPattern_usingJdk13_thenExpectException() {
+        ParserConfiguration parserConfiguration = new ParserConfiguration();
+        parserConfiguration.setSymbolResolver(new JavaSymbolSolver(typeSolver));
+        parserConfiguration.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_13);
+
+        ParseResult<CompilationUnit> parseResult = new JavaParser(parserConfiguration)
+                .parse(ParseStart.COMPILATION_UNIT, new StringProvider(CODE_INSTANCEOF_PATTERN_IF));
+
+        assertEquals(1, parseResult.getProblems().size());
+        assertEquals("Use of patterns with instanceof is not supported.", parseResult.getProblem(0).getMessage());
     }
 
     @Test
@@ -172,19 +183,6 @@ public class InstanceOfTest {
             final ResolvedMethodDeclaration resolve = outOfScopeMethodCall.resolve();
             System.out.println("resolve = " + resolve);
         });
-    }
-
-    @Test
-    public void givenInstanceOfPattern_usingJdk13_thenExpectException() {
-        ParserConfiguration parserConfiguration = new ParserConfiguration();
-        parserConfiguration.setSymbolResolver(new JavaSymbolSolver(typeSolver));
-        parserConfiguration.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_13);
-
-        ParseResult<CompilationUnit> parseResult = new JavaParser(parserConfiguration)
-                .parse(ParseStart.COMPILATION_UNIT, new StringProvider(CODE_INSTANCEOF_PATTERN_IF));
-
-        assertEquals(1, parseResult.getProblems().size());
-        assertEquals("Use of patterns with instanceof is not supported.", parseResult.getProblem(0).getMessage());
     }
 
     @Test

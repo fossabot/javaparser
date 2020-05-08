@@ -306,6 +306,7 @@ class NameLogicTest extends AbstractNameLogicTest {
 
     @Test
     void instanceOfPatternTypeName() {
+        // Note: Requires JDK14
         assertNameInCodeIsSyntactically("void myMethod() { if (myValue instanceof Foo f) { }; }", "Foo",
                 NameCategory.TYPE_NAME, ParseStart.CLASS_BODY);
     }
@@ -824,6 +825,7 @@ class NameLogicTest extends AbstractNameLogicTest {
 
     @Test
     void classifyRoleInstanceOfPatternTypeName() {
+        // Note: Requires JDK14
         assertNameInCodeHasRole("void myMethod() { if (myValue instanceof Foo f) { }; }", "Foo",
                 REFERENCE, ParseStart.CLASS_BODY);
     }

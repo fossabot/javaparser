@@ -130,14 +130,6 @@ public class JavaParserFactory {
             } else {
                 return new NoSymbolDeclarator<>(expressionStmt, typeSolver);
             }
-        } else if (node instanceof IfStmt) {
-            Expression condition = ((IfStmt) node).getCondition();
-            if(condition.findAll(PatternExpr.class).size() == 1) {
-                PatternExpr patternExpr = node.findAll(PatternExpr.class).get(0);
-                return new PatternSymbolDeclarator(patternExpr, typeSolver);
-            }
-            // else if() -- FIXME: some logic to figure out which one is relevant...
-            return new NoSymbolDeclarator<>((IfStmt) node, typeSolver);
         } else if (node instanceof ForEachStmt) {
             ForEachStmt foreachStmt = (ForEachStmt) node;
             return new VariableSymbolDeclarator(foreachStmt.getVariable(), typeSolver);

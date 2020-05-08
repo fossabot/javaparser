@@ -124,11 +124,25 @@ public class StatementContext<N extends Statement> extends AbstractJavaParserCon
             return getParent().solveSymbolAsValue(name);
         }
         if (demandParentNode(wrappedNode) instanceof IfStmt) {
+            // Only try to get the patternExprs from the IfStmt condition if we're directly inside the "then" section
+            if(nodeContextIsThenOfIfStmt(getParent())) {
+                List<PatternExpr> patternExprs = getParent().patternExprExposedToChild(wrappedNode);
+                for (PatternExpr patternExpr : patternExprs) {
+                    if (patternExpr.getName().getIdentifier().equals(name)) {
+                        JavaParserSymbolDeclaration decl = JavaParserSymbolDeclaration.patternVar(patternExpr, typeSolver);
+                        return Optional.of(Value.from(decl));
+                    }
+                }
+            }
+
+            // Otherwise continue up the scope chain as normal...
             return getParent().solveSymbolAsValue(name);
         }
+
         if (!(demandParentNode(wrappedNode) instanceof NodeWithStatements)) {
             return getParent().solveSymbolAsValue(name);
         }
+
         NodeWithStatements<?> nodeWithStmt = (NodeWithStatements<?>) demandParentNode(wrappedNode);
         int position = -1;
         for (int i = 0; i < nodeWithStmt.getStatements().size(); i++) {
@@ -148,8 +162,7 @@ public class StatementContext<N extends Statement> extends AbstractJavaParserCon
         }
 
         // if nothing is found we should ask the parent context
-        Context parentContext = getParent();
-        return parentContext.solveSymbolAsValue(name);
+        return getParent().solveSymbolAsValue(name);
     }
 
     @Override
@@ -166,7 +179,7 @@ public class StatementContext<N extends Statement> extends AbstractJavaParserCon
         // If this is the "then" section of an if/else if (i.e. not an else) -- e.g. wrappedNode of ExpressionStmt
         // ... consider pattern expressions defined within the IfStmt condition
         boolean nodeContextIsThenOfIfStmt = nodeContextIsThenOfIfStmt(parentContext);
-        if(nodeContextIsThenOfIfStmt) {
+        if (nodeContextIsThenOfIfStmt) {
             List<PatternExpr> patternExprs = parentContext.patternExprExposedToChild(getWrappedNode());
             for (PatternExpr patternExpr : patternExprs) {
                 if (patternExpr.getName().getIdentifier().equals(name)) {
