@@ -117,7 +117,6 @@ public interface Context {
     }
 
 
-
     default Optional<ResolvedFieldDeclaration> fieldDeclarationInScope(String name) {
         if (getParent() == null) {
             return Optional.empty();
@@ -140,25 +139,27 @@ public interface Context {
 
     /**
      * Aim to resolve the given name by looking for a variable matching it.
-     *
-     * To do it consider local variables that are visible in a certain scope as defined in JLS 6.3. Scope of a Declaration.
-     *
-     * 1. The scope of a local variable declaration in a block (§14.4) is the rest of the block in which the declaration
+     * <p>
+     * To do it consider local variables that are visible in a certain scope as defined in JLS 6.3. Scope of a
+     * Declaration.
+     * <p>
+     * 1. The scope of a local variable declaration in a block (§14.4) is the rest of the block in which the
+     * declaration
      * appears, starting with its own initializer and including any further declarators to the right in the local
      * variable declaration statement.
-     *
+     * <p>
      * 2. The scope of a local variable declared in the ForInit part of a basic for statement (§14.14.1) includes all
      * of the following:
      * 2.1 Its own initializer
      * 2.2 Any further declarators to the right in the ForInit part of the for statement
      * 2.3 The Expression and ForUpdate parts of the for statement
      * 2.4 The contained Statement
-     *
+     * <p>
      * 3. The scope of a local variable declared in the FormalParameter part of an enhanced for statement (§14.14.2) is
      * the contained Statement.
      * 4. The scope of a parameter of an exception handler that is declared in a catch clause of a try statement
      * (§14.20) is the entire block associated with the catch.
-     *
+     * <p>
      * 5. The scope of a variable declared in the ResourceSpecification of a try-with-resources statement (§14.20.3) is
      * from the declaration rightward over the remainder of the ResourceSpecification and the entire try block
      * associated with the try-with-resources statement.
@@ -279,10 +280,10 @@ public interface Context {
             MethodUsage methodUsage;
             if (methodDeclaration instanceof TypeVariableResolutionCapability) {
                 methodUsage = ((TypeVariableResolutionCapability) methodDeclaration)
-                                      .resolveTypeVariables(this, argumentsTypes);
+                        .resolveTypeVariables(this, argumentsTypes);
             } else {
                 throw new UnsupportedOperationException("Resolved method declarations should have the " +
-                                                        TypeVariableResolutionCapability.class.getName() + ".");
+                        TypeVariableResolutionCapability.class.getName() + ".");
             }
 
             return Optional.of(methodUsage);
@@ -343,6 +344,42 @@ public interface Context {
                 if (currentNodeIsAnElseBlock) {
                     return true;
                 }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * <pre>{@code
+     * if() {
+     *     // Does not match here (doesn't need to, as stuff inside of the if() is likely in context..)
+     * } else {
+     *     // Does not match here, as the else block is a field inside of an ifstmt as opposed to child
+     * }
+     * }</pre>
+     *
+     * @return true, If this is an else inside of an if...
+     */
+    default boolean nodeContextIsThenOfIfStmt(Context parentContext) {
+        if (!(parentContext instanceof AbstractJavaParserContext)) {
+            return false;
+        }
+        if (!(this instanceof AbstractJavaParserContext)) {
+            return false;
+        }
+
+        AbstractJavaParserContext<?> abstractContext = (AbstractJavaParserContext<?>) this;
+        AbstractJavaParserContext<?> abstractParentContext = (AbstractJavaParserContext<?>) parentContext;
+
+        Node wrappedNode = abstractContext.getWrappedNode();
+        Node wrappedParentNode = abstractParentContext.getWrappedNode();
+
+        if (wrappedParentNode instanceof IfStmt) {
+            IfStmt parentIfStmt = (IfStmt) wrappedParentNode;
+            boolean currentNodeIsAnElseBlock = parentIfStmt.getThenStmt() == wrappedNode;
+            if (currentNodeIsAnElseBlock) {
+                return true;
             }
         }
 

@@ -47,6 +47,7 @@ import static com.github.javaparser.symbolsolver.javaparser.Navigator.demandPare
 public class JavaParserFactory {
 
     public static Context getContext(Node node, TypeSolver typeSolver) {
+        // TODO: Is order important here?
         if (node == null) {
             throw new NullPointerException("Node should not be null");
         } else if (node instanceof AnnotationDeclaration) {
@@ -61,6 +62,8 @@ public class JavaParserFactory {
             return new ForStatementContext((ForStmt) node, typeSolver);
         } else if (node instanceof IfStmt) {
             return new IfStatementContext((IfStmt) node, typeSolver);
+        } else if (node instanceof ExpressionStmt) {
+            return new ExpressionStmtContext((ExpressionStmt) node, typeSolver);
         } else if (node instanceof LambdaExpr) {
             return new LambdaExprContext((LambdaExpr) node, typeSolver);
         } else if (node instanceof MethodDeclaration) {

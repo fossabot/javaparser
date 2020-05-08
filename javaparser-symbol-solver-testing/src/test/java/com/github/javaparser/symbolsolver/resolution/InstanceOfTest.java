@@ -80,6 +80,75 @@ public class InstanceOfTest {
 
     }
 
+
+    @Test
+    public void givenInstanceOfPattern_andField_skipBraces_thenResolvesToPattern() {
+        String x = "class X {\n" +
+                "  public X() {\n" +
+                "    List<Integer> s;\n" +
+                "    boolean result;\n" +
+                "    String obj = \"abc\";\n" +
+                "    if (!(obj instanceof String s) && true) \n" +
+                "        result = s.contains(\"b\");\n" +
+                "    \n" +
+                "  }\n" +
+                " }\n";
+
+        final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
+        final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
+        assertEquals(1, methodCalls.size());
+
+        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
+
+        // Resolving the method call .contains()
+        final ResolvedMethodDeclaration resolve = inScopeMethodCall.resolve();
+        System.out.println("resolve.getQualifiedSignature() = " + resolve.getQualifiedSignature());
+
+        assertEquals("java.lang.String.contains(java.lang.CharSequence)", resolve.getQualifiedSignature());
+        assertEquals("boolean", resolve.getReturnType().describe());
+        assertEquals("contains", resolve.getName());
+        assertEquals(1, resolve.getNumberOfParams());
+        assertEquals("contains(java.lang.CharSequence)", resolve.getSignature());
+
+    }
+
+    @Test
+    public void givenInstanceOfPattern_andField_else_skipBraces_thenResolvesToPattern() {
+        String x = "import java.util.List;\n" +
+                "\n" +
+                "class X {\n" +
+                "    public X() {\n" +
+                "        List<Integer> s;\n" +
+                "        boolean result;\n" +
+                "        String obj = \"abc\";\n" +
+                "        if (!(obj instanceof String s) && true) {\n" +
+                "            // Empty BlockStmt\n" +
+                "        } else\n" +
+                "            result = s.contains(\"b\");\n" +
+                "\n" +
+                "    }\n" +
+                "}\n";
+
+        final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
+        final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
+        assertEquals(1, methodCalls.size());
+
+//        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
+        MethodCallExpr outOfScopeMethodCall = methodCalls.get(0);
+
+        // Resolving the method call .contains()
+        final ResolvedMethodDeclaration resolve = outOfScopeMethodCall.resolve();
+        System.out.println("resolve.getQualifiedSignature() = " + resolve.getQualifiedSignature());
+
+        assertEquals("java.util.List.contains(java.lang.String)", resolve.getQualifiedSignature());
+        assertEquals("boolean", resolve.getReturnType().describe());
+        assertEquals("contains", resolve.getName());
+        assertEquals(1, resolve.getNumberOfParams());
+        assertEquals("contains(java.lang.String)", resolve.getSignature());
+
+    }
+
+
     @Test
     public void givenInstanceOfPattern_thenCorrectNumberOfMethodCalls() {
         final CompilationUnit cu = parseWithTypeSolver(CODE_INSTANCEOF_PATTERN_IF_ELSE);
