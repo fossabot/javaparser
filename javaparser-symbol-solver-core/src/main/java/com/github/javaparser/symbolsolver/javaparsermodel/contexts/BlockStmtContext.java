@@ -26,11 +26,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
-import com.github.javaparser.symbolsolver.core.resolution.Context;
-import com.github.javaparser.symbolsolver.model.resolution.SymbolReference;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 
 import java.util.Collections;
@@ -63,102 +59,14 @@ public class BlockStmtContext extends AbstractJavaParserContext<BlockStmt> {
 
     private List<VariableDeclarator> localVariablesDeclaredIn(Statement statement) {
         if (statement instanceof ExpressionStmt) {
-            ExpressionStmt expressionStmt = (ExpressionStmt)statement;
+            ExpressionStmt expressionStmt = (ExpressionStmt) statement;
             if (expressionStmt.getExpression() instanceof VariableDeclarationExpr) {
-                VariableDeclarationExpr variableDeclarationExpr = (VariableDeclarationExpr)expressionStmt.getExpression();
+                VariableDeclarationExpr variableDeclarationExpr = (VariableDeclarationExpr) expressionStmt.getExpression();
                 List<VariableDeclarator> variableDeclarators = new LinkedList<>();
                 variableDeclarators.addAll(variableDeclarationExpr.getVariables());
                 return variableDeclarators;
             }
         }
         return Collections.emptyList();
-    }
-
-    /**
-     * With respect to solving, the AST "parent" of a block statement is not necessarily the same as the scope parent.
-     * <br>Example:
-     * <br>
-     * <pre>{@code
-     *  public String x() {
-     *      if(x) {
-     *          // Parent node: the block attached to the method declaration
-     *          // Scope-parent: the block attached to the method declaration
-     *      } else if {
-     *          // Parent node: the if
-     *          // Scope-parent: the block attached to the method declaration
-     *      } else {
-     *          // Parent node: the elseif
-     *          // Scope-parent: the block attached to the method declaration
-     *      }
-     *  }
-     * }</pre>
-     */
-    @Override
-    public SymbolReference<? extends ResolvedValueDeclaration> solveSymbol(String name) {
-        Context parentContext = getParent();
-        while (nodeContextIsNestedIf(parentContext) || nodeContextIsImmediateChildElse(parentContext)) {
-            parentContext = parentContext.getParent();
-            if (parentContext == null) {
-                // Unsolved, if the parent context ends up being null
-                return SymbolReference.unsolved(ResolvedValueDeclaration.class);
-            }
-        }
-
-        return parentContext.solveSymbol(name);
-    }
-
-    /**
-     * <pre>{@code
-     * if() {
-     *     // Does not match here (doesn't need to, as stuff inside of the if() is likely in context..)
-     * } else if() {
-     *     // Matches here
-     * } else {
-     *     // Matches here
-     * }
-     * }</pre>
-     * @return true, If this is an if inside of an if...
-     */
-    private boolean nodeContextIsNestedIf(Context parentContext) {
-        return parentContext instanceof AbstractJavaParserContext
-                && ((AbstractJavaParserContext<?>) this).getWrappedNode() instanceof IfStmt
-                && ((AbstractJavaParserContext<?>) parentContext).getWrappedNode() instanceof IfStmt;
-    }
-
-    /**
-     * <pre>{@code
-     * if() {
-     *     // Does not match here (doesn't need to, as stuff inside of the if() is likely in context..)
-     * } else {
-     *     // Does not match here, as the else block is a field inside of an ifstmt as opposed to child
-     * }
-     * }</pre>
-     * @return true, If this is an else inside of an if...
-     */
-    private boolean nodeContextIsImmediateChildElse(Context parentContext) {
-        if (!(parentContext instanceof AbstractJavaParserContext)) {
-            return false;
-        }
-        if (!(this instanceof AbstractJavaParserContext)) {
-            return false;
-        }
-
-        AbstractJavaParserContext<?> abstractContext = (AbstractJavaParserContext<?>) this;
-        AbstractJavaParserContext<?> abstractParentContext = (AbstractJavaParserContext<?>) parentContext;
-
-        Node wrappedNode = abstractContext.getWrappedNode();
-        Node wrappedParentNode = abstractParentContext.getWrappedNode();
-
-        if (wrappedParentNode instanceof IfStmt) {
-            IfStmt parentIfStmt = (IfStmt) wrappedParentNode;
-            if (parentIfStmt.getElseStmt().isPresent()) {
-                boolean currentNodeIsAnElseBlock = parentIfStmt.getElseStmt().get() == wrappedNode;
-                if (currentNodeIsAnElseBlock) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }
