@@ -128,7 +128,8 @@ public class JavaParserFactory {
                 return new NoSymbolDeclarator<>(expressionStmt, typeSolver);
             }
         } else if (node instanceof IfStmt) {
-            if(node.findAll(PatternExpr.class).size() == 1) {
+            Expression condition = ((IfStmt) node).getCondition();
+            if(condition.findAll(PatternExpr.class).size() == 1) {
                 PatternExpr patternExpr = node.findAll(PatternExpr.class).get(0);
                 return new PatternSymbolDeclarator(patternExpr, typeSolver);
             }
