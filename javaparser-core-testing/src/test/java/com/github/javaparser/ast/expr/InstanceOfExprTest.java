@@ -21,7 +21,6 @@
 
 package com.github.javaparser.ast.expr;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.utils.TestParser;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +48,7 @@ class InstanceOfExprTest {
 
     @Test
     void annotationsOnTheType_patternExpression() {
-        InstanceOfExpr expr = StaticJavaParser.parseExpression("obj instanceof @A @DA String s");
+        InstanceOfExpr expr = TestParser.parseExpression(LanguageLevel.JAVA_14, "obj instanceof @A @DA String s");
 
         assertThat(expr.getType().getAnnotations())
                 .containsExactly(
@@ -60,7 +59,7 @@ class InstanceOfExprTest {
 
     @Test
     void annotationsOnTheType_referenceTypeExpression() {
-        InstanceOfExpr expr = StaticJavaParser.parseExpression("obj instanceof @A @DA String");
+        InstanceOfExpr expr = TestParser.parseExpression(LanguageLevel.JAVA_14, "obj instanceof @A @DA String");
 
         assertThat(expr.getType().getAnnotations())
                 .containsExactly(
