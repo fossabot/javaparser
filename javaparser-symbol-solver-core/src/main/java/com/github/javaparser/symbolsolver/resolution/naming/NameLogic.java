@@ -466,13 +466,16 @@ public class NameLogic {
 
         String name = nameAsString(nameNode);
         Context context = JavaParserFactory.getContext(nameNode, typeSolver);
+        if (context.fieldDeclarationInScope(name).isPresent()) {
+            return NameCategory.EXPRESSION_NAME;
+        }
         if (context.localVariableDeclarationInScope(name).isPresent()) {
             return NameCategory.EXPRESSION_NAME;
         }
         if (context.parameterDeclarationInScope(name).isPresent()) {
             return NameCategory.EXPRESSION_NAME;
         }
-        if (context.fieldDeclarationInScope(name).isPresent()) {
+        if (context.patternExprInScope(name).isPresent()) {
             return NameCategory.EXPRESSION_NAME;
         }
 

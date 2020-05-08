@@ -204,6 +204,31 @@ public interface Context {
         return getParent().parameterDeclarationInScope(name);
     }
 
+    default Optional<PatternExpr> patternExprInScope(String name) {
+        if (getParent() == null) {
+            return Optional.empty();
+        }
+
+        // First check if the parameter is directly declared within this context.
+        Node wrappedNode = ((AbstractJavaParserContext) this).getWrappedNode();
+        // TODO: Only getParent() where the both the parent isn't an IfStmt and this is an IfStmt (nested if/elseif/else)
+        // TODO: Only getParent() where this isn't an else block / statement (this node is equal to the parent IfStmt's else block)
+        Optional<PatternExpr> localResolutionResults = getParent()
+                .patternExprExposedToChild(wrappedNode)
+                .stream()
+                .filter(vd -> vd.getNameAsString().equals(name))
+                .findFirst();
+
+        if (localResolutionResults.isPresent()) {
+            return localResolutionResults;
+        }
+
+        // If we don't find the parameter locally, escalate up the scope hierarchy to see if it is declared there.
+        // TODO: Logic to skip parents if e.g. nested if/elseif/else
+        // TODO: Logic to test if declaration exists before usage (similar to localvar bits?)
+        return getParent().patternExprInScope(name);
+    }
+
 
     /* Constructor resolution */
 
