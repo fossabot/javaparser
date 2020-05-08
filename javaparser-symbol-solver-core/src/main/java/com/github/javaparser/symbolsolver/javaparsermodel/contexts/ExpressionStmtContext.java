@@ -37,6 +37,7 @@ public class ExpressionStmtContext extends AbstractJavaParserContext<ExpressionS
         super(wrappedNode, typeSolver);
     }
 
+    @Override
     public SymbolReference<? extends ResolvedValueDeclaration> solveSymbol(String name) {
         Context parentContext = getParent();
         if(parentContext == null) {

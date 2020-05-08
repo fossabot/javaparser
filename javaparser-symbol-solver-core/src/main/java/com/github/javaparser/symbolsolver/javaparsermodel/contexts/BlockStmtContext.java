@@ -45,6 +45,7 @@ public class BlockStmtContext extends AbstractJavaParserContext<BlockStmt> {
     }
 
 
+    @Override
     public SymbolReference<? extends ResolvedValueDeclaration> solveSymbol(String name) {
         Context parentContext = getParent();
         if(parentContext == null) {

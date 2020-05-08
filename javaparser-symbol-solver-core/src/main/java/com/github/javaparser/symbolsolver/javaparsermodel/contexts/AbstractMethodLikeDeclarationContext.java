@@ -51,6 +51,7 @@ public abstract class AbstractMethodLikeDeclarationContext
         super(wrappedNode, typeSolver);
     }
 
+    @Override
     public final SymbolReference<? extends ResolvedValueDeclaration> solveSymbol(String name) {
         for (Parameter parameter : wrappedNode.getParameters()) {
             SymbolDeclarator sb = JavaParserFactory.getSymbolDeclarator(parameter, typeSolver);
