@@ -25,6 +25,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.PatternExpr;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.resolution.MethodUsage;
 import com.github.javaparser.resolution.declarations.ResolvedConstructorDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
@@ -204,16 +205,35 @@ public interface Context {
         return getParent().parameterDeclarationInScope(name);
     }
 
+
+    /**
+     * With respect to solving, the AST "parent" of a block statement is not necessarily the same as the scope parent.
+     * <br>Example:
+     * <br>
+     * <pre>{@code
+     *  public String x() {
+     *      if(x) {
+     *          // Parent node: the block attached to the method declaration
+     *          // Scope-parent: the block attached to the method declaration
+     *      } else if {
+     *          // Parent node: the if
+     *          // Scope-parent: the block attached to the method declaration
+     *      } else {
+     *          // Parent node: the elseif
+     *          // Scope-parent: the block attached to the method declaration
+     *      }
+     *  }
+     * }</pre>
+     */
     default Optional<PatternExpr> patternExprInScope(String name) {
-        if (getParent() == null) {
+        Context parentContext = getParent();
+        if (parentContext == null) {
             return Optional.empty();
         }
 
         // First check if the parameter is directly declared within this context.
         Node wrappedNode = ((AbstractJavaParserContext) this).getWrappedNode();
-        // TODO: Only getParent() where the both the parent isn't an IfStmt and this is an IfStmt (nested if/elseif/else)
-        // TODO: Only getParent() where this isn't an else block / statement (this node is equal to the parent IfStmt's else block)
-        Optional<PatternExpr> localResolutionResults = getParent()
+        Optional<PatternExpr> localResolutionResults = parentContext
                 .patternExprExposedToChild(wrappedNode)
                 .stream()
                 .filter(vd -> vd.getNameAsString().equals(name))
@@ -224,9 +244,7 @@ public interface Context {
         }
 
         // If we don't find the parameter locally, escalate up the scope hierarchy to see if it is declared there.
-        // TODO: Logic to skip parents if e.g. nested if/elseif/else
-        // TODO: Logic to test if declaration exists before usage (similar to localvar bits?)
-        return getParent().patternExprInScope(name);
+        return parentContext.patternExprInScope(name);
     }
 
 
@@ -273,4 +291,59 @@ public interface Context {
         }
     }
 
+
+    /**
+     * <pre>{@code
+     * if() {
+     *     // Does not match here (doesn't need to, as stuff inside of the if() is likely in context..)
+     * } else if() {
+     *     // Matches here
+     * } else {
+     *     // Matches here
+     * }
+     * }</pre>
+     * @return true, If this is an if inside of an if...
+     */
+    default boolean nodeContextIsNestedIf(Context parentContext) {
+        return parentContext instanceof AbstractJavaParserContext
+                && ((AbstractJavaParserContext<?>) this).getWrappedNode() instanceof IfStmt
+                && ((AbstractJavaParserContext<?>) parentContext).getWrappedNode() instanceof IfStmt;
+    }
+
+    /**
+     * <pre>{@code
+     * if() {
+     *     // Does not match here (doesn't need to, as stuff inside of the if() is likely in context..)
+     * } else {
+     *     // Does not match here, as the else block is a field inside of an ifstmt as opposed to child
+     * }
+     * }</pre>
+     * @return true, If this is an else inside of an if...
+     */
+    default boolean nodeContextIsImmediateChildElse(Context parentContext) {
+        if (!(parentContext instanceof AbstractJavaParserContext)) {
+            return false;
+        }
+        if (!(this instanceof AbstractJavaParserContext)) {
+            return false;
+        }
+
+        AbstractJavaParserContext<?> abstractContext = (AbstractJavaParserContext<?>) this;
+        AbstractJavaParserContext<?> abstractParentContext = (AbstractJavaParserContext<?>) parentContext;
+
+        Node wrappedNode = abstractContext.getWrappedNode();
+        Node wrappedParentNode = abstractParentContext.getWrappedNode();
+
+        if (wrappedParentNode instanceof IfStmt) {
+            IfStmt parentIfStmt = (IfStmt) wrappedParentNode;
+            if (parentIfStmt.getElseStmt().isPresent()) {
+                boolean currentNodeIsAnElseBlock = parentIfStmt.getElseStmt().get() == wrappedNode;
+                if (currentNodeIsAnElseBlock) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
