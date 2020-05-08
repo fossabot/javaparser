@@ -28,5 +28,6 @@ public class Java14Validator extends Java13Validator {
 
     public Java14Validator() {
         super();
+        remove(noInstanceOfPattern);
     }
 }
