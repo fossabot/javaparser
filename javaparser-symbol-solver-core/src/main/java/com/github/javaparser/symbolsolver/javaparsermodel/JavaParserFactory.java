@@ -52,6 +52,8 @@ public class JavaParserFactory {
             throw new NullPointerException("Node should not be null");
         } else if (node instanceof AnnotationDeclaration) {
             return new AnnotationDeclarationContext((AnnotationDeclaration) node, typeSolver);
+        } else if (node instanceof BinaryExpr) {
+            return new BinaryExprContext((BinaryExpr) node, typeSolver);
         } else if (node instanceof BlockStmt) {
             return new BlockStmtContext((BlockStmt) node, typeSolver);
         } else if (node instanceof CompilationUnit) {

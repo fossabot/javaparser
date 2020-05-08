@@ -14,6 +14,7 @@ import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -216,6 +217,7 @@ public class InstanceOfTest {
 
     }
 
+    @Disabled
     @Test
     public void binaryExpr_shouldPass() {
         String x = "class X {\n" +
