@@ -62,8 +62,6 @@ public class JavaParserFactory {
             return new ForStatementContext((ForStmt) node, typeSolver);
         } else if (node instanceof IfStmt) {
             return new IfStatementContext((IfStmt) node, typeSolver);
-        } else if (node instanceof ExpressionStmt) {
-            return new ExpressionStmtContext((ExpressionStmt) node, typeSolver);
         } else if (node instanceof LambdaExpr) {
             return new LambdaExprContext((LambdaExpr) node, typeSolver);
         } else if (node instanceof MethodDeclaration) {

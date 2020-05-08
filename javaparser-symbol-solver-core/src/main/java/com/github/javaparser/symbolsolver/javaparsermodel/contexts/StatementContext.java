@@ -21,7 +21,10 @@
 
 package com.github.javaparser.symbolsolver.javaparsermodel.contexts;
 
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.PatternExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithStatements;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -31,6 +34,7 @@ import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.core.resolution.Context;
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFactory;
+import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserSymbolDeclaration;
 import com.github.javaparser.symbolsolver.model.resolution.SymbolReference;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.model.resolution.Value;
@@ -113,7 +117,7 @@ public class StatementContext<N extends Statement> extends AbstractJavaParserCon
         }
 
         // we should look in all the statements preceding, treating them as SymbolDeclarators
-        if (demandParentNode(wrappedNode) instanceof com.github.javaparser.ast.body.MethodDeclaration) {
+        if (demandParentNode(wrappedNode) instanceof MethodDeclaration) {
             return getParent().solveSymbolAsValue(name);
         }
         if (demandParentNode(wrappedNode) instanceof LambdaExpr) {
@@ -150,6 +154,7 @@ public class StatementContext<N extends Statement> extends AbstractJavaParserCon
 
     @Override
     public SymbolReference<? extends ResolvedValueDeclaration> solveSymbol(String name) {
+        Context parentContext = getParent();
 
         // if we're in a multiple Variable declaration line (for ex: double a=0, b=a;)
         SymbolDeclarator symbolDeclarator = JavaParserFactory.getSymbolDeclarator(wrappedNode, typeSolver);
@@ -158,18 +163,30 @@ public class StatementContext<N extends Statement> extends AbstractJavaParserCon
             return symbolReference;
         }
 
-        // we should look in all the statements preceding, treating them as SymbolDeclarators
-        if (demandParentNode(wrappedNode) instanceof com.github.javaparser.ast.body.MethodDeclaration) {
-            return getParent().solveSymbol(name);
+        // If this is the "then" section of an if/else if (i.e. not an else) -- e.g. wrappedNode of ExpressionStmt
+        // ... consider pattern expressions defined within the IfStmt condition
+        boolean nodeContextIsThenOfIfStmt = nodeContextIsThenOfIfStmt(parentContext);
+        if(nodeContextIsThenOfIfStmt) {
+            List<PatternExpr> patternExprs = parentContext.patternExprExposedToChild(getWrappedNode());
+            for (PatternExpr patternExpr : patternExprs) {
+                if (patternExpr.getName().getIdentifier().equals(name)) {
+                    return SymbolReference.solved(JavaParserSymbolDeclaration.patternVar(patternExpr, typeSolver));
+                }
+            }
         }
-        if (demandParentNode(wrappedNode) instanceof com.github.javaparser.ast.body.ConstructorDeclaration) {
-            return getParent().solveSymbol(name);
+
+        // we should look in all the statements preceding, treating them as SymbolDeclarators
+        if (demandParentNode(wrappedNode) instanceof MethodDeclaration) {
+            return parentContext.solveSymbol(name);
+        }
+        if (demandParentNode(wrappedNode) instanceof ConstructorDeclaration) {
+            return parentContext.solveSymbol(name);
         }
         if (demandParentNode(wrappedNode) instanceof LambdaExpr) {
-            return getParent().solveSymbol(name);
+            return parentContext.solveSymbol(name);
         }
         if (!(demandParentNode(wrappedNode) instanceof NodeWithStatements)) {
-            return getParent().solveSymbol(name);
+            return parentContext.solveSymbol(name);
         }
         NodeWithStatements<?> nodeWithStmt = (NodeWithStatements<?>) demandParentNode(wrappedNode);
         int position = -1;
@@ -190,7 +207,7 @@ public class StatementContext<N extends Statement> extends AbstractJavaParserCon
         }
 
         // if nothing is found we should ask the parent context
-        return getParent().solveSymbol(name);
+        return parentContext.solveSymbol(name);
     }
 
     @Override

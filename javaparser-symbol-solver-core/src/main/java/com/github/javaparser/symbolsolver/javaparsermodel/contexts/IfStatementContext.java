@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class IfStatementContext extends AbstractJavaParserContext<IfStmt> {
+public class IfStatementContext extends StatementContext<IfStmt> {
+//public class IfStatementContext extends AbstractJavaParserContext<IfStmt> {
 
     public IfStatementContext(IfStmt wrappedNode, TypeSolver typeSolver) {
         super(wrappedNode, typeSolver);

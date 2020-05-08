@@ -37,7 +37,6 @@ import com.github.javaparser.resolution.types.ResolvedPrimitiveType;
 import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade;
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFactory;
-import com.github.javaparser.symbolsolver.javaparsermodel.declarators.PatternSymbolDeclarator;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 
 import static com.github.javaparser.symbolsolver.javaparser.Navigator.demandParentNode;
@@ -72,6 +71,7 @@ public class JavaParserSymbolDeclaration implements ResolvedValueDeclaration {
     public static JavaParserSymbolDeclaration localVar(VariableDeclarator variableDeclarator, TypeSolver typeSolver) {
         return new JavaParserSymbolDeclaration(variableDeclarator, variableDeclarator.getName().getId(), typeSolver);
     }
+
     public static JavaParserSymbolDeclaration patternVar(PatternExpr patternExpr, TypeSolver typeSolver) {
         return new JavaParserSymbolDeclaration(patternExpr, patternExpr.getName().getId(), typeSolver);
     }

@@ -175,7 +175,7 @@ public class InstanceOfTest {
     }
 
     @Test
-    public void givenInstanceOfPattern_usingJdk13() {
+    public void givenInstanceOfPattern_usingJdk13_thenExpectException() {
         ParserConfiguration parserConfiguration = new ParserConfiguration();
         parserConfiguration.setSymbolResolver(new JavaSymbolSolver(typeSolver));
         parserConfiguration.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_13);
