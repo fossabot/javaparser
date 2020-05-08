@@ -31,11 +31,11 @@ public class IfStatementContext extends AbstractJavaParserContext<IfStmt> {
 
         // Don't search in the "parent" if/elseif/else bits...
         Context parentContext = getParent();
-        while (nodeContextIsNestedIf(parentContext) || nodeContextIsImmediateChildElse(parentContext)) {
+        while (nodeContextIsChainedIfElseIf(parentContext) || nodeContextIsImmediateChildElse(parentContext)) {
             parentContext = parentContext.getParent();
         }
 
-        return getParent().solveSymbol(name);
+        return parentContext.solveSymbol(name);
     }
 
     public List<PatternExpr> patternExprExposedToChild(Node child) {
@@ -54,62 +54,5 @@ public class IfStatementContext extends AbstractJavaParserContext<IfStmt> {
         return allPatternExprInCondition.stream()
                 .filter(patternExpr -> patternExpr.getRange().get().end.isBefore(child.getRange().get().begin))
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * <pre>{@code
-     * if() {
-     *     // Does not match here (doesn't need to, as stuff inside of the if() is likely in context..)
-     * } else if() {
-     *     // Matches here
-     * } else {
-     *     // Matches here
-     * }
-     * }</pre>
-     *
-     * @return true, If this is an if inside of an if...
-     */
-    private boolean nodeContextIsNestedIf(Context parentContext) {
-        return parentContext instanceof AbstractJavaParserContext
-                && ((AbstractJavaParserContext<?>) this).getWrappedNode() instanceof IfStmt
-                && ((AbstractJavaParserContext<?>) parentContext).getWrappedNode() instanceof IfStmt;
-    }
-
-    /**
-     * <pre>{@code
-     * if() {
-     *     // Does not match here (doesn't need to, as stuff inside of the if() is likely in context..)
-     * } else {
-     *     // Does not match here, as the else block is a field inside of an ifstmt as opposed to child
-     * }
-     * }</pre>
-     *
-     * @return true, If this is an else inside of an if...
-     */
-    private boolean nodeContextIsImmediateChildElse(Context parentContext) {
-        if (!(parentContext instanceof AbstractJavaParserContext)) {
-            return false;
-        }
-        if (!(this instanceof AbstractJavaParserContext)) {
-            return false;
-        }
-
-        AbstractJavaParserContext<?> abstractContext = (AbstractJavaParserContext<?>) this;
-        AbstractJavaParserContext<?> abstractParentContext = (AbstractJavaParserContext<?>) parentContext;
-
-        Node wrappedNode = abstractContext.getWrappedNode();
-        Node wrappedParentNode = abstractParentContext.getWrappedNode();
-
-        if (wrappedParentNode instanceof IfStmt) {
-            IfStmt parentIfStmt = (IfStmt) wrappedParentNode;
-            if (parentIfStmt.getElseStmt().isPresent()) {
-                boolean currentNodeIsAnElseBlock = parentIfStmt.getElseStmt().get() == wrappedNode;
-                if (currentNodeIsAnElseBlock) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }

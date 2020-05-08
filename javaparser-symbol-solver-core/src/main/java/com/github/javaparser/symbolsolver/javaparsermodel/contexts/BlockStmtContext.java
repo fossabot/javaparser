@@ -27,6 +27,9 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
+import com.github.javaparser.symbolsolver.core.resolution.Context;
+import com.github.javaparser.symbolsolver.model.resolution.SymbolReference;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 
 import java.util.Collections;
@@ -37,6 +40,17 @@ public class BlockStmtContext extends AbstractJavaParserContext<BlockStmt> {
 
     public BlockStmtContext(BlockStmt wrappedNode, TypeSolver typeSolver) {
         super(wrappedNode, typeSolver);
+    }
+
+
+    public SymbolReference<? extends ResolvedValueDeclaration> solveSymbol(String name) {
+        // Don't search in the "parent"/"prior-chained" if/elseif/else bits...
+        Context parentContext = getParent();
+        while (nodeContextIsChainedIfElseIf(parentContext) || nodeContextIsImmediateChildElse(parentContext)) {
+            parentContext = parentContext.getParent();
+        }
+
+        return parentContext.solveSymbol(name);
     }
 
     @Override
