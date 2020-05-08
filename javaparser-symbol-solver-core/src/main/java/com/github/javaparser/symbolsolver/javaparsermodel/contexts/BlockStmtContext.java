@@ -96,13 +96,23 @@ public class BlockStmtContext extends AbstractJavaParserContext<BlockStmt> {
     @Override
     public SymbolReference<? extends ResolvedValueDeclaration> solveSymbol(String name) {
         Context parentContext = getParent();
-        while(
-                parentContext instanceof AbstractJavaParserContext
-                        && ((AbstractJavaParserContext) this         ).getWrappedNode() instanceof IfStmt
-                        && ((AbstractJavaParserContext) parentContext).getWrappedNode() instanceof IfStmt // If this is an if inside of an if...
-        ) {
+        while (nodeContextIsNestedIf(parentContext)) {
             parentContext = parentContext.getParent();
+            if (parentContext == null) {
+                // Unsolved, if the parent context ends up being null
+                return SymbolReference.unsolved(ResolvedValueDeclaration.class);
+            }
         }
+
         return parentContext.solveSymbol(name);
+    }
+
+    /**
+     * @return true, If this is an if inside of an if...
+     */
+    private boolean nodeContextIsNestedIf(Context parentContext) {
+        return parentContext instanceof AbstractJavaParserContext
+                && ((AbstractJavaParserContext<?>) this).getWrappedNode() instanceof IfStmt
+                && ((AbstractJavaParserContext<?>) parentContext).getWrappedNode() instanceof IfStmt;
     }
 }
