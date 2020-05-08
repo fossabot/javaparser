@@ -24,8 +24,14 @@ package com.github.javaparser.symbolsolver.core.resolution;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.PatternExpr;
 import com.github.javaparser.resolution.MethodUsage;
-import com.github.javaparser.resolution.declarations.*;
+import com.github.javaparser.resolution.declarations.ResolvedConstructorDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.javaparsermodel.contexts.AbstractJavaParserContext;
 import com.github.javaparser.symbolsolver.model.resolution.SymbolReference;
@@ -76,6 +82,15 @@ public interface Context {
         }
     }
 
+
+    /**
+     * The fields that are declared and in this immediate context made visible to a given child.
+     * This list could include values which are shadowed.
+     */
+    default List<ResolvedFieldDeclaration> fieldsExposedToChild(Node child) {
+        return Collections.emptyList();
+    }
+
     /**
      * The local variables that are declared in this immediate context and made visible to a given child.
      * This list could include values which are shadowed.
@@ -93,11 +108,33 @@ public interface Context {
     }
 
     /**
-     * The fields that are declared and in this immediate context made visible to a given child.
+     * The parameters that are declared in this immediate context and made visible to a given child.
      * This list could include values which are shadowed.
      */
-    default List<ResolvedFieldDeclaration> fieldsExposedToChild(Node child) {
+    default List<PatternExpr> patternExprExposedToChild(Node child) {
         return Collections.emptyList();
+    }
+
+
+
+    default Optional<ResolvedFieldDeclaration> fieldDeclarationInScope(String name) {
+        if (getParent() == null) {
+            return Optional.empty();
+        }
+
+        // First check if the field is directly declared within this context.
+        Node wrappedNode = ((AbstractJavaParserContext) this).getWrappedNode();
+        Optional<ResolvedFieldDeclaration> localResolutionResults = getParent().fieldsExposedToChild(wrappedNode)
+                .stream()
+                .filter(vd -> vd.getName().equals(name))
+                .findFirst();
+
+        if (localResolutionResults.isPresent()) {
+            return localResolutionResults;
+        }
+
+        // If we don't find the field locally, escalate up the scope hierarchy to see if it is declared there.
+        return getParent().fieldDeclarationInScope(name);
     }
 
     /**
@@ -129,12 +166,20 @@ public interface Context {
         if (getParent() == null) {
             return Optional.empty();
         }
-        Optional<VariableDeclarator> localRes = getParent().localVariablesExposedToChild(((AbstractJavaParserContext)this)
-                .getWrappedNode()).stream().filter(vd -> vd.getNameAsString().equals(name)).findFirst();
-        if (localRes.isPresent()) {
-            return localRes;
+
+        // First check if the variable is directly declared within this context.
+        Node wrappedNode = ((AbstractJavaParserContext) this).getWrappedNode();
+        Optional<VariableDeclarator> localResolutionResults = getParent()
+                .localVariablesExposedToChild(wrappedNode)
+                .stream()
+                .filter(vd -> vd.getNameAsString().equals(name))
+                .findFirst();
+
+        if (localResolutionResults.isPresent()) {
+            return localResolutionResults;
         }
 
+        // If we don't find the variable locally, escalate up the scope hierarchy to see if it is declared there.
         return getParent().localVariableDeclarationInScope(name);
     }
 
@@ -142,27 +187,23 @@ public interface Context {
         if (getParent() == null) {
             return Optional.empty();
         }
-        Optional<Parameter> localRes = getParent().parametersExposedToChild(((AbstractJavaParserContext)this)
-                .getWrappedNode()).stream().filter(vd -> vd.getNameAsString().equals(name)).findFirst();
-        if (localRes.isPresent()) {
-            return localRes;
+
+        // First check if the parameter is directly declared within this context.
+        Node wrappedNode = ((AbstractJavaParserContext) this).getWrappedNode();
+        Optional<Parameter> localResolutionResults = getParent()
+                .parametersExposedToChild(wrappedNode)
+                .stream()
+                .filter(vd -> vd.getNameAsString().equals(name))
+                .findFirst();
+
+        if (localResolutionResults.isPresent()) {
+            return localResolutionResults;
         }
 
+        // If we don't find the parameter locally, escalate up the scope hierarchy to see if it is declared there.
         return getParent().parameterDeclarationInScope(name);
     }
 
-    default Optional<ResolvedFieldDeclaration> fieldDeclarationInScope(String name) {
-        if (getParent() == null) {
-            return Optional.empty();
-        }
-        Optional<ResolvedFieldDeclaration> localRes = getParent().fieldsExposedToChild(((AbstractJavaParserContext)this)
-                .getWrappedNode()).stream().filter(vd -> vd.getName().equals(name)).findFirst();
-        if (localRes.isPresent()) {
-            return localRes;
-        }
-
-        return getParent().fieldDeclarationInScope(name);
-    }
 
     /* Constructor resolution */
 
