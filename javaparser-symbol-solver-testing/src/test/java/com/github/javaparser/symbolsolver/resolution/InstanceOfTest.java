@@ -50,6 +50,47 @@ public class InstanceOfTest {
 
     private final TypeSolver typeSolver = new ReflectionTypeSolver();
 
+    @Disabled
+    @Test
+    public void binaryExpr_shouldPass() {
+        String x = "class X {\n" +
+                "  public X() {\n" +
+                "    boolean result;\n" +
+                "    String obj = \"abc\";\n" +
+                "    if(obj instanceof String s && s.contains(\"b\")) {\n" +
+                "        // empty block\n" +
+                "    }\n" +
+                "  }\n" +
+                "}\n";
+
+        final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
+        final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
+        assertEquals(1, methodCalls.size());
+
+        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
+
+
+        // Resolving the method call .contains()
+        final ResolvedMethodDeclaration resolve = inScopeMethodCall.resolve();
+        System.out.println("resolve.getQualifiedSignature() = " + resolve.getQualifiedSignature());
+
+        assertEquals("java.lang.String.contains(java.lang.CharSequence)", resolve.getQualifiedSignature());
+        assertEquals("boolean", resolve.getReturnType().describe());
+        assertEquals("contains", resolve.getName());
+        assertEquals(1, resolve.getNumberOfParams());
+        assertEquals("contains(java.lang.CharSequence)", resolve.getSignature());
+
+
+        // Resolving the variable `s`
+        assertTrue(inScopeMethodCall.getScope().isPresent());
+        final Expression expression = inScopeMethodCall.getScope().get();
+
+        final ResolvedType resolvedType = expression.calculateResolvedType();
+        assertEquals("java.lang.String", resolvedType.describe());
+
+
+    }
+
     @Test
     public void givenInstanceOfPattern_andField_else_skipBraces_thenResolvesToPattern() {
         String x = "import java.util.List;\n" +
@@ -182,6 +223,7 @@ public class InstanceOfTest {
         // Expected to not be able to resolve s, as out of scope within an else block.
         assertThrows(UnsolvedSymbolException.class, () -> {
             final ResolvedMethodDeclaration resolve = outOfScopeMethodCall.resolve();
+            // Note: Only printed if the above line doesn't error...
             System.out.println("resolve = " + resolve);
         });
     }
@@ -217,45 +259,47 @@ public class InstanceOfTest {
 
     }
 
-    @Disabled
+    private CompilationUnit parseWithTypeSolver(String code) {
+        return parseWithTypeSolver(null, code);
+    }
+
+    private CompilationUnit parseWithTypeSolver(ParserConfiguration.LanguageLevel languageLevel, String code) {
+        ParserConfiguration parserConfiguration = new ParserConfiguration();
+        parserConfiguration.setSymbolResolver(new JavaSymbolSolver(typeSolver));
+
+        if (languageLevel != null) {
+            parserConfiguration.setLanguageLevel(languageLevel);
+        }
+
+        return new JavaParser(parserConfiguration)
+                .parse(ParseStart.COMPILATION_UNIT, new StringProvider(code))
+                .getResult().get();
+    }
+
     @Test
-    public void binaryExpr_shouldPass() {
+    public void test2_shouldFail() {
         String x = "class X {\n" +
-                "  public X() {\n" +
-                "    boolean result;\n" +
-                "    String obj = \"abc\";\n" +
-                "    if(obj instanceof String s && s.contains(\"b\")) {\n" +
-                "        // empty block\n" +
+                "    public X() {\n" +
+                "        String obj = \"abc\";\n" +
+                "        if(s.contains(\"b\") && obj instanceof String s) {\n" +
+                "            // Empty BlockStmt\n" +
+                "        }\n" +
+                "    \n" +
                 "    }\n" +
-                "  }\n" +
                 "}\n";
 
         final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
         final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
         assertEquals(1, methodCalls.size());
 
-        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
+        MethodCallExpr outOfScopeMethodCall = methodCalls.get(0);
 
-
-        // Resolving the method call .contains()
-        final ResolvedMethodDeclaration resolve = inScopeMethodCall.resolve();
-        System.out.println("resolve.getQualifiedSignature() = " + resolve.getQualifiedSignature());
-
-        assertEquals("java.lang.String.contains(java.lang.CharSequence)", resolve.getQualifiedSignature());
-        assertEquals("boolean", resolve.getReturnType().describe());
-        assertEquals("contains", resolve.getName());
-        assertEquals(1, resolve.getNumberOfParams());
-        assertEquals("contains(java.lang.CharSequence)", resolve.getSignature());
-
-
-        // Resolving the variable `s`
-        assertTrue(inScopeMethodCall.getScope().isPresent());
-        final Expression expression = inScopeMethodCall.getScope().get();
-
-        final ResolvedType resolvedType = expression.calculateResolvedType();
-        assertEquals("java.lang.String", resolvedType.describe());
-
-
+        // Expected to not be able to resolve s, as out of scope within an else block.
+        assertThrows(UnsolvedSymbolException.class, () -> {
+            final ResolvedMethodDeclaration resolve = outOfScopeMethodCall.resolve();
+            // Note: Only printed if the above line doesn't error...
+            System.out.println("resolve = " + resolve);
+        });
     }
 
 
@@ -290,22 +334,69 @@ public class InstanceOfTest {
 //
 //    }
 
+    @Test
+    public void test_shouldFail() {
+        String x = "class X {\n" +
+                "    public X() {\n" +
+                "        String obj = \"abc\";\n" +
+                "        if(obj instanceof String s || s.contains(\"b\")) {\n" +
+                "            // Empty BlockStmt\n" +
+                "        }\n" +
+                "    \n" +
+                "    }\n" +
+                "}\n";
 
-    private CompilationUnit parseWithTypeSolver(String code) {
-        return parseWithTypeSolver(null, code);
+        final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
+        final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
+        assertEquals(1, methodCalls.size());
+
+        MethodCallExpr outOfScopeMethodCall = methodCalls.get(0);
+
+        // Expected to not be able to resolve s, as out of scope within an else block.
+        assertThrows(UnsolvedSymbolException.class, () -> {
+            final ResolvedMethodDeclaration resolve = outOfScopeMethodCall.resolve();
+            // Note: Only printed if the above line doesn't error...
+            System.out.println("resolve = " + resolve);
+        });
     }
 
-    private CompilationUnit parseWithTypeSolver(ParserConfiguration.LanguageLevel languageLevel, String code) {
-        ParserConfiguration parserConfiguration = new ParserConfiguration();
-        parserConfiguration.setSymbolResolver(new JavaSymbolSolver(typeSolver));
+    @Test
+    public void variable_shouldPass() {
+        String x = "class X {\n" +
+                "  public void foo() {\n" +
+                "    String obj = \"abc\";\n" +
+                "    boolean condition = obj instanceof String s;\n" +
+                "    boolean result;\n" +
+                "    result = s.contains(\"b\");\n" +
+                "  }\n" +
+                "}\n";
 
-        if (languageLevel != null) {
-            parserConfiguration.setLanguageLevel(languageLevel);
-        }
+        final CompilationUnit cu = parseWithTypeSolver(ParserConfiguration.LanguageLevel.JAVA_14, x);
+        final List<MethodCallExpr> methodCalls = cu.findAll(MethodCallExpr.class);
+        assertEquals(1, methodCalls.size());
 
-        return new JavaParser(parserConfiguration)
-                .parse(ParseStart.COMPILATION_UNIT, new StringProvider(code))
-                .getResult().get();
+        MethodCallExpr inScopeMethodCall = methodCalls.get(0);
+
+
+        // Resolving the method call .contains()
+        final ResolvedMethodDeclaration resolve = inScopeMethodCall.resolve();
+        System.out.println("resolve.getQualifiedSignature() = " + resolve.getQualifiedSignature());
+
+        assertEquals("java.lang.String.contains(java.lang.CharSequence)", resolve.getQualifiedSignature());
+        assertEquals("boolean", resolve.getReturnType().describe());
+        assertEquals("contains", resolve.getName());
+        assertEquals(1, resolve.getNumberOfParams());
+        assertEquals("contains(java.lang.CharSequence)", resolve.getSignature());
+
+
+        // Resolving the variable `s`
+        assertTrue(inScopeMethodCall.getScope().isPresent());
+        final Expression expression = inScopeMethodCall.getScope().get();
+
+        final ResolvedType resolvedType = expression.calculateResolvedType();
+        assertEquals("java.lang.String", resolvedType.describe());
+
+
     }
 
 }
